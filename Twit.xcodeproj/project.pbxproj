@@ -7,23 +7,39 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27E021267BC6A01A59F88410 /* Pods_Twit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0634758A984B2BBBBDDFC54E /* Pods_Twit.framework */; };
 		835D2CA31D7C1FBC00A06580 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CA21D7C1FBC00A06580 /* AppDelegate.swift */; };
 		835D2CA51D7C1FBC00A06580 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CA41D7C1FBC00A06580 /* ViewController.swift */; };
-		835D2CA81D7C1FBC00A06580 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 835D2CA61D7C1FBC00A06580 /* Main.storyboard */; };
 		835D2CAB1D7C1FBC00A06580 /* Twit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CA91D7C1FBC00A06580 /* Twit.xcdatamodeld */; };
 		835D2CAD1D7C1FBC00A06580 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 835D2CAC1D7C1FBC00A06580 /* Assets.xcassets */; };
 		835D2CB01D7C1FBC00A06580 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 835D2CAE1D7C1FBC00A06580 /* LaunchScreen.storyboard */; };
+		835D2CB81D7C201E00A06580 /* TwitMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CB71D7C201E00A06580 /* TwitMain.swift */; };
+		835D2CBC1D7C229600A06580 /* TwitTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CBB1D7C229600A06580 /* TwitTabBarController.swift */; };
+		835D2CBF1D7C24EC00A06580 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CBE1D7C24EC00A06580 /* HomeVC.swift */; };
+		835D2CC31D7D696900A06580 /* HomeDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CC21D7D696900A06580 /* HomeDataService.swift */; };
+		835D2CC51D7D697600A06580 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CC41D7D697600A06580 /* DataService.swift */; };
+		835D2CC81D7D6B2200A06580 /* Constaints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835D2CC71D7D6B2200A06580 /* Constaints.swift */; };
+		835D2CCA1D7D6D0400A06580 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 835D2CC91D7D6D0400A06580 /* Alamofire.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0634758A984B2BBBBDDFC54E /* Pods_Twit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Twit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0E2213B76B9A9047FABD9EA7 /* Pods-Twit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Twit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Twit/Pods-Twit.release.xcconfig"; sourceTree = "<group>"; };
 		835D2C9F1D7C1FBC00A06580 /* Twit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Twit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		835D2CA21D7C1FBC00A06580 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		835D2CA41D7C1FBC00A06580 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		835D2CA71D7C1FBC00A06580 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		835D2CAA1D7C1FBC00A06580 /* Twit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Twit.xcdatamodel; sourceTree = "<group>"; };
 		835D2CAC1D7C1FBC00A06580 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		835D2CAF1D7C1FBC00A06580 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		835D2CB11D7C1FBC00A06580 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		835D2CB71D7C201E00A06580 /* TwitMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitMain.swift; sourceTree = "<group>"; };
+		835D2CBB1D7C229600A06580 /* TwitTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TwitTabBarController.swift; path = Controllers/Setup/TwitTabBarController.swift; sourceTree = "<group>"; };
+		835D2CBE1D7C24EC00A06580 /* HomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeVC.swift; path = Controllers/Home/HomeVC.swift; sourceTree = "<group>"; };
+		835D2CC21D7D696900A06580 /* HomeDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeDataService.swift; path = Services/Home/HomeDataService.swift; sourceTree = "<group>"; };
+		835D2CC41D7D697600A06580 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataService.swift; path = Services/DataService.swift; sourceTree = "<group>"; };
+		835D2CC71D7D6B2200A06580 /* Constaints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constaints.swift; path = Utils/Constaints.swift; sourceTree = "<group>"; };
+		835D2CC91D7D6D0400A06580 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = "../../Library/Developer/Xcode/DerivedData/Twit-erhsfecukdkspbcjpnfmlcmipfxx/Build/Products/Debug-iphoneos/Alamofire/Alamofire.framework"; sourceTree = "<group>"; };
+		DB0BE488F8D79554352388A0 /* Pods-Twit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Twit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Twit/Pods-Twit.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +47,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				835D2CCA1D7D6D0400A06580 /* Alamofire.framework in Frameworks */,
+				27E021267BC6A01A59F88410 /* Pods_Twit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		743348205DEF209B895E8E88 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DB0BE488F8D79554352388A0 /* Pods-Twit.debug.xcconfig */,
+				0E2213B76B9A9047FABD9EA7 /* Pods-Twit.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		835D2C961D7C1FBC00A06580 = {
 			isa = PBXGroup;
 			children = (
 				835D2CA11D7C1FBC00A06580 /* Twit */,
 				835D2CA01D7C1FBC00A06580 /* Products */,
+				743348205DEF209B895E8E88 /* Pods */,
+				9E6FF39A311DEEE398F5C890 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +85,77 @@
 		835D2CA11D7C1FBC00A06580 /* Twit */ = {
 			isa = PBXGroup;
 			children = (
+				835D2CC61D7D6B0D00A06580 /* Utils */,
+				835D2CC01D7D692C00A06580 /* Services */,
+				835D2CB91D7C225600A06580 /* Controllers */,
 				835D2CA21D7C1FBC00A06580 /* AppDelegate.swift */,
 				835D2CA41D7C1FBC00A06580 /* ViewController.swift */,
-				835D2CA61D7C1FBC00A06580 /* Main.storyboard */,
 				835D2CAC1D7C1FBC00A06580 /* Assets.xcassets */,
 				835D2CAE1D7C1FBC00A06580 /* LaunchScreen.storyboard */,
 				835D2CB11D7C1FBC00A06580 /* Info.plist */,
 				835D2CA91D7C1FBC00A06580 /* Twit.xcdatamodeld */,
+				835D2CB71D7C201E00A06580 /* TwitMain.swift */,
 			);
 			path = Twit;
+			sourceTree = "<group>";
+		};
+		835D2CB91D7C225600A06580 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				835D2CBD1D7C24A300A06580 /* Home */,
+				835D2CBA1D7C226B00A06580 /* Setup */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		835D2CBA1D7C226B00A06580 /* Setup */ = {
+			isa = PBXGroup;
+			children = (
+				835D2CBB1D7C229600A06580 /* TwitTabBarController.swift */,
+			);
+			name = Setup;
+			sourceTree = "<group>";
+		};
+		835D2CBD1D7C24A300A06580 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				835D2CBE1D7C24EC00A06580 /* HomeVC.swift */,
+			);
+			name = Home;
+			sourceTree = "<group>";
+		};
+		835D2CC01D7D692C00A06580 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				835D2CC11D7D693500A06580 /* Home */,
+				835D2CC41D7D697600A06580 /* DataService.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
+		835D2CC11D7D693500A06580 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				835D2CC21D7D696900A06580 /* HomeDataService.swift */,
+			);
+			name = Home;
+			sourceTree = "<group>";
+		};
+		835D2CC61D7D6B0D00A06580 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				835D2CC71D7D6B2200A06580 /* Constaints.swift */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		9E6FF39A311DEEE398F5C890 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				835D2CC91D7D6D0400A06580 /* Alamofire.framework */,
+				0634758A984B2BBBBDDFC54E /* Pods_Twit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +165,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 835D2CB41D7C1FBC00A06580 /* Build configuration list for PBXNativeTarget "Twit" */;
 			buildPhases = (
+				F503700FC567D861EDD6689E /* [CP] Check Pods Manifest.lock */,
 				835D2C9B1D7C1FBC00A06580 /* Sources */,
 				835D2C9C1D7C1FBC00A06580 /* Frameworks */,
 				835D2C9D1D7C1FBC00A06580 /* Resources */,
+				9FD5336D8A749DCE709DE2FF /* [CP] Embed Pods Frameworks */,
+				6CC59EB0E96DEF7515990191 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -127,34 +221,79 @@
 			files = (
 				835D2CB01D7C1FBC00A06580 /* LaunchScreen.storyboard in Resources */,
 				835D2CAD1D7C1FBC00A06580 /* Assets.xcassets in Resources */,
-				835D2CA81D7C1FBC00A06580 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6CC59EB0E96DEF7515990191 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Twit/Pods-Twit-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9FD5336D8A749DCE709DE2FF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Twit/Pods-Twit-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F503700FC567D861EDD6689E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		835D2C9B1D7C1FBC00A06580 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				835D2CBC1D7C229600A06580 /* TwitTabBarController.swift in Sources */,
 				835D2CAB1D7C1FBC00A06580 /* Twit.xcdatamodeld in Sources */,
 				835D2CA51D7C1FBC00A06580 /* ViewController.swift in Sources */,
+				835D2CBF1D7C24EC00A06580 /* HomeVC.swift in Sources */,
+				835D2CB81D7C201E00A06580 /* TwitMain.swift in Sources */,
+				835D2CC31D7D696900A06580 /* HomeDataService.swift in Sources */,
+				835D2CC81D7D6B2200A06580 /* Constaints.swift in Sources */,
 				835D2CA31D7C1FBC00A06580 /* AppDelegate.swift in Sources */,
+				835D2CC51D7D697600A06580 /* DataService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		835D2CA61D7C1FBC00A06580 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				835D2CA71D7C1FBC00A06580 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		835D2CAE1D7C1FBC00A06580 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -253,6 +392,7 @@
 		};
 		835D2CB51D7C1FBC00A06580 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DB0BE488F8D79554352388A0 /* Pods-Twit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Twit/Info.plist;
@@ -264,6 +404,7 @@
 		};
 		835D2CB61D7C1FBC00A06580 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0E2213B76B9A9047FABD9EA7 /* Pods-Twit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Twit/Info.plist;
@@ -292,6 +433,7 @@
 				835D2CB61D7C1FBC00A06580 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

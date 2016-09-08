@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "twit-mobile",
+  "private_key_id": "febd239fd2d6258c8f26e50c4dc0cf9dca8d2a2c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEwAIBADANBgkqhkiG9w0BAQEFAASCBKowggSmAgEAAoIBAQDME0z8oyurQ1Ic\ntLt4Jsi0D+O7NJdbXXSlxVHgNrhaTREN0XSEVg8nk9rdZhcRyNm01XQ73ya1jzcp\n1a/XQPImY6Mfbwp+vmThum3DAg5gEk4w/ApU1xZd7w8zhgrEhfOy7h6d/HTbp3i2\nypR+U3AzvNXiL0oQDH2AGkjcZ9NP1TS3zjfq54DYxuZz6AtftI3m4HGYaVeWuUJQ\nV9beS8q93ZZ9yiTDFLSPHH71CdT8tmszNstgHo02jAsQUoxNReUtkY1+HM301cHC\nzXYIUA/2FnbrAoVQ2Wb2Vtq/uBoU5AnTErlmN4GaSw4pfaINCRFFyI2G7Qu9zZNb\nv7W0KUWdAgMBAAECggEBAMJBEQRekZ/ZWh0HEHgjeuKjSWQWgIiwoet1syUZEUyr\nlTMxEJczkANdY3Vhy03bgRf4I0cmeCNU6u6AgHwGTzmpmEnAmh3hQAf6PKbmmyZp\n5lIMaA0wHBNYDoE985vz4fCNZ0l9WQMJHAfrN4Q0ClbFRlaiKv6x1PiOjJJ4phWT\nKc3+ykbotwMBd9zFvOJouP7gasAbHzMG/YywWaAuqJiI+pPPC6ouENyb8T4Amwao\nHhs/P23ZiygI6a3jNiFb/YKbmG0rkp+V4LJV6NDpuC8sTh8Rn8BIfsUTYRpzTLeU\nd3/WwdH2G5r2fuZcjF2cXLfTOBX4mru8OCUdQhOdJAECgYEA9qxszcCNpEH/PTk+\ndoUH/hVs6AEdp0pchporolwZAnJPMfjxv4WVhLsSft3GtjBfLS7ftjqwCdlPShaw\nt+z6X5r+VnNZIhI921U21Ffs9djTMDJSwTVXD/MYslTW80ezSHYMNhJ1oDt5ZCHp\n15FkyPkYZqZfOiI3eXpHviyZSJ0CgYEA08qQhQ7fb9WX0ApxEz4uiC3DD2XKE6O9\nvOHqC1R+lzO2IufxS29yrK4WybziITGVBzxDgVj8gju7ACslyqgCrYcUiMFqRgf1\nnV+ay9SYhwbG1s7yLTpOZ0olRsof0oMr7MqYyC0BrpyVRmOAhnjU8lbGc56NN30N\nEC+8ivJW4QECgYEA8l4elddRFIiIChbZycgSP1O76wVVpo7I9LQ8lU2agS3hpH8u\nwPi3HXBVzvOHkHFcwt9gjgOB/ltXrbs3rbAZnaCDsFurw29a+cvzkJZHzJNbheqc\nJxyKy7AWnvn/LZBQlqzueJ6Qlnx5XKp5wgYomdMuZ4Wm4U7HZQOBxFi7z30CgYEA\nraUmisGf9ox0dTEqdrGD60lB5cz6OtIEjenYP8PeKtBOJB5xWv0cU3JE4tDHwplp\na85ANrwkBA8/CitWR+sqjuXysxGJtbNu8MHjI/3BtOuceaChNO3aPJuxJnIwVyQP\nDo0paO5ls6lURqrsRNSrG6qD+WXkuLsBy+SnvHBnRQECgYEAzXYlPbYsMBLbmGLs\nIZ9IdQuTMtvj0k5wdI6/kmBVJowQj62XtzUiXmdXFvT1KkvbsDDEYCGDT73y4KHp\nOdwq8ueIEeT3jNPTeKKOO9E4VJfEkA8/S6Yit5Sq6x3wZJ0I85e9f//DgZpk21oe\nAxjb+fOTRBYyS13EzF/Ovd9O2Io=\n-----END PRIVATE KEY-----\n",
+  "client_email": "twit-mobile@twit-mobile.iam.gserviceaccount.com",
+  "client_id": "118199616053763334627",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/twit-mobile%40twit-mobile.iam.gserviceaccount.com"
+}
