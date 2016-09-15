@@ -28,8 +28,8 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             count: data['count']
           });*/
           for (var show in shows) {
-              episodesRef.child(showNumber).child(shows[show]['id']).set({
 
+            var mainDict = {
                 id: shows[show]['id'],
                 label: shows[show]['label'],
                 showNotes: shows[show]['showNotes'],
@@ -41,7 +41,67 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 showNotesFooter: shows[show]['showNotesFooter'],
                 created: shows[show]['created'],
                 changed: shows[show]['changed']
-              });
+              };
+
+            if (shows[show]['video_audio'] != null) {
+                mainDict["video_audio"] = {
+                    mediaUrl: shows[show]['video_audio']['mediaUrl'],
+                    format: shows[show]['video_audio']['format'],
+                    changed: shows[show]['video_audio']['changed'],
+                    runningTime: shows[show]['video_audio']['runningTime'],
+                    hours: shows[show]['video_audio']['hours'],
+                    minutes: shows[show]['video_audio']['minutes'],
+                    seconds: shows[show]['video_audio']['seconds'],
+                    size: shows[show]['video_audio']['size']
+                };
+            };
+
+            if (shows[show]['video_hd'] != null) {
+                mainDict["video_hd"] = {
+                    mediaUrl: shows[show]['video_hd']['mediaUrl'],
+                    format: shows[show]['video_hd']['format'],
+                    changed: shows[show]['video_hd']['changed'],
+                    runningTime: shows[show]['video_hd']['runningTime'],
+                    hours: shows[show]['video_hd']['hours'],
+                    minutes: shows[show]['video_hd']['minutes'],
+                    seconds: shows[show]['video_hd']['seconds'],
+                    size: shows[show]['video_hd']['size']
+                };
+            };
+
+            if (shows[show]['video_large'] != null) {
+                mainDict["video_large"] = {
+                  mediaUrl: shows[show]['video_large']['mediaUrl'],
+                  format: shows[show]['video_large']['format'],
+                  changed: shows[show]['video_large']['changed'],
+                  runningTime: shows[show]['video_large']['runningTime'],
+                  hours: shows[show]['video_large']['hours'],
+                  minutes: shows[show]['video_large']['minutes'],
+                  seconds: shows[show]['video_large']['seconds'],
+                  size: shows[show]['video_large']['size']
+                };
+            };
+
+            if (shows[show]['video_small'] != null) {
+                mainDict["video_large"] = {
+                  mediaUrl: shows[show]['video_small']['mediaUrl'],
+                  format: shows[show]['video_small']['format'],
+                  changed: shows[show]['video_small']['changed'],
+                  runningTime: shows[show]['video_small']['runningTime'],
+                  hours: shows[show]['video_small']['hours'],
+                  minutes: shows[show]['video_small']['minutes'],
+                  seconds: shows[show]['video_small']['seconds'],
+                  size: shows[show]['video_small']['size']
+                };
+            };
+
+            if (shows[show]['video_youtube'] != null) {
+                mainDict["video_large"] = {
+                video_youtube: shows[show]['video_youtube']
+              };
+            };
+
+              episodesRef.child(showNumber).child(shows[show]['id']).set(mainDict);
                 console.log('WORKING...');
           };
           console.log('COMPLETE');

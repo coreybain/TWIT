@@ -12,6 +12,7 @@ var debug = require('debug')('Server:server');
 var http = require('http');
 var twitServerSync = require('../twit/twitServerSync');
 var firebaseServerSync = require('../firebase/firebaseServerSync');
+var showArray = [];
 
 /**
  * Get port from environment and store in Express.
@@ -89,15 +90,31 @@ function onError(error) {
 
 // Start Listening to Twit Server and Syncing information to Firebase
 function twitSync() {
-  console.log('Hello Corey');
-var pageNumber = 1
-var showNumber = 1643
-function test() { twitServerSync.twitConnect("episodes", showNumber, (pageNumber++), function(result) {
-    console.log('YESSSSSSSSSS')
-    firebaseServerSync.firebaseEpisodeSync("episodes", showNumber, result);
-});
+var pageNumber = 1;
+var showNumber = 0;
+var showID = 0;
+if (showArray[showNumber] != null) {
+  showID = showArray[showNumber];
+} else {
+  showNumber = 0;
+  showID = showArray[0];
+      console.log('End of show array --> array resetting at start');
 }
-var timer = setInterval(test,10000);
+
+console.log('showID: ' + showID);
+
+function twitEpisodes() { twitServerSync.twitConnect("episodes", showID, (pageNumber++), function(result) {
+    
+   // console.log(result['episodes']);
+    if (result['episodes'] == "") {
+      showNumber++;
+      pageNumber = 1
+      console.log('Show has finished downloading all episodes');
+    } else {
+      firebaseServerSync.firebaseEpisodeSync("episodes", showID, result);
+    }
+})}
+var timer = setInterval(twitEpisodes,15000);
 }
 
 
@@ -109,5 +126,14 @@ function onListening() {
   debug('Listening on ' + bind);
 
   //This is used to sync data from the twit servers to Spiritdevs Firebase account.
-  twitSync();
+  console.log('Hello Corey');
+
+  //Check show listing fist
+  twitServerSync.twitShowConnect(function(shows) {
+      console.log('Server Started');
+      for (var show in shows) {
+        showArray.push((shows[show]['id']));
+      }
+      twitSync();
+  });
 }
