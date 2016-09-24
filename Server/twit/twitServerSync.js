@@ -25,7 +25,9 @@ function twitConnect(url, showID, pageNum, callback) {
         callback(JSON.parse(body));
 
     }else{
-        console.log('error' + response.statusCode);
+        console.log('error');
+        var shows = []
+        callback(shows);
     } 
     });
 }
@@ -48,7 +50,9 @@ function twitShowConnect(callback) {
         callback(shows);
 
     }else{
-        console.log('error' + response.statusCode);
+        console.log('error');
+        var shows = []
+        callback(shows);
     } 
     });
 }
