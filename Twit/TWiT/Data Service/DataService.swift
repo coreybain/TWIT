@@ -19,7 +19,7 @@ class DataService {
     }
     
     //MARK: -- Variables:
-    let recentTwitParse = RecentTwitParse()
+    let twitEpisodeParse = TwitEpisodeParse()
     
     //MARK: - Firebase Variables:
     var ref = FIRDatabase.database().reference()
@@ -33,7 +33,7 @@ class DataService {
     var newHelpData: NSDictionary!
     var activeCastData: NSDictionary!
     
-    func downloadFeaturedPage(downloadComplete:@escaping (_ featuredPageDetails:[FeaturedPageDetails]?) -> ()) {
+    func downloadFeaturedPage(downloadComplete:@escaping (_ featuredPageDetails:[TwitEpisodeDetails]?) -> ()) {
         
         //MARK: Download new releases:
         ref.child("episodes").child("allEpisodes").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -44,7 +44,7 @@ class DataService {
                     
                     
                     
-                    self.recentTwitParse.parseRecent(data: self.newReleaseData)
+                    self.twitEpisodeParse.parseEpisode(data: self.newReleaseData)
                     
                     print("Still downloading over episodes")
                 } else {

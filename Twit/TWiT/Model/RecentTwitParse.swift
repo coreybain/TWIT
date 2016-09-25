@@ -9,14 +9,14 @@
 import Foundation
 import Firebase
 
-class RecentTwitParse {
+class TwitEpisodeParse {
     
-    func parseRecent(data:FIRDataSnapshot) {
+    func parseEpisode(data:FIRDataSnapshot) {
         
         let recentData = data.value as! [String : AnyObject]
         
         for recent in recentData {
-            //            let label = recent.value["label"] as! String
+            var twitEpisode:TwitEpisodeDetails?
             let label = recent.value["label"] as! String
             let ID = recent.value["id"] as! Int
             let created = recent.value["created"] as! String
@@ -25,8 +25,8 @@ class RecentTwitParse {
             let teaser = recent.value["teaser"] as! String
             print(label)
             print(ID)
-            var showLabel = ""
-            var showPicture = ""
+            var showLabel:String?
+            var showPicture:String?
             if let embedded = recent.value["embedded"] as? NSDictionary {
                 if let showsDict = embedded.value(forKey: "shows") as? NSDictionary {
                     showLabel = showsDict.value(forKey: "label") as! String
@@ -45,45 +45,49 @@ class RecentTwitParse {
                 print(recent)
             }
             print(showLabel)
-            if let video_audio = recent.value["video_audio"] as? NSDictionary {
-                let format = video_audio.value(forKey: "format") as! String
-                let runningTime = video_audio.value(forKey: "runningTime") as! String
-                let hours = video_audio.value(forKey: "hours") as! String
-                let minutes = video_audio.value(forKey: "minutes") as! String
-                let seconds = video_audio.value(forKey: "seconds") as! String
-                let mediaUrl = video_audio.value(forKey: "mediaUrl") as! String
-                let size = video_audio.value(forKey: "size") as! String
+            var videoArray:[TwitVideoDetails] = []
+            var videoAudio:TwitVideoDetails?
+            var videoHD:TwitVideoDetails?
+            var videoLarge:TwitVideoDetails?
+            var videoSmall:TwitVideoDetails?
+            
+            if let audioData = recent.value["video_audio"] as? NSDictionary {
+                videoAudio = parseVideoData(data: audioData)
+                print(videoAudio)
+                videoArray.append(videoAudio!)
+                print(videoArray)
             }
-            if let video_audio = recent.value["video_hd"] as? NSDictionary {
-                let format = video_audio.value(forKey: "format") as! String
-                let runningTime = video_audio.value(forKey: "runningTime") as! String
-                let hours = video_audio.value(forKey: "hours") as! String
-                let minutes = video_audio.value(forKey: "minutes") as! String
-                let seconds = video_audio.value(forKey: "seconds") as! String
-                let mediaUrl = video_audio.value(forKey: "mediaUrl") as! String
-                let size = video_audio.value(forKey: "size") as! String
+            if let hdData = recent.value["video_hd"] as? NSDictionary {
+                videoHD = parseVideoData(data: hdData)
+                videoArray.append(videoHD!)
             }
-            if let video_audio = recent.value["video_large"] as? NSDictionary {
-                let format = video_audio.value(forKey: "format") as! String
-                let runningTime = video_audio.value(forKey: "runningTime") as! String
-                let hours = video_audio.value(forKey: "hours") as! String
-                let minutes = video_audio.value(forKey: "minutes") as! String
-                let seconds = video_audio.value(forKey: "seconds") as! String
-                let mediaUrl = video_audio.value(forKey: "mediaUrl") as! String
-                let size = video_audio.value(forKey: "size") as! String
+            if let largeData = recent.value["video_large"] as? NSDictionary {
+                videoLarge = parseVideoData(data: largeData)
+                videoArray.append(videoLarge!)
             }
-            if let video_audio = recent.value["video_small"] as? NSDictionary {
-                let format = video_audio.value(forKey: "format") as! String
-                let runningTime = video_audio.value(forKey: "runningTime") as! String
-                let hours = video_audio.value(forKey: "hours") as! String
-                let minutes = video_audio.value(forKey: "minutes") as! String
-                let seconds = video_audio.value(forKey: "seconds") as! String
-                let mediaUrl = video_audio.value(forKey: "mediaUrl") as! String
-                let size = video_audio.value(forKey: "size") as! String
+            if let smallData = recent.value["video_small"] as? NSDictionary {
+                videoSmall = parseVideoData(data: smallData)
+                videoArray.append(videoSmall!)
+            }
+            if videoArray.count != 0 {
+                twitEpisode = TwitEpisodeDetails.init(label: label, ID: ID, created: created, episodeNumber: episodeNumber, showNotes: showNotes, showLabel: showLabel, showPicture: showPicture, videoArray: videoArray)
+                print(videoArray.count)
+            } else {
+                twitEpisode = TwitEpisodeDetails.init(label: label, ID: ID, created: created, episodeNumber: episodeNumber, showNotes: showNotes, showLabel: showLabel, showPicture: showPicture, videoArray: nil)
+                print("no video array")
             }
         }
         
     }
-    
+    func parseVideoData(data:NSDictionary) -> TwitVideoDetails {
+        let format = data.value(forKey: "format") as! String
+        let runningTime = data.value(forKey: "runningTime") as! String
+        let hours = data.value(forKey: "hours") as! String
+        let minutes = data.value(forKey: "minutes") as! String
+        let seconds = data.value(forKey: "seconds") as! String
+        let mediaUrl = data.value(forKey: "mediaUrl") as! String
+        let size = data.value(forKey: "size") as! String
+        return TwitVideoDetails(formatString: format, mediaUrlString: mediaUrl, runningTimeString: runningTime, hoursString: hours, minutesString: minutes, secondsString: seconds, sizeString: size)
+    }
     
 }
