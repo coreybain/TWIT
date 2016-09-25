@@ -13,29 +13,84 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     
     //MARK: - Variables
     fileprivate let homeCellID = "HomeCell"
+    fileprivate let largeCellId = "largeCellId"
+    fileprivate let headerId = "headerId"
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Featured"
-        
-        collectionView?.backgroundColor = .white
+       // navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 1.0)]
+        //navigationController?.navigationBar.barTintColor = UIColor(red: 16/255, green: 16/255, blue: 16/255, alpha: 1.0)
+        navigationController?.navigationBar.barStyle = .black
+        collectionView?.backgroundColor = UIColor(red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0) //UIColor(colorLiteralRed: 29, green: 29, blue: 28, alpha: 1.0)
+        collectionView?.showsVerticalScrollIndicator = false
         
         collectionView?.register(CategoryCell.self, forCellWithReuseIdentifier: homeCellID)
+        collectionView?.register(CategoryLargeCell.self, forCellWithReuseIdentifier: largeCellId)
+        collectionView?.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
+        
+        DataService.ds().downloadFeaturedPage { (snapshot) in
+            
+        }
         
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return 7
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: homeCellID, for: indexPath as IndexPath) as! CategoryCell
         
+        let cell: CategoryCell
+        
+        if (indexPath as NSIndexPath).item == 2 || (indexPath as NSIndexPath).item == 4 || (indexPath as NSIndexPath).item == 6 {
+            cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
+        } else {
+            cell = collectionView.dequeueReusableCell(withReuseIdentifier: homeCellID, for: indexPath as IndexPath) as! CategoryCell
+        }
+        if (indexPath as NSIndexPath).item == 0 {
+            cell.nameLabel.text = "New Released TWiT's"
+        } else if (indexPath as NSIndexPath).item == 1 {
+            cell.nameLabel.text = "Latest News"
+        } else if (indexPath as NSIndexPath).item == 2 {
+            cell.nameLabel.text = "Active Shows"
+        } else if (indexPath as NSIndexPath).item == 3 {
+            cell.nameLabel.text = "Product Reviews"
+        } else if (indexPath as NSIndexPath).item == 4 {
+            cell.nameLabel.text = "TWiT Bits & Specials"
+        } else if (indexPath as NSIndexPath).item == 5 {
+            cell.nameLabel.text = "Help and How-To's"
+        } else if (indexPath as NSIndexPath).item == 6 {
+            cell.nameLabel.text = "TWiT Crew"
+        }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        if (indexPath as NSIndexPath).item == 2 || (indexPath as NSIndexPath).item == 4 || (indexPath as NSIndexPath).item == 6 {
+            return CGSize(width: view.frame.width, height: 160)
+        }
+        
         return CGSize(width: view.frame.width, height: 200)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: view.frame.width, height: 160)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! HeaderCell
+        
+        //header.appCategory = featuredApps?.bannerCategory
+        
+        return header
+    }
+
 }
 

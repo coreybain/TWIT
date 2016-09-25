@@ -9,7 +9,9 @@ firebase.initializeApp({
 var db = firebase.database();
 var episodesRef = db.ref("episodes");
 var showRef = db.ref("Shows");
+var activeShowRef = db.ref("activeShows");
 var peopleRef = db.ref("people");
+var castRef = db.ref("cast");
 var rolesRef = db.ref("roles");
 var offersRef = db.ref("offers");
 var categoriesRef = db.ref("categories");
@@ -893,12 +895,23 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               showRef.child(showsID).set(showDict);
               for (test in peopleArray) {
                 peopleRef.child(peopleArray[test]['id']).set(peopleArray[test]);
+                if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
+                  castRef.child(peopleArray[test]['id']).set(peopleArray[test]);
+                }
               }
               for (test in offersArray) {
                 offersRef.child(offersArray[test]['id']).set(offersArray[test]);
               }
               for (test in categoriesArray) {
                 categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
+              }
+              if (mainDict['embedded'] != null) {
+                if (mainDict['embedded']['shows'] != null) {
+                  if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                    console.log('ACTIVE SHOW');
+                    activeShowRef.child(showsID).set(showDict);
+                  }
+                }
               }
 
               //THIS IS WHERE WE CHECK FOR CATEGORY type
@@ -907,7 +920,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                   for (var category in shows[show]['_embedded']['categories']) {
                     console.log(shows[show]['_embedded']['categories'][category]['id'])
                     console.log(shows[show]['_embedded']['categories'][category]['label'])
-                    console.log(shows[show]['id'])
+                    console.log(shows[show]['id'])                    
                     var showID = shows[show]['_embedded']['categories'][category]['id']
                     categoryEpisodesRef.child(showID).child(shows[show]['id']).set(mainDict);
                   }

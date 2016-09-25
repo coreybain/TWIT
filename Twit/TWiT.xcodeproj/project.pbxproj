@@ -19,6 +19,14 @@
 		8397AAEE1D961F5F00009C01 /* TwitTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AAED1D961F5F00009C01 /* TwitTabBarController.swift */; };
 		8397AAF11D961FAE00009C01 /* FeaturedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AAF01D961FAE00009C01 /* FeaturedVC.swift */; };
 		8397AAF51D9632F200009C01 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AAF41D9632F200009C01 /* CategoryCell.swift */; };
+		8397AAF71D972D3100009C01 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8397AAF61D972D3100009C01 /* GoogleService-Info.plist */; };
+		8397AAFB1D972F9A00009C01 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AAFA1D972F9A00009C01 /* DataService.swift */; };
+		8397AAFE1D97388600009C01 /* FeaturedPageDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AAFD1D97388600009C01 /* FeaturedPageDetails.swift */; };
+		8397AB001D97514B00009C01 /* CategoryLargeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AAFF1D97514B00009C01 /* CategoryLargeCell.swift */; };
+		8397AB021D9755EF00009C01 /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB011D9755EF00009C01 /* HeaderCell.swift */; };
+		8397AB041D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB031D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift */; };
+		8397AB061D97BCF900009C01 /* UIGradientImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB051D97BCF900009C01 /* UIGradientImageView.swift */; };
+		8397AB081D97D87B00009C01 /* RecentTwitParse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB071D97D87B00009C01 /* RecentTwitParse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +43,14 @@
 		8397AAED1D961F5F00009C01 /* TwitTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TwitTabBarController.swift; path = Controllers/Setup/TwitTabBarController.swift; sourceTree = "<group>"; };
 		8397AAF01D961FAE00009C01 /* FeaturedVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeaturedVC.swift; path = Controllers/Featured/FeaturedVC.swift; sourceTree = "<group>"; };
 		8397AAF41D9632F200009C01 /* CategoryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategoryCell.swift; path = Views/Featured/CategoryCell.swift; sourceTree = "<group>"; };
+		8397AAF61D972D3100009C01 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8397AAFA1D972F9A00009C01 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataService.swift; path = "Data Service/DataService.swift"; sourceTree = "<group>"; };
+		8397AAFD1D97388600009C01 /* FeaturedPageDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FeaturedPageDetails.swift; path = Model/FeaturedPageDetails.swift; sourceTree = "<group>"; };
+		8397AAFF1D97514B00009C01 /* CategoryLargeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategoryLargeCell.swift; path = Views/Featured/CategoryLargeCell.swift; sourceTree = "<group>"; };
+		8397AB011D9755EF00009C01 /* HeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HeaderCell.swift; path = Views/Featured/HeaderCell.swift; sourceTree = "<group>"; };
+		8397AB031D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterCellCollectionViewFlowLayout.swift; path = Utils/CenterCellCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		8397AB051D97BCF900009C01 /* UIGradientImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIGradientImageView.swift; path = Utils/UIGradientImageView.swift; sourceTree = "<group>"; };
+		8397AB071D97D87B00009C01 /* RecentTwitParse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecentTwitParse.swift; path = Model/RecentTwitParse.swift; sourceTree = "<group>"; };
 		AE29C1531FDBE3FBFD2FB5CF /* Pods-TWiT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TWiT.release.xcconfig"; path = "Pods/Target Support Files/Pods-TWiT/Pods-TWiT.release.xcconfig"; sourceTree = "<group>"; };
 		C2D6D8BA2F26FAD96B9071D6 /* Pods-TWiT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TWiT.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TWiT/Pods-TWiT.debug.xcconfig"; sourceTree = "<group>"; };
 		F5735FA9F5BB2724E91E9DCC /* Pods_TWiT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TWiT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,17 +97,20 @@
 		8397AAD01D9606D400009C01 /* TWiT */ = {
 			isa = PBXGroup;
 			children = (
+				8397AAFC1D97385900009C01 /* Model */,
+				8397AAF91D972F5D00009C01 /* Data Service */,
+				8397AAF81D972ED200009C01 /* CoreData */,
 				8397AAF21D9632CB00009C01 /* Views */,
 				8397AAE61D96087D00009C01 /* Utils */,
-				8397AAD11D9606D400009C01 /* AppDelegate.swift */,
-				8397AAD31D9606D400009C01 /* ViewController.swift */,
 				8397AAEB1D961F4600009C01 /* Controllers */,
+				8397AAD31D9606D400009C01 /* ViewController.swift */,
 				8397AAD51D9606D400009C01 /* Main.storyboard */,
 				8397AADB1D9606D400009C01 /* Assets.xcassets */,
 				8397AADD1D9606D400009C01 /* LaunchScreen.storyboard */,
-				8397AAE91D961F2400009C01 /* TwitMain.swift */,
 				8397AAE01D9606D400009C01 /* Info.plist */,
-				8397AAD81D9606D400009C01 /* TWiT.xcdatamodeld */,
+				8397AAE91D961F2400009C01 /* TwitMain.swift */,
+				8397AAD11D9606D400009C01 /* AppDelegate.swift */,
+				8397AAF61D972D3100009C01 /* GoogleService-Info.plist */,
 			);
 			path = TWiT;
 			sourceTree = "<group>";
@@ -100,6 +119,8 @@
 			isa = PBXGroup;
 			children = (
 				8397AAE71D9608A500009C01 /* Constaints.swift */,
+				8397AB031D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift */,
+				8397AB051D97BCF900009C01 /* UIGradientImageView.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -141,8 +162,35 @@
 			isa = PBXGroup;
 			children = (
 				8397AAF41D9632F200009C01 /* CategoryCell.swift */,
+				8397AAFF1D97514B00009C01 /* CategoryLargeCell.swift */,
+				8397AB011D9755EF00009C01 /* HeaderCell.swift */,
 			);
 			name = Featured;
+			sourceTree = "<group>";
+		};
+		8397AAF81D972ED200009C01 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				8397AAD81D9606D400009C01 /* TWiT.xcdatamodeld */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
+		8397AAF91D972F5D00009C01 /* Data Service */ = {
+			isa = PBXGroup;
+			children = (
+				8397AAFA1D972F9A00009C01 /* DataService.swift */,
+			);
+			name = "Data Service";
+			sourceTree = "<group>";
+		};
+		8397AAFC1D97385900009C01 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				8397AAFD1D97388600009C01 /* FeaturedPageDetails.swift */,
+				8397AB071D97D87B00009C01 /* RecentTwitParse.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		F625544E08F1BD292DC114F6 /* Pods */ = {
@@ -218,6 +266,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8397AADF1D9606D400009C01 /* LaunchScreen.storyboard in Resources */,
+				8397AAF71D972D3100009C01 /* GoogleService-Info.plist in Resources */,
 				8397AADC1D9606D400009C01 /* Assets.xcassets in Resources */,
 				8397AAD71D9606D400009C01 /* Main.storyboard in Resources */,
 			);
@@ -278,13 +327,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8397AAFB1D972F9A00009C01 /* DataService.swift in Sources */,
+				8397AB041D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift in Sources */,
+				8397AB081D97D87B00009C01 /* RecentTwitParse.swift in Sources */,
+				8397AAFE1D97388600009C01 /* FeaturedPageDetails.swift in Sources */,
 				8397AAF11D961FAE00009C01 /* FeaturedVC.swift in Sources */,
 				8397AADA1D9606D400009C01 /* TWiT.xcdatamodeld in Sources */,
+				8397AB021D9755EF00009C01 /* HeaderCell.swift in Sources */,
 				8397AAEA1D961F2400009C01 /* TwitMain.swift in Sources */,
 				8397AAF51D9632F200009C01 /* CategoryCell.swift in Sources */,
 				8397AAE81D9608A500009C01 /* Constaints.swift in Sources */,
 				8397AAD41D9606D400009C01 /* ViewController.swift in Sources */,
+				8397AB061D97BCF900009C01 /* UIGradientImageView.swift in Sources */,
 				8397AAD21D9606D400009C01 /* AppDelegate.swift in Sources */,
+				8397AB001D97514B00009C01 /* CategoryLargeCell.swift in Sources */,
 				8397AAEE1D961F5F00009C01 /* TwitTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

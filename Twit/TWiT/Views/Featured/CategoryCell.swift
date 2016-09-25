@@ -16,6 +16,7 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         setupViews()
     }
     required init?(coder aDecoder: NSCoder) {
@@ -23,28 +24,48 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     }
     
     let showsCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+        let collectionViewLayout: CenterCellCollectionViewFlowLayout = CenterCellCollectionViewFlowLayout()
+        //collectionViewLayout.itemSize = CGSize(width: view.frame.width, height: 120)
+        collectionViewLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        //collectionViewLayout.minimumInteritemSpacing = 0
+        //collectionViewLayout.minimumLineSpacing = 0
+        collectionViewLayout.scrollDirection = .horizontal
         
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.showsHorizontalScrollIndicator = false
         
         return collectionView
     }()
+    
+//    let showsCollectionView: UICollectionView = {
+//        let layout = UICollectionViewFlowLayout()
+//        layout.scrollDirection = .horizontal
+//        
+//        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+//        
+//        collectionView.backgroundColor = .clear
+//        collectionView.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        return collectionView
+//    }()
+    
+    
     
     let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "New Releases"
         label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     let dividerLineView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(white: 0.4, alpha: 0.4)
+        view.backgroundColor = UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 1.0)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -103,7 +124,7 @@ class ShowCell: UICollectionViewCell {
     
     let imageView: UIImageView = {
         let iv = UIImageView()
-        iv.image = UIImage(named: "frozen")
+        iv.image = UIImage(named: "twit1400")
         iv.contentMode = .scaleAspectFill
         iv.layer.cornerRadius = 16
         iv.layer.masksToBounds = true
@@ -114,6 +135,7 @@ class ShowCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "Hiss Happens to the best"
         label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
         label.numberOfLines = 2
         return label
     }()
@@ -122,6 +144,7 @@ class ShowCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "This Week in Tech"
         label.font = UIFont.systemFont(ofSize: 13)
+        label.textColor = UIColor(red: 147/255, green: 147/255, blue: 147/255, alpha: 1.0)
         label.textColor = UIColor.darkGray
         return label
     }()

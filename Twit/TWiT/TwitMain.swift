@@ -24,7 +24,6 @@ class TwitMain {
     
     func startTwit() {
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.backgroundColor = UIColor.white
         window.makeKeyAndVisible()
         presentInWindow(window: window)
     }
