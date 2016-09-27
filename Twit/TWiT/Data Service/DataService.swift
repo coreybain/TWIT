@@ -25,36 +25,34 @@ class DataService {
     var ref = FIRDatabase.database().reference()
     
     //MARK: - Firebase Data:
-    var newReleaseData: FIRDataSnapshot!
-    var newEpisodeData: NSDictionary!
-    var activeShowData: NSDictionary!
-    var newReviewData: NSDictionary!
-    var newTwitBitsData: NSDictionary!
-    var newHelpData: NSDictionary!
-    var activeCastData: NSDictionary!
+    var newReleaseData: [TwitEpisodeDetails]!
+    var newEpisodeData: [TwitEpisodeDetails]!
+    var activeShowData: [TwitShowDetails]!
+    var newReviewData: [TwitEpisodeDetails]!
+    var newTwitBitsData: [TwitEpisodeDetails]!
+    var newHelpData: [TwitEpisodeDetails]!
+    var activeCastData: [TwitCastDetails]!
     
-    func downloadFeaturedPage(downloadComplete:@escaping (_ featuredPageDetails:[TwitEpisodeDetails]?) -> ()) {
+    func downloadFeaturedPage(downloadComplete:@escaping (_ newReleaseData:[TwitEpisodeDetails]?, _ newEpisodeData:[TwitEpisodeDetails]?, _ activeShowData:[TwitShowDetails]?, _ newReviewData:[TwitEpisodeDetails]?, _ newTwitBitsData:[TwitEpisodeDetails]?, _ newHelpData:[TwitEpisodeDetails]?, _ activeCastData:[TwitCastDetails]?) -> ()) {
         
         //MARK: Download new releases:
         ref.child("episodes").child("allEpisodes").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
-                if self.newEpisodeData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
-                    self.newReleaseData = snapshot
-                    
-                    
-                    
-                    self.twitEpisodeParse.parseEpisode(data: self.newReleaseData)
-                    
-                    print("Still downloading over episodes")
-                } else {
-                    self.newReleaseData = snapshot.value as! FIRDataSnapshot
-                    print("Download complete and ready for processing")
-                    //downloadComplete(nil)
-                }
+                self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
+                    print("NEW RELEASE")
+                    if self.newEpisodeData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
+                        self.newReleaseData = data
+                        print("Still downloading over episodes")
+                    } else {
+                        self.newReleaseData = data
+                        print("Download complete and ready for processing")
+                         
+                        downloadComplete(self.newReleaseData, self.newEpisodeData, self.activeShowData, self.newReviewData, self.newTwitBitsData, self.newHelpData, self.activeCastData)
+                        //downloadComplete(nil)
+                    }
+                })
             }
-            
-            // ...
         }) { (error) in
             print(error.localizedDescription)
         }
@@ -63,17 +61,21 @@ class DataService {
         ref.child("categoryEpisodes").child("93").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
-                if self.newReleaseData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
-                    self.newEpisodeData = snapshot.value as! NSDictionary
-                    print("Still downloading over episodes")
-                } else {
-                    self.newEpisodeData = snapshot.value as! NSDictionary
-                    print("Download complete and ready for processing")
-                    //downloadComplete(nil)
-                }
+                self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
+                    print("CATEGORY NEW EPISODES")
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
+                        self.newEpisodeData = data
+                        
+                        print("Still downloading over episodes")
+                    } else {
+                        self.newEpisodeData = data
+                        print("Download complete and ready for processing")
+                         
+                        downloadComplete(self.newReleaseData, self.newEpisodeData, self.activeShowData, self.newReviewData, self.newTwitBitsData, self.newHelpData, self.activeCastData)
+                        //downloadComplete(nil)
+                    }
+                })
             }
-            
-            // ...
         }) { (error) in
             print(error.localizedDescription)
         }
@@ -82,14 +84,19 @@ class DataService {
         ref.child("activeShows").observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
-                if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
-                    self.activeShowData = snapshot.value as! NSDictionary
-                    print("Still downloading over episodes")
-                } else {
-                    self.activeShowData = snapshot.value as! NSDictionary
-                    print("Download complete and ready for processing")
-                    //downloadComplete(nil)
-                }
+                self.twitEpisodeParse.parseShow(data: snapshot, complete: { (data) in
+                    print("ACTIVE SHOWS")
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
+                        self.activeShowData = data
+                        print("Still downloading over episodes")
+                    } else {
+                        self.activeShowData = data
+                        print("Download complete and ready for processing")
+                         
+                        downloadComplete(self.newReleaseData, self.newEpisodeData, self.activeShowData, self.newReviewData, self.newTwitBitsData, self.newHelpData, self.activeCastData)
+                    }
+                })
+                
             }
             
             // ...
@@ -101,17 +108,20 @@ class DataService {
         ref.child("categoryEpisodes").child("92").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
-                if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
-                    self.newReviewData = snapshot.value as! NSDictionary
-                    print("Still downloading over episodes")
-                } else {
-                    self.newReviewData = snapshot.value as! NSDictionary
-                    print("Download complete and ready for processing")
-                    //downloadComplete(nil)
-                }
+                self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
+                    print("REVIEW EPS")
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
+                        self.newReviewData = data
+                        print("Still downloading over episodes")
+                    } else {
+                        self.newReviewData = data
+                        print("Download complete and ready for processing")
+                         
+                        downloadComplete(self.newReleaseData, self.newEpisodeData, self.activeShowData, self.newReviewData, self.newTwitBitsData, self.newHelpData, self.activeCastData)
+                        //downloadComplete(nil)
+                    }
+                })
             }
-            
-            // ...
         }) { (error) in
             print(error.localizedDescription)
         }
@@ -120,17 +130,20 @@ class DataService {
         ref.child("categoryEpisodes").child("2001").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
-                if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newHelpData == nil {
-                    self.newTwitBitsData = snapshot.value as! NSDictionary
-                    print("Still downloading over episodes")
-                } else {
-                    self.newTwitBitsData = snapshot.value as! NSDictionary
-                    print("Download complete and ready for processing")
-                    //downloadComplete(nil)
-                }
+                self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
+                    print("TWIT BITS")
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newHelpData == nil {
+                        self.newTwitBitsData = data
+                        print("Still downloading over episodes")
+                    } else {
+                        self.newTwitBitsData = data
+                        print("Download complete and ready for processing")
+                         
+                        downloadComplete(self.newReleaseData, self.newEpisodeData, self.activeShowData, self.newReviewData, self.newTwitBitsData, self.newHelpData, self.activeCastData)
+                        //downloadComplete(nil)
+                    }
+                })
             }
-            
-            // ...
         }) { (error) in
             print(error.localizedDescription)
         }
@@ -139,36 +152,41 @@ class DataService {
         ref.child("categoryEpisodes").child("94").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
-                if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil {
-                    self.newHelpData = snapshot.value as! NSDictionary
-                    print("Still downloading over episodes")
-                } else {
-                    self.newHelpData = snapshot.value as! NSDictionary
-                    print("Download complete and ready for processing")
-                    //downloadComplete(nil)
-                }
+                self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
+                    print("HOW TO")
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil {
+                        self.newHelpData = data
+                        print("Still downloading over episodes")
+                    } else {
+                        self.newHelpData = data
+                        print("Download complete and ready for processing")
+                         
+                        downloadComplete(self.newReleaseData, self.newEpisodeData, self.activeShowData, self.newReviewData, self.newTwitBitsData, self.newHelpData, self.activeCastData)
+                        //downloadComplete(nil)
+                    }
+                })
             }
-            
-            // ...
         }) { (error) in
             print(error.localizedDescription)
         }
         
         //MARK: Download list of cast members (long button):
-        ref.child("cast").observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("cast").queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
-                if self.newReleaseData == nil || self.newTwitBitsData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newHelpData == nil {
-                    self.activeCastData = snapshot.value as! NSDictionary
-                    print("Still downloading over episodes")
-                } else {
-                    self.activeCastData = snapshot.value as! NSDictionary
-                    print("Download complete and ready for processing")
-                    //downloadComplete(nil)
-                }
+                
+                self.twitEpisodeParse.parseCast(data: snapshot, complete: { (data) in
+                    print("CAST MEMBERS")
+                    if self.newReleaseData == nil || self.newTwitBitsData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newHelpData == nil {
+                        self.activeCastData = data
+                        print("Still downloading over episodes")
+                    } else {
+                        self.activeCastData = data
+                        print("Download complete and ready for processing") 
+                        downloadComplete(self.newReleaseData, self.newEpisodeData, self.activeShowData, self.newReviewData, self.newTwitBitsData, self.newHelpData, self.activeCastData)
+                    }
+                })
             }
-            
-            // ...
         }) { (error) in
             print(error.localizedDescription)
         }

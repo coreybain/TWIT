@@ -128,15 +128,14 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             };
 
             if (shows[show]['_embedded'] != null) {
+              mainDict['embedded'] = {}
                 for (var credit in shows[show]['_embedded']['credits']) {
-                  mainDict['embedded'] = {
-                    credits: {
-                      [shows[show]['_embedded']['credits'][credit]['id']]: {
-                        id: shows[show]['_embedded']['credits'][credit]['id'],
-                        label: shows[show]['_embedded']['credits'][credit]['label'],
-                        ttl: shows[show]['_embedded']['credits'][credit]['ttl'],
-                        created: shows[show]['_embedded']['credits'][credit]['created']
-                      }
+                  mainDict['embedded']['credits'] = {
+                    [shows[show]['_embedded']['credits'][credit]['id']]: {
+                      id: shows[show]['_embedded']['credits'][credit]['id'],
+                      label: shows[show]['_embedded']['credits'][credit]['label'],
+                      ttl: shows[show]['_embedded']['credits'][credit]['ttl'],
+                      created: shows[show]['_embedded']['credits'][credit]['created']
                     }
                   }
                   if (shows[show]['_embedded']['credits'][credit]['roles'] != null) {

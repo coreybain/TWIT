@@ -16,6 +16,16 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     fileprivate let largeCellId = "largeCellId"
     fileprivate let headerId = "headerId"
     
+    //MARK: - Firebase Data:
+    var newRelease: [TwitEpisodeDetails]?
+    var newEpisode: [TwitEpisodeDetails]?
+    var activeShow: [TwitShowDetails]?
+    var newReview: [TwitEpisodeDetails]?
+    var newTwitBits: [TwitEpisodeDetails]?
+    var newHelp: [TwitEpisodeDetails]?
+    var activeCast: [TwitCastDetails]?
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -34,8 +44,17 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         collectionView?.register(CategoryLargeCell.self, forCellWithReuseIdentifier: largeCellId)
         collectionView?.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
         
-        DataService.ds().downloadFeaturedPage { (snapshot) in
-            
+        DataService.ds().downloadFeaturedPage { (newReleaseData, newEpisodeData, activeShowData, newReviewData, newTwitBitsData, newHelpData, activeCastData) in
+            print("WE GOT HERE")
+            self.newRelease = newReleaseData
+            self.newEpisode = newEpisodeData
+            self.activeShow = activeShowData
+            self.newReview = newReviewData
+            self.newTwitBits = newTwitBitsData
+            self.newHelp = newHelpData
+            self.activeCast = activeCastData
+            print(activeCastData?.count)
+            self.collectionView?.reloadData()
         }
         
     }
@@ -55,18 +74,26 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         }
         if (indexPath as NSIndexPath).item == 0 {
             cell.nameLabel.text = "New Released TWiT's"
+            print(newRelease?.count)
+            cell.episodeData = newRelease
         } else if (indexPath as NSIndexPath).item == 1 {
             cell.nameLabel.text = "Latest News"
+            cell.episodeData = newEpisode
         } else if (indexPath as NSIndexPath).item == 2 {
             cell.nameLabel.text = "Active Shows"
+            cell.showData = activeShow
         } else if (indexPath as NSIndexPath).item == 3 {
             cell.nameLabel.text = "Product Reviews"
+            cell.episodeData = newReview
         } else if (indexPath as NSIndexPath).item == 4 {
             cell.nameLabel.text = "TWiT Bits & Specials"
+            cell.episodeData = newTwitBits
         } else if (indexPath as NSIndexPath).item == 5 {
             cell.nameLabel.text = "Help and How-To's"
+            cell.episodeData = newHelp
         } else if (indexPath as NSIndexPath).item == 6 {
             cell.nameLabel.text = "TWiT Crew"
+            cell.castData = activeCast
         }
         return cell
     }

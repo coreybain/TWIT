@@ -97,8 +97,8 @@ function onListening() {
   //This is used to sync data from the twit servers to Spiritdevs Firebase account.
 
   /*** This is where we start setting up the server ***/
-  //setupTwitServer();
-  runTwitServer();
+  setupTwitServer();
+  //runTwitServer();
       //firebaseServerSync.deletefirebase();
 }
 

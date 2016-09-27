@@ -9,7 +9,7 @@ var showsDict = {}
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-twitServerSync.twitConnect("episodes", 1665, 1, function(result) {
+twitServerSync.twitConnect("shows", 1653, null, function(result) {
       /*
     // console.log(result['episodes']);
       if (result['episodes'] == "") {

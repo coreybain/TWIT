@@ -13,6 +13,23 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     
     //MARK: -- Variables
     fileprivate let cellId = "showCellId"
+    var episodeData: [TwitEpisodeDetails]? {
+        didSet {
+            print(episodeData?.count)
+            showsCollectionView.reloadData()
+        }
+    }
+    var castData: [TwitCastDetails]? {
+        didSet {
+            print(castData)
+            showsCollectionView.reloadData()
+        }
+    }
+    var showData: [TwitShowDetails]? {
+        didSet {
+            showsCollectionView.reloadData()
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -93,11 +110,25 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        print(castData?.count)
+        if let count = episodeData?.count {
+            return count
+        } else if let count = showData?.count {
+            return count
+        } else if let count = castData?.count {
+            return count
+        } else {
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ShowCell
+        if episodeData != nil {
+            cell.episodeTitle = episodeData?[indexPath.row].label
+            cell.showTitle = episodeData?[indexPath.row].showLabel
+        }
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -112,6 +143,22 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
 
 
 class ShowCell: UICollectionViewCell {
+    
+    //MARK: -- Variables
+    var episodeTitle:String? {
+        didSet {
+            if let title = episodeTitle {
+                nameLabel.text = title
+            }
+        }
+    }
+    var showTitle:String? {
+        didSet {
+            if let title = showTitle {
+                categoryLabel.text = title
+            }
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
