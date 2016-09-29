@@ -17,6 +17,7 @@ struct TwitEpisodeDetails {
     private var _showNotes:String?
     private var _showLabel:String?
     private var _showPicture:String?
+    private var _showDetails:TwitShowDetails?
     private var _videoArray:[TwitVideoDetails]?
     
     var label:String {
@@ -81,8 +82,17 @@ struct TwitEpisodeDetails {
             return _videoArray!
         }
     }
+    
+    var showDetails:TwitShowDetails {
+        get {
+            if _showDetails == nil {
+                return TwitShowDetails(label: "", showID: "", description: "", active: nil, shortCode: nil, showContactInfo: nil, showDate: nil, tagline: nil, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: nil)
+            }
+            return _showDetails!
+        }
+    }
 
-    init(label:String, ID:Int, created:String, episodeNumber:String?, showNotes:String?, showLabel:String?, showPicture:String?, videoArray:[TwitVideoDetails]?) {
+    init(label:String, ID:Int, created:String, episodeNumber:String?, showNotes:String?, showLabel:String?, showPicture:String?, videoArray:[TwitVideoDetails]?, showDetails:TwitShowDetails?) {
         _label = label
         _ID = ID
         _created = created
@@ -90,6 +100,7 @@ struct TwitEpisodeDetails {
         _showNotes = showNotes
         _showLabel = showLabel
         _showPicture = showPicture
+        _showDetails = showDetails
         _videoArray = videoArray
     }
     

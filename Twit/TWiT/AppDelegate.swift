@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        UserDefaults.standard.removeObject(forKey: "videoplaying")
         FIRApp.configure()
         UIApplication.shared.statusBarStyle = .lightContent
         TwitMain.st().startTwit()
@@ -35,6 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        if !UserDefaults.standard.bool(forKey: "videoplaying") {
+            UserDefaults.standard.removeObject(forKey: "videoplayingLandscape")
+        }
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -44,7 +48,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
+        UserDefaults.standard.removeObject(forKey: "videoplayingLandscape")
         self.saveContext()
+    }
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        if let rootViewController = self.topViewControllerWithRootViewController(window?.rootViewController) {
+            if (rootViewController.responds(to: Selector("canRotate"))) {
+                if UserDefaults.standard.bool(forKey: "videoplayingLandscape") {
+                    // Unlock landscape view orientations for this view controller
+                    return .allButUpsideDown
+                }
+            }
+        }
+        
+        // Only allow portrait (standard behaviour)
+        return .portrait;
+    }
+    
+    fileprivate func topViewControllerWithRootViewController(_ rootViewController: UIViewController!) -> UIViewController? {
+        if (rootViewController == nil) { return nil }
+        if (rootViewController.isKind(of: UITabBarController.self)) {
+            return topViewControllerWithRootViewController((rootViewController as! UITabBarController).selectedViewController)
+        } else if (rootViewController.isKind(of: UINavigationController.self)) {
+            return topViewControllerWithRootViewController((rootViewController as! UINavigationController).visibleViewController)
+        } else if (rootViewController.presentedViewController != nil) {
+            return topViewControllerWithRootViewController(rootViewController.presentedViewController)
+        }
+        return rootViewController
     }
 
     // MARK: - Core Data stack

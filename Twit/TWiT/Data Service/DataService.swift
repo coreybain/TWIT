@@ -36,7 +36,7 @@ class DataService {
     func downloadFeaturedPage(downloadComplete:@escaping (_ newReleaseData:[TwitEpisodeDetails]?, _ newEpisodeData:[TwitEpisodeDetails]?, _ activeShowData:[TwitShowDetails]?, _ newReviewData:[TwitEpisodeDetails]?, _ newTwitBitsData:[TwitEpisodeDetails]?, _ newHelpData:[TwitEpisodeDetails]?, _ activeCastData:[TwitCastDetails]?) -> ()) {
         
         //MARK: Download new releases:
-        ref.child("episodes").child("allEpisodes").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("episodes").child("allEpisodes").queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
@@ -58,7 +58,7 @@ class DataService {
         }
         
         //MARK: Download News episodes from categories section:
-        ref.child("categoryEpisodes").child("93").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("categoryEpisodes").child("93").queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
@@ -105,7 +105,7 @@ class DataService {
         }
         
         //MARK: Download Review episodes from categories section:
-        ref.child("categoryEpisodes").child("92").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("categoryEpisodes").child("92").queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
@@ -127,7 +127,7 @@ class DataService {
         }
         
         //MARK: Download Twit Bits (long buttons) episodes from categories section:
-        ref.child("categoryEpisodes").child("2001").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("categoryEpisodes").child("2001").queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
@@ -149,7 +149,7 @@ class DataService {
         }
         
         //MARK: Download Help and How-to episodes from categories section:
-        ref.child("categoryEpisodes").child("94").queryLimited(toLast: 10).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("categoryEpisodes").child("94").queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in

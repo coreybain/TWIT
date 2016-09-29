@@ -28,7 +28,6 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
     }
     
     override func viewDidLoad() {
@@ -95,6 +94,7 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
             cell.nameLabel.text = "TWiT Crew"
             cell.castData = activeCast
         }
+        cell.featuredVC = self
         return cell
     }
     
@@ -118,6 +118,17 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         
         return header
     }
+    
+    func showShowsDetail(_ app: TwitEpisodeDetails) {
+        let layout = UICollectionViewFlowLayout()
+        let seasonsDetailVC = SeasonsDetailVC(collectionViewLayout: layout)
+        seasonsDetailVC.episodeData = app
+        navigationController?.pushViewController(seasonsDetailVC, animated: true)
+    }
+    
+    func canRotate() -> Void {}
 
+
+    
 }
 

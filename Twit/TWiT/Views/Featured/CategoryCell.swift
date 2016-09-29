@@ -13,9 +13,15 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     
     //MARK: -- Variables
     fileprivate let cellId = "showCellId"
+    var featuredVC: FeaturedVC?
     var episodeData: [TwitEpisodeDetails]? {
         didSet {
             print(episodeData?.count)
+            showsCollectionView.reloadData()
+        }
+    }
+    var singleEpisodeData: TwitEpisodeDetails? {
+        didSet {
             showsCollectionView.reloadData()
         }
     }
@@ -117,6 +123,8 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
             return count
         } else if let count = castData?.count {
             return count
+        } else if let count = singleEpisodeData?.showDetails.twitCastDetails.count {
+            return count
         } else {
             return 0
         }
@@ -127,6 +135,10 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
         if episodeData != nil {
             cell.episodeTitle = episodeData?[indexPath.row].label
             cell.showTitle = episodeData?[indexPath.row].showLabel
+            if (episodeData?[indexPath.row].showPicture) != "" {
+                print(episodeData?[indexPath.row].showPicture)
+                cell.imageView.image = UIImage(named: (episodeData?[indexPath.row].showPicture)!)
+            }
         }
         return cell
     }
@@ -137,6 +149,24 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsetsMake(0, 14, 0, 14)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if episodeData != nil {
+            if let show = episodeData?[indexPath.row] {
+                print(show)
+                featuredVC?.showShowsDetail(show)
+            }
+        }
+        
+        
+//        if !UserDefaults.standard.bool(forKey: "videoplaying"){
+//            if episodeData != nil {
+//                let videoLauncher = VideoLauncher()
+//                videoLauncher.urlString = (episodeData?[indexPath.row].videoArray[1].mediaUrl)!
+//                videoLauncher.showVideoPlayer()
+//            }
+//        }
     }
 }
 

@@ -30,7 +30,31 @@ class CategoryLargeCell: CategoryCell {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCategoryCellID, for: indexPath) as! ShowCell
         //cell.app = appCategory?.apps?[(indexPath as NSIndexPath).item]
-        cell.imageView.image = UIImage(named: "banner-sn1400")
+        
+        if singleEpisodeData != nil {
+            if let cellname = (singleEpisodeData?.showDetails.twitCastDetails[indexPath.row].pictureFileName) {
+                if UIImage(named: cellname) != nil {
+                    cell.imageView.image = UIImage(named: cellname)
+                    return cell
+                } else {
+                    cell.imageView.image = UIImage(named: "leo_1")
+                    return cell
+                }
+            } else {
+                cell.imageView.image = UIImage(named: "leo_1")
+                return cell
+            }
+        }
+        if let cellname = (showData?[indexPath.row].showCoverImage.coverArtFileName) {
+            if UIImage(named: "banner-\(cellname)") != nil {
+                cell.imageView.image = UIImage(named: "banner-\(cellname)")
+            } else {
+                cell.imageView.image = UIImage(named: "banner-bits1400")
+            }
+        } else {
+            cell.imageView.image = UIImage(named: "banner-bits1400")
+        }
+        
         return cell
     }
     
