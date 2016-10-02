@@ -25,6 +25,12 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
         }
     }
     
+    var showData: TwitShowDetails? {
+        didSet {
+            collectionView?.reloadData()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -71,6 +77,39 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
                 cell.singleEpisodeData = episodeData
                 cell.nameLabel.text = "Cast and Crew"
+                return cell
+            }
+        }
+        
+        if showData != nil {
+            if (indexPath as NSIndexPath).item == 0 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
+                cell.episodeData = episodeData
+                return cell
+            }
+            if (indexPath as NSIndexPath).item == 1 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
+                cell.episodeData = episodeData
+                cell.titleLabel.text = "Current Seasons"
+                return cell
+            }
+            if (indexPath as NSIndexPath).item == 2 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
+                cell.episodeData = episodeData
+                cell.titleLabel.text = "Past Seasons"
+                return cell
+            }
+            if (indexPath as NSIndexPath).item == 3 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
+                cell.singleEpisodeData = episodeData
+                cell.nameLabel.text = "Cast and Crew"
+                return cell
+            }
+            
+            if (indexPath as NSIndexPath).item == 3 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
+                cell.singleEpisodeData = episodeData
+                cell.nameLabel.text = "Sponsors"
                 return cell
             }
         }

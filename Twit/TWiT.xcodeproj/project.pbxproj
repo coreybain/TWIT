@@ -42,6 +42,7 @@
 		83121D071D9C72530026ACCA /* ShowsDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShowsDetailVC.swift; path = Controllers/Featured/ShowsDetailVC.swift; sourceTree = "<group>"; };
 		83121D091D9C75810026ACCA /* ShowsDetailCoverHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShowsDetailCoverHeader.swift; path = Views/Featured/ShowsDetailCoverHeader.swift; sourceTree = "<group>"; };
 		8323936B1D9B09DC00A85474 /* VideoLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoLauncher.swift; path = Utils/VideoLauncher.swift; sourceTree = "<group>"; };
+		8391B5A01D9F2BA300E0D9DF /* TWiT-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TWiT-Bridging-Header.h"; sourceTree = "<group>"; };
 		8397AACE1D9606D400009C01 /* TWiT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TWiT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8397AAD11D9606D400009C01 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8397AAD31D9606D400009C01 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -123,6 +124,7 @@
 				8397AAE91D961F2400009C01 /* TwitMain.swift */,
 				8397AAD11D9606D400009C01 /* AppDelegate.swift */,
 				8397AAF61D972D3100009C01 /* GoogleService-Info.plist */,
+				8391B5A01D9F2BA300E0D9DF /* TWiT-Bridging-Header.h */,
 			);
 			path = TWiT;
 			sourceTree = "<group>";
@@ -256,6 +258,7 @@
 					8397AACD1D9606D400009C01 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = 4444F36N8Z;
+						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -489,11 +492,14 @@
 			baseConfigurationReference = C2D6D8BA2F26FAD96B9071D6 /* Pods-TWiT.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 4444F36N8Z;
 				INFOPLIST_FILE = TWiT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spiritdevs.TWiT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TWiT/TWiT-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -503,11 +509,13 @@
 			baseConfigurationReference = AE29C1531FDBE3FBFD2FB5CF /* Pods-TWiT.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 4444F36N8Z;
 				INFOPLIST_FILE = TWiT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spiritdevs.TWiT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TWiT/TWiT-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

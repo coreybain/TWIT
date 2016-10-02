@@ -71,6 +71,9 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         } else {
             cell = collectionView.dequeueReusableCell(withReuseIdentifier: homeCellID, for: indexPath as IndexPath) as! CategoryCell
         }
+        if (indexPath as NSIndexPath).item == 6 {
+                cell.castPic = true
+        }
         if (indexPath as NSIndexPath).item == 0 {
             cell.nameLabel.text = "New Released TWiT's"
             print(newRelease?.count)

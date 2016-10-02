@@ -30,16 +30,43 @@ class CategoryLargeCell: CategoryCell {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCategoryCellID, for: indexPath) as! ShowCell
         //cell.app = appCategory?.apps?[(indexPath as NSIndexPath).item]
-        
-        if singleEpisodeData != nil {
-            if let cellname = (singleEpisodeData?.showDetails.twitCastDetails[indexPath.row].pictureFileName) {
-                if UIImage(named: cellname) != nil {
-                    cell.imageView.image = UIImage(named: cellname)
-                    return cell
+        if seasonCastPic {
+            if singleEpisodeData != nil {
+                if let cellname = (singleEpisodeData?.showDetails.twitCastDetails[indexPath.row].pictureUrl300) {
+                    
+                        //cell.imageView.image = UIImage(named: cellname)
+                    print(cellname)
+                    cell.imageView.sd_setImage(with: URL(string: cellname), placeholderImage: UIImage(named: "twit1"))
+                        return cell
+                    
                 } else {
                     cell.imageView.image = UIImage(named: "leo_1")
                     return cell
                 }
+            } else if episodeData != nil {
+                for cast in (episodeData?[indexPath.row].showDetails.twitCastDetails)! {
+                    if cast.pictureUrl300 != "" {
+                        let cellname = cast.pictureUrl300
+                        cell.imageView.sd_setImage(with: URL(string: cellname), placeholderImage: UIImage(named: "twit1"))
+                        return cell
+                    } else {
+                        cell.imageView.image = UIImage(named: "leo_1")
+                        return cell
+                    }
+                }
+            }
+        }
+        if seasonOffersPic {
+            //OFFERS WILL GO IN HERE
+        }
+        if castPic {
+            if let cellname = (castData?[indexPath.row].pictureUrl300) {
+                
+                //cell.imageView.image = UIImage(named: cellname)
+                print(cellname)
+                cell.imageView.sd_setImage(with: URL(string: cellname), placeholderImage: UIImage(named: "twit1"))
+                return cell
+                
             } else {
                 cell.imageView.image = UIImage(named: "leo_1")
                 return cell

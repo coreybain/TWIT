@@ -14,6 +14,9 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     //MARK: -- Variables
     fileprivate let cellId = "showCellId"
     var featuredVC: FeaturedVC?
+    var castPic:Bool = false
+    var seasonCastPic:Bool = false
+    var seasonOffersPic:Bool = false
     var episodeData: [TwitEpisodeDetails]? {
         didSet {
             print(episodeData?.count)

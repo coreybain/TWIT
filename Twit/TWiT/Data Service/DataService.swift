@@ -171,7 +171,7 @@ class DataService {
         }
         
         //MARK: Download list of cast members (long button):
-        ref.child("cast").queryLimited(toLast: 20).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("people").queryLimited(toFirst: 20).observeSingleEvent(of: .value, with: { (snapshot) in
             // Get user value
             if snapshot.exists() {
                 
