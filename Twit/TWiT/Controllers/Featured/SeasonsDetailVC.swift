@@ -31,6 +31,9 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
         }
     }
     
+    var seasonInfo: [TwitShowDetails]?
+    var seasonEpisodeInfo: [TwitEpisodeDetails]?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,7 +53,7 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return 5
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -62,10 +65,19 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
                 return cell
             }
             if (indexPath as NSIndexPath).item == 1 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
-                cell.episodeData = episodeData
-                cell.titleLabel.text = "Current Seasons"
-                return cell
+                if showData != nil {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! CategoryCell
+                    cell.showData = seasonInfo
+                    cell.nameLabel.text = "Current Seasons"
+                    return cell
+                } else {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: categoryCell, for: indexPath as IndexPath) as! CategoryCell
+                    //cell.showData = seasonInfo
+                    cell.cellLoading = true
+                    cell.loadingLabel.text = "Loading current seasons"
+                    cell.nameLabel.text = "Current Seasons"
+                    return cell
+                }
             }
             if (indexPath as NSIndexPath).item == 2 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
@@ -77,6 +89,13 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
                 cell.singleEpisodeData = episodeData
                 cell.nameLabel.text = "Cast and Crew"
+                return cell
+            }
+            
+            if (indexPath as NSIndexPath).item == 4 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
+                cell.singleEpisodeData = episodeData
+                cell.nameLabel.text = "Sponsors"
                 return cell
             }
         }
@@ -106,7 +125,7 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
                 return cell
             }
             
-            if (indexPath as NSIndexPath).item == 3 {
+            if (indexPath as NSIndexPath).item == 4 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
                 cell.singleEpisodeData = episodeData
                 cell.nameLabel.text = "Sponsors"

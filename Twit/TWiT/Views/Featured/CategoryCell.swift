@@ -16,6 +16,7 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     var featuredVC: FeaturedVC?
     var castPic:Bool = false
     var seasonCastPic:Bool = false
+    var cellLoading:Bool?
     var seasonOffersPic:Bool = false
     var episodeData: [TwitEpisodeDetails]? {
         didSet {
@@ -89,6 +90,15 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
         return label
     }()
     
+    let loadingLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Loading..."
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     let dividerLineView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 1.0)
@@ -102,6 +112,15 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
         addSubview(showsCollectionView)
         addSubview(dividerLineView)
         addSubview(nameLabel)
+        
+        if cellLoading != nil {
+            if cellLoading! {
+                addSubview(loadingLabel)
+                //nameLabel.frame = CGRect(x: frame.width / 2, y: frame.width / 2, width: frame.width, height: 40)
+                addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[v0]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": loadingLabel]))
+                addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[v0(40)]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": loadingLabel]))
+            }
+        }
         
         showsCollectionView.dataSource = self
         showsCollectionView.delegate = self
