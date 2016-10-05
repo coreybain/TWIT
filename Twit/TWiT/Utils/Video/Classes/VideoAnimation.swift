@@ -78,7 +78,35 @@ extension VideoVC {
         
         UIView.animate(withDuration: 0.4, delay: 0.0, options: UIViewAnimationOptions(), animations: {
             self.minimizeButton.isHidden = true
-            self.playerView.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI_2))
+            self.playerView.transform = CGAffineTransform(rotationAngle: CGFloat((M_PI_2)))
+            
+            self.playerView.frame = CGRect(x: self.initialFirstViewFrame!.origin.x, y: self.initialFirstViewFrame!.origin.x, width: self.initialFirstViewFrame!.size.width, height: self.initialFirstViewFrame!.size.height)
+            
+            }, completion: { finished in
+                UIApplication.shared.setStatusBarHidden(true, with: .slide)
+                self.isFullscreen = true
+                self.fullscreen.setImage(UIImage(named: "unfullscreen"), for: UIControlState())
+                
+                let originY = self.initialFirstViewFrame!.size.width - self.playerControlsFrame!.height
+                
+                self.backPlayerControlsView.frame.origin.x = self.initialFirstViewFrame!.origin.x
+                self.backPlayerControlsView.frame.origin.y = originY
+                self.backPlayerControlsView.frame.size.width = self.initialFirstViewFrame!.size.height
+                
+                self.playerControlsView.frame.origin.x = self.initialFirstViewFrame!.origin.x
+                self.playerControlsView.frame.origin.y = originY
+                self.playerControlsView.frame.size.width = self.initialFirstViewFrame!.size.height
+                
+                self.showPlayerControls()
+        })
+    }
+    
+    func setPlayerToFullscreenLeft() {
+        self.hidePlayerControls(true)
+        
+        UIView.animate(withDuration: 0.4, delay: 0.0, options: UIViewAnimationOptions(), animations: {
+            self.minimizeButton.isHidden = true
+            self.playerView.transform = CGAffineTransform(rotationAngle: CGFloat(-(M_PI_2)))
             
             self.playerView.frame = CGRect(x: self.initialFirstViewFrame!.origin.x, y: self.initialFirstViewFrame!.origin.x, width: self.initialFirstViewFrame!.size.width, height: self.initialFirstViewFrame!.size.height)
             
@@ -354,7 +382,7 @@ extension VideoVC {
         let trueOffset = initialFirstViewFrame!.size.height - 100
         let xOffset = initialFirstViewFrame!.size.width - 160
         
-        viewMinimizedFrame!.origin.y = trueOffset + 2
+        viewMinimizedFrame!.origin.y = trueOffset - 46
         viewMinimizedFrame!.origin.x = xOffset - 6
         viewMinimizedFrame!.size.width = initialFirstViewFrame!.size.width
         
@@ -429,6 +457,7 @@ extension VideoVC {
         self.transparentView?.removeFromSuperview()
         self.playerControlsView.removeFromSuperview()
         self.backPlayerControlsView.removeFromSuperview()
+        dragViewController = nil
     }
     
 }

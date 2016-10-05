@@ -33,9 +33,12 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Featured"
+        navigationController?.navigationBar.tintColor = .white
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: nil)
        // navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 1.0)]
         //navigationController?.navigationBar.barTintColor = UIColor(red: 16/255, green: 16/255, blue: 16/255, alpha: 1.0)
         navigationController?.navigationBar.barStyle = .black
+        tabBarController?.tabBar.barStyle = .black
         collectionView?.backgroundColor = UIColor(red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0) //UIColor(colorLiteralRed: 29, green: 29, blue: 28, alpha: 1.0)
         collectionView?.showsVerticalScrollIndicator = false
         

@@ -182,7 +182,11 @@ class VideoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     func rotated() {
         if(UIDeviceOrientationIsLandscape(UIDevice.current.orientation)) {
             print("landscape")
-            setPlayerToFullscreen()
+            if UIDevice.current.orientation == UIDeviceOrientation.landscapeLeft{
+                setPlayerToFullscreen()
+            } else {
+                setPlayerToFullscreenLeft()
+            }
             
         }
         
