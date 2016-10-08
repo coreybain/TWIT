@@ -65,7 +65,7 @@ class ShowsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! ShowsDetailCoverHeader
         header.nameLabel.text = episodeData?.showLabel
         header.imageView.image = UIImage(named: (episodeData?.showPicture)!)
-        header.coverImage.image = UIImage(named: "banner-\((episodeData?.showPicture)!)")
+        header.coverImage.image = UIImage(named: "\((episodeData?.showDetails.showHeroImage.heroImageFileName)!)")
         
         return header
     }

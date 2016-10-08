@@ -125,11 +125,18 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         return header
     }
     
-    func showShowsDetail(_ app: TwitEpisodeDetails) {
+    func showSeasonDetail(_ app: TwitEpisodeDetails) {
         let layout = UICollectionViewFlowLayout()
         let seasonsDetailVC = SeasonsDetailVC(collectionViewLayout: layout)
         seasonsDetailVC.episodeData = app
         navigationController?.pushViewController(seasonsDetailVC, animated: true)
+    }
+    
+    func showShowsDetail(_ app: TwitEpisodeDetails) {
+        let layout = UICollectionViewFlowLayout()
+        let showsDetailVC = ShowsDetailVC(collectionViewLayout: layout)
+        showsDetailVC.episodeData = app
+        navigationController?.pushViewController(showsDetailVC, animated: true)
     }
     
     func canRotate() -> Void {}

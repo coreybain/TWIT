@@ -16,7 +16,7 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     var featuredVC: FeaturedVC?
     var castPic:Bool = false
     var seasonCastPic:Bool = false
-    var cellLoading:Bool?
+    var cellLoading:Bool = true
     var seasonOffersPic:Bool = false
     var episodeData: [TwitEpisodeDetails]? {
         didSet {
@@ -25,6 +25,17 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
         }
     }
     var singleEpisodeData: TwitEpisodeDetails? {
+        didSet {
+            showsCollectionView.reloadData()
+        }
+    }
+    var singleCastInEpisodeData: TwitEpisodeDetails? {
+        didSet {
+            seasonCastPic = true
+            showsCollectionView.reloadData()
+        }
+    }
+    var singleSponsorsInEpisodeData: TwitEpisodeDetails? {
         didSet {
             showsCollectionView.reloadData()
         }
@@ -95,7 +106,7 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
         label.text = "Loading..."
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        //label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -112,15 +123,6 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
         addSubview(showsCollectionView)
         addSubview(dividerLineView)
         addSubview(nameLabel)
-        
-        if cellLoading != nil {
-            if cellLoading! {
-                addSubview(loadingLabel)
-                //nameLabel.frame = CGRect(x: frame.width / 2, y: frame.width / 2, width: frame.width, height: 40)
-                addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[v0]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": loadingLabel]))
-                addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[v0(40)]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": loadingLabel]))
-            }
-        }
         
         showsCollectionView.dataSource = self
         showsCollectionView.delegate = self
@@ -146,6 +148,8 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
         } else if let count = castData?.count {
             return count
         } else if let count = singleEpisodeData?.showDetails.twitCastDetails.count {
+            return count
+        } else if let count = singleCastInEpisodeData?.showDetails.twitCastDetails.count {
             return count
         } else {
             return 0
@@ -175,9 +179,14 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if episodeData != nil {
-            if let show = episodeData?[indexPath.row] {
+            if episodeData?[indexPath.row].showDetails.twitCastDetails.count == 0 {
+                if let show = episodeData?[indexPath.row] {
+                    print(show)
+                    featuredVC?.showShowsDetail(show)
+                }
+            } else if let show = episodeData?[indexPath.row] {
                 print(show)
-                featuredVC?.showShowsDetail(show)
+                featuredVC?.showSeasonDetail(show)
             }
         }
         

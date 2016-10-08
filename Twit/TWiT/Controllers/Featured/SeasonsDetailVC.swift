@@ -80,21 +80,23 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
                 }
             }
             if (indexPath as NSIndexPath).item == 2 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
-                cell.episodeData = episodeData
-                cell.titleLabel.text = "Past Seasons"
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: categoryCell, for: indexPath as IndexPath) as! CategoryCell
+                //cell.showData = seasonInfo
+                cell.cellLoading = true
+                cell.loadingLabel.text = "Loading current seasons"
+                cell.nameLabel.text = "Past Seasons"
                 return cell
             }
             if (indexPath as NSIndexPath).item == 3 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
-                cell.singleEpisodeData = episodeData
+                cell.singleCastInEpisodeData = episodeData
                 cell.nameLabel.text = "Cast and Crew"
                 return cell
             }
             
             if (indexPath as NSIndexPath).item == 4 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
-                cell.singleEpisodeData = episodeData
+                cell.singleSponsorsInEpisodeData = episodeData
                 cell.nameLabel.text = "Sponsors"
                 return cell
             }
@@ -120,7 +122,7 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
             }
             if (indexPath as NSIndexPath).item == 3 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
-                cell.singleEpisodeData = episodeData
+                cell.singleCastInEpisodeData = episodeData
                 cell.nameLabel.text = "Cast and Crew"
                 return cell
             }

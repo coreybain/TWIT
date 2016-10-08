@@ -224,6 +224,10 @@
 		8397AAEB1D961F4600009C01 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				83A3A69A1DA660BE00547580 /* Account */,
+				83A3A6991DA660B800547580 /* Trending */,
+				83A3A6981DA660A800547580 /* Downloads */,
+				83A3A6971DA6607200547580 /* Subscriptions */,
 				8397AAEF1D961F8600009C01 /* Featured */,
 				8397AAEC1D961F4D00009C01 /* Setup */,
 			);
@@ -292,6 +296,34 @@
 				8397AB071D97D87B00009C01 /* RecentTwitParse.swift */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		83A3A6971DA6607200547580 /* Subscriptions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Subscriptions;
+			sourceTree = "<group>";
+		};
+		83A3A6981DA660A800547580 /* Downloads */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Downloads;
+			sourceTree = "<group>";
+		};
+		83A3A6991DA660B800547580 /* Trending */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Trending;
+			sourceTree = "<group>";
+		};
+		83A3A69A1DA660BE00547580 /* Account */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Account;
 			sourceTree = "<group>";
 		};
 		F625544E08F1BD292DC114F6 /* Pods */ = {
