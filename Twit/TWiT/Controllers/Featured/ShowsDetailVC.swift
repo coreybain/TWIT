@@ -8,13 +8,15 @@
 
 import Foundation
 import UIKit
+import QuartzCore
 
-class ShowsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class ShowsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
     
     //MARK: -- Variables
     fileprivate let headerId = "headerId"
     fileprivate let topShowDetailsId = "headerId"
     fileprivate let baseCellId = "baseCell"
+    var tapBGGesture: UITapGestureRecognizer!
     
     var episodeData: TwitEpisodeDetails? {
         didSet {
@@ -22,9 +24,58 @@ class ShowsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        tapBGGesture = UITapGestureRecognizer(target: self, action: #selector(settingsBGTapped))
+        tapBGGesture.numberOfTapsRequired = 1
+        tapBGGesture.cancelsTouchesInView = false
+        self.view!.window!.addGestureRecognizer(tapBGGesture)
+        tapBGGesture.delegate = self
+    }
+    func settingsBGTapped(sender: UITapGestureRecognizer) {
+        if sender.state == UIGestureRecognizerState.ended {
+            let location = sender.location(in: nil)
+            if !self.view.point(inside: self.view.convert(location, from: self.view.window), with: nil) {
+                // Remove the recognizer first so it’s view.window is valid.
+                self.view.window?.removeGestureRecognizer(sender)
+                self.dismiss(animated: true, completion: { () -> Void in
+                })
+            }
+        }
+    }
+    // MARK: - UIGestureRecognizer Delegate
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return true
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.view.window!.removeGestureRecognizer(tapBGGesture)
+    }
+    
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.view.superview?.layer.cornerRadius = 0.0
+            self.view.superview?.layer.masksToBounds = false
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.view.layer.cornerRadius = 0
+        }
         collectionView?.alwaysBounceVertical = true
         navigationController?.navigationBar.barStyle = .black
         collectionView?.backgroundColor = UIColor(red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0) //UIColor(colorLiteralRed: 29, green: 29, blue: 28, alpha: 1.0)
@@ -64,6 +115,8 @@ class ShowsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! ShowsDetailCoverHeader
         header.nameLabel.text = episodeData?.showLabel
+        
+        header.audioButton.isHidden = true
         header.imageView.image = UIImage(named: (episodeData?.showPicture)!)
         header.coverImage.image = UIImage(named: "\((episodeData?.showDetails.showHeroImage.heroImageFileName)!)")
         
@@ -153,6 +206,16 @@ class TopShowDetailsId: BaseCell {
         return label
     }()
     
+    let audioButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("AUDIO", for: UIControlState())
+        button.layer.borderColor = UIColor(red: 0, green: 129/255, blue: 250/255, alpha: 1).cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 5
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        return button
+    }()
+    
     let subscribeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("SUBSCRIBE", for: UIControlState())
@@ -176,6 +239,7 @@ class TopShowDetailsId: BaseCell {
         addSubview(segmentedControl)
         addSubview(nameLabel)
         addSubview(seasonLabel)
+        addSubview(audioButton)
         addSubview(subscribeButton)
         addSubview(dividerLineView)
         
@@ -188,6 +252,9 @@ class TopShowDetailsId: BaseCell {
         
         addConstraintsWithFormat("H:|-40-[v0]-40-|", views: segmentedControl)
         addConstraintsWithFormat("V:[v0(34)]-8-|", views: segmentedControl)
+        
+        addConstraintsWithFormat("H:[v0(120)]-14-|", views: audioButton)
+        addConstraintsWithFormat("V:[v0(32)]-14-[v1]", views: audioButton, subscribeButton)
         
         addConstraintsWithFormat("H:[v0(120)]-14-|", views: subscribeButton)
         addConstraintsWithFormat("V:[v0(32)]-56-|", views: subscribeButton)

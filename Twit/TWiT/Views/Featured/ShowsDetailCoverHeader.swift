@@ -66,6 +66,16 @@ class ShowsDetailCoverHeader: UICollectionViewCell {
         return label
     }()
     
+    let audioButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("AUDIO", for: UIControlState())
+        button.layer.borderColor = UIColor(red: 0, green: 129/255, blue: 250/255, alpha: 1).cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 5
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        return button
+    }()
+    
     let subscribeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("SUBSCRIBE", for: UIControlState())
@@ -121,6 +131,7 @@ class ShowsDetailCoverHeader: UICollectionViewCell {
         addSubview(segmentedControl)
         addSubview(nameLabel)
         addSubview(seasonLabel)
+        addSubview(audioButton)
         addSubview(subscribeButton)
         addSubview(dividerLineView)
         
@@ -136,6 +147,9 @@ class ShowsDetailCoverHeader: UICollectionViewCell {
         
         addConstraintsWithFormat("H:|-40-[v0]-40-|", views: segmentedControl)
         addConstraintsWithFormat("V:[v0(34)]-12-|", views: segmentedControl)
+        
+        addConstraintsWithFormat("H:[v0(120)]-14-|", views: audioButton)
+        addConstraintsWithFormat("V:[v0(32)]-8-[v1]", views: audioButton, subscribeButton)
         
         addConstraintsWithFormat("H:[v0(120)]-14-|", views: subscribeButton)
         addConstraintsWithFormat("V:[v0(32)]-63-|", views: subscribeButton)

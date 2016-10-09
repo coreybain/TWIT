@@ -229,7 +229,7 @@ private extension CMTime {
     func playerItemDidPlayToEndTime(_ aNotification: Notification) {
         //notification of player to stop
         let item = aNotification.object as! PVPlayerItem
-        print("Itens \(player?.items().count)")
+      
         if loopVideosQueue && player?.items().count == 1,
             let urlsQueue = urlsQueue {
             
@@ -421,7 +421,7 @@ private extension CMTime {
     
       override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
-        //print("CHANGE",keyPath)
+   
         
         
         if context == &statusContext {

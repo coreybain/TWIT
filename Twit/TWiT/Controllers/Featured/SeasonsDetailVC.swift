@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import QuartzCore
 
-class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
     
     //MARK: -- Variables
     fileprivate let headerId = "headerId"
@@ -18,6 +19,7 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
     fileprivate let quickEpisodeCell = "quickEpisodeCell"
     fileprivate let categoryCell = "categoryCell"
     fileprivate let largeCellId = "largeCellId"
+    var tapBGGesture: UITapGestureRecognizer!
     
     var episodeData: TwitEpisodeDetails? {
         didSet {
@@ -34,9 +36,53 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
     var seasonInfo: [TwitShowDetails]?
     var seasonEpisodeInfo: [TwitEpisodeDetails]?
     
+    override func viewDidAppear(_ animated: Bool) {
+        tapBGGesture = UITapGestureRecognizer(target: self, action: #selector(settingsBGTapped))
+        tapBGGesture.numberOfTapsRequired = 1
+        tapBGGesture.cancelsTouchesInView = false
+        self.view!.window!.addGestureRecognizer(tapBGGesture)
+        tapBGGesture.delegate = self
+    }
+    func settingsBGTapped(sender: UITapGestureRecognizer) {
+        if sender.state == UIGestureRecognizerState.ended {
+            let location = sender.location(in: nil)
+            if !self.view.point(inside: self.view.convert(location, from: self.view.window), with: nil) {
+                // Remove the recognizer first so it’s view.window is valid.
+                self.view.window?.removeGestureRecognizer(sender)
+                self.dismiss(animated: true, completion: { () -> Void in
+                })
+            }
+        }
+    }
+    // MARK: - UIGestureRecognizer Delegate
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return true
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.view.window!.removeGestureRecognizer(tapBGGesture)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.view.superview?.layer.cornerRadius = 0.0
+            self.view.superview?.layer.masksToBounds = false
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationItem.title = episodeData?.showLabel
         
         collectionView?.alwaysBounceVertical = true
@@ -153,7 +199,6 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! SeasonsDetailCoverHeader
-        print((episodeData?.showDetails.showHeroImage.heroImageFileName)!)
         header.coverImage.image = UIImage(named: "\((episodeData?.showDetails.showHeroImage.heroImageFileName)!)")
         
         return header

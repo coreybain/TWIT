@@ -27,10 +27,10 @@ class VideoPlayerView: UIView {
         backgroundColor = .black
         
         //warning: use your own video url here, the bandwidth for google firebase storage will run out as more and more people use this file
-        print(urlString)
+        
         if urlString != nil {
             if let url = URL(string: urlString!) {
-                print(url)
+                
                 UserDefaults.standard.set(true, forKey: "videoplaying")
                 UserDefaults.standard.set(true, forKey: "videoplayingLandscape")
                 
@@ -86,7 +86,7 @@ class VideoPlayerView: UIView {
             print("landscape")
            // videoLauncher.showVideoPlayerLandscape()
             if let keyWindow = UIApplication.shared.keyWindow {
-                print("HELLO")
+          
                 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                     
                     self.frame = keyWindow.frame
@@ -114,7 +114,7 @@ class VideoPlayerView: UIView {
             print("Portrait")
             //videoLauncher.showVideoPlayer()
             if let keyWindow = UIApplication.shared.keyWindow {
-                print("HELLO")
+               
                 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                     
                     let height = keyWindow.frame.width * 9 / 16
@@ -199,7 +199,7 @@ class VideoPlayerView: UIView {
     
     
     func fadeUI() {
-        print("HEHEHEHE")
+        
         UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             self.controlsContainerView.alpha = 0.0
@@ -323,7 +323,6 @@ class VideoPlayerView: UIView {
     
     func hideVideo() {
         if let keyWindow = UIApplication.shared.keyWindow {
-            print(keyWindow.subviews.count)
             
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
                 
@@ -407,7 +406,6 @@ class VideoPlayerView: UIView {
     }()
     
     func handleSliderChange() {
-        print(videoSlider.value)
         
         if let duration = player?.currentItem?.duration {
             let totalSeconds = CMTimeGetSeconds(duration)
@@ -429,7 +427,6 @@ class VideoLauncher: NSObject {
     var urlString:String = ""
     
     func showVideoPlayer() {
-        print("Showing video player animation....")
         
         if let keyWindow = UIApplication.shared.keyWindow {
             

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PopupDialog
 
 class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
@@ -32,9 +33,10 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
         navigationItem.title = "Featured"
         navigationController?.navigationBar.tintColor = .white
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: nil)
+        //navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: nil)
        // navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor(red: 47/255, green: 47/255, blue: 47/255, alpha: 1.0)]
         //navigationController?.navigationBar.barTintColor = UIColor(red: 16/255, green: 16/255, blue: 16/255, alpha: 1.0)
         navigationController?.navigationBar.barStyle = .black
@@ -46,6 +48,12 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         collectionView?.register(CategoryLargeCell.self, forCellWithReuseIdentifier: largeCellId)
         collectionView?.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
         
+        downloadUI()
+        
+    }
+    
+    func downloadUI() {
+        loading(loading: true)
         DataService.ds().downloadFeaturedPage { (newReleaseData, newEpisodeData, activeShowData, newReviewData, newTwitBitsData, newHelpData, activeCastData) in
             print("WE GOT HERE")
             self.newRelease = newReleaseData
@@ -55,10 +63,9 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
             self.newTwitBits = newTwitBitsData
             self.newHelp = newHelpData
             self.activeCast = activeCastData
-            print(activeCastData?.count)
+            self.loading(loading: false)
             self.collectionView?.reloadData()
         }
-        
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -79,7 +86,6 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         }
         if (indexPath as NSIndexPath).item == 0 {
             cell.nameLabel.text = "New Released TWiT's"
-            print(newRelease?.count)
             cell.episodeData = newRelease
         } else if (indexPath as NSIndexPath).item == 1 {
             cell.nameLabel.text = "Latest News"
@@ -114,6 +120,9 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return CGSize(width: view.frame.width, height: 200)
+        }
         return CGSize(width: view.frame.width, height: 160)
     }
     
@@ -126,17 +135,45 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     }
     
     func showSeasonDetail(_ app: TwitEpisodeDetails) {
-        let layout = UICollectionViewFlowLayout()
-        let seasonsDetailVC = SeasonsDetailVC(collectionViewLayout: layout)
-        seasonsDetailVC.episodeData = app
-        navigationController?.pushViewController(seasonsDetailVC, animated: true)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let layout = UICollectionViewFlowLayout()
+            let seasonsDetailVC = SeasonsDetailVC(collectionViewLayout: layout)
+            seasonsDetailVC.episodeData = app
+            seasonsDetailVC.modalPresentationStyle = .formSheet
+            self.present(seasonsDetailVC, animated: true, completion: nil)
+        } else {
+            let layout = UICollectionViewFlowLayout()
+            let seasonsDetailVC = SeasonsDetailVC(collectionViewLayout: layout)
+            seasonsDetailVC.episodeData = app
+            navigationController?.pushViewController(seasonsDetailVC, animated: true)
+        }
     }
     
     func showShowsDetail(_ app: TwitEpisodeDetails) {
-        let layout = UICollectionViewFlowLayout()
-        let showsDetailVC = ShowsDetailVC(collectionViewLayout: layout)
-        showsDetailVC.episodeData = app
-        navigationController?.pushViewController(showsDetailVC, animated: true)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let layout = UICollectionViewFlowLayout()
+            let showsDetailVC = ShowsDetailVC(collectionViewLayout: layout)
+            showsDetailVC.episodeData = app
+            showsDetailVC.modalPresentationStyle = .formSheet
+            self.present(showsDetailVC, animated: true, completion: nil)
+        } else {
+            let layout = UICollectionViewFlowLayout()
+            let showsDetailVC = ShowsDetailVC(collectionViewLayout: layout)
+            showsDetailVC.episodeData = app
+            navigationController?.pushViewController(showsDetailVC, animated: true)
+        }
+    }
+    
+    func loading(loading:Bool) {
+        if loading {
+            collectionView?.isHidden = true
+            navigationItem.rightBarButtonItem = nil
+            LoadingView.startSpinning(mainView: view)
+        } else {
+            collectionView?.isHidden = false
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: nil)
+            LoadingView.stopSpinning()
+        }
     }
     
     func canRotate() -> Void {}

@@ -14,6 +14,10 @@
 		83121D081D9C72530026ACCA /* ShowsDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83121D071D9C72530026ACCA /* ShowsDetailVC.swift */; };
 		83121D0A1D9C75810026ACCA /* ShowsDetailCoverHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83121D091D9C75810026ACCA /* ShowsDetailCoverHeader.swift */; };
 		8323936C1D9B09DC00A85474 /* VideoLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323936B1D9B09DC00A85474 /* VideoLauncher.swift */; };
+		8336E5761DA992B500E2AD35 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336E5751DA992B500E2AD35 /* LoadingView.swift */; };
+		8336E57C1DA995CF00E2AD35 /* RPCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336E57B1DA995CF00E2AD35 /* RPCircularProgress.swift */; };
+		8336E57E1DA9A52700E2AD35 /* UIImageExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336E57D1DA9A52700E2AD35 /* UIImageExtentions.swift */; };
+		8336E5801DA9CDB800E2AD35 /* InfiniteCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336E57F1DA9CDB800E2AD35 /* InfiniteCollectionView.swift */; };
 		833907461DA3913700BA0004 /* fullscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8339073A1DA3913700BA0004 /* fullscreen.png */; };
 		833907471DA3913700BA0004 /* fullscreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8339073B1DA3913700BA0004 /* fullscreen@2x.png */; };
 		833907481DA3913700BA0004 /* NowPlayingCollapseChevronMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 8339073C1DA3913700BA0004 /* NowPlayingCollapseChevronMask.png */; };
@@ -54,6 +58,19 @@
 		8397AB081D97D87B00009C01 /* RecentTwitParse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB071D97D87B00009C01 /* RecentTwitParse.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8336E57A1DA994FF00E2AD35 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		8302CA0F1D9CBE900018F982 /* SeasonsDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SeasonsDetailVC.swift; path = Controllers/Featured/SeasonsDetailVC.swift; sourceTree = "<group>"; };
 		8302CA111D9CBF030018F982 /* SeasonsDetailCoverHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SeasonsDetailCoverHeader.swift; path = Views/Featured/SeasonsDetailCoverHeader.swift; sourceTree = "<group>"; };
@@ -61,6 +78,10 @@
 		83121D071D9C72530026ACCA /* ShowsDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShowsDetailVC.swift; path = Controllers/Featured/ShowsDetailVC.swift; sourceTree = "<group>"; };
 		83121D091D9C75810026ACCA /* ShowsDetailCoverHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShowsDetailCoverHeader.swift; path = Views/Featured/ShowsDetailCoverHeader.swift; sourceTree = "<group>"; };
 		8323936B1D9B09DC00A85474 /* VideoLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoLauncher.swift; path = Utils/VideoLauncher.swift; sourceTree = "<group>"; };
+		8336E5751DA992B500E2AD35 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingView.swift; path = Views/LoadingView.swift; sourceTree = "<group>"; };
+		8336E57B1DA995CF00E2AD35 /* RPCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RPCircularProgress.swift; sourceTree = "<group>"; };
+		8336E57D1DA9A52700E2AD35 /* UIImageExtentions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImageExtentions.swift; path = Utils/UIImageExtentions.swift; sourceTree = "<group>"; };
+		8336E57F1DA9CDB800E2AD35 /* InfiniteCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteCollectionView.swift; sourceTree = "<group>"; };
 		8339073A1DA3913700BA0004 /* fullscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fullscreen.png; sourceTree = "<group>"; };
 		8339073B1DA3913700BA0004 /* fullscreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fullscreen@2x.png"; sourceTree = "<group>"; };
 		8339073C1DA3913700BA0004 /* NowPlayingCollapseChevronMask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NowPlayingCollapseChevronMask.png; sourceTree = "<group>"; };
@@ -212,11 +233,14 @@
 		8397AAE61D96087D00009C01 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				8336E57B1DA995CF00E2AD35 /* RPCircularProgress.swift */,
+				8336E57F1DA9CDB800E2AD35 /* InfiniteCollectionView.swift */,
 				8391B5A31DA3908000E0D9DF /* Video */,
 				8397AAE71D9608A500009C01 /* Constaints.swift */,
 				8397AB031D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift */,
 				8397AB051D97BCF900009C01 /* UIGradientImageView.swift */,
 				8323936B1D9B09DC00A85474 /* VideoLauncher.swift */,
+				8336E57D1DA9A52700E2AD35 /* UIImageExtentions.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -256,6 +280,7 @@
 			isa = PBXGroup;
 			children = (
 				8397AAF31D9632D300009C01 /* Featured */,
+				8336E5751DA992B500E2AD35 /* LoadingView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -348,6 +373,7 @@
 				8397AACC1D9606D400009C01 /* Resources */,
 				3250C5A5AF40AF8C37E45E6F /* [CP] Embed Pods Frameworks */,
 				EE841C2BB0B8F2CE9B215EDB /* [CP] Copy Pods Resources */,
+				8336E57A1DA994FF00E2AD35 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -486,20 +512,24 @@
 				8323936C1D9B09DC00A85474 /* VideoLauncher.swift in Sources */,
 				8302CA121D9CBF030018F982 /* SeasonsDetailCoverHeader.swift in Sources */,
 				83121D0A1D9C75810026ACCA /* ShowsDetailCoverHeader.swift in Sources */,
+				8336E57C1DA995CF00E2AD35 /* RPCircularProgress.swift in Sources */,
 				835E6B5D1DA39D9B002A1117 /* VideoProgressSlider.swift in Sources */,
 				8397AAEA1D961F2400009C01 /* TwitMain.swift in Sources */,
 				835E6B651DA3AD81002A1117 /* VideoPopupCloseButton.swift in Sources */,
 				8397AAF51D9632F200009C01 /* CategoryCell.swift in Sources */,
 				835E6B5B1DA39755002A1117 /* VideoVC.swift in Sources */,
 				835E6B611DA39F57002A1117 /* VideoAnimation.swift in Sources */,
+				8336E5801DA9CDB800E2AD35 /* InfiniteCollectionView.swift in Sources */,
 				83121D081D9C72530026ACCA /* ShowsDetailVC.swift in Sources */,
 				8397AAE81D9608A500009C01 /* Constaints.swift in Sources */,
 				8397AAD41D9606D400009C01 /* ViewController.swift in Sources */,
 				8302CA101D9CBE900018F982 /* SeasonsDetailVC.swift in Sources */,
 				8397AB061D97BCF900009C01 /* UIGradientImageView.swift in Sources */,
 				8397AAD21D9606D400009C01 /* AppDelegate.swift in Sources */,
+				8336E5761DA992B500E2AD35 /* LoadingView.swift in Sources */,
 				8397AB001D97514B00009C01 /* CategoryLargeCell.swift in Sources */,
 				835E6B591DA392AE002A1117 /* VideoPlayer.swift in Sources */,
+				8336E57E1DA9A52700E2AD35 /* UIImageExtentions.swift in Sources */,
 				8397AAEE1D961F5F00009C01 /* TwitTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

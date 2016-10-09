@@ -9,9 +9,12 @@
 import Foundation
 import UIKit
 
-class HeaderCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class HeaderCell: UICollectionViewCell, InfiniteCollectionViewDataSource, InfiniteCollectionViewDelegate {
     
     let cellId = "bannerCellId"
+    var timr=Timer()
+    var w:CGFloat=0.0
+    var running:Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -22,16 +25,16 @@ class HeaderCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         fatalError("init(coder:) has not been implemented")
     }
     
-    let headerCollectionView: UICollectionView = {
+    let headerCollectionView: InfiniteCollectionView = {
         let collectionViewLayout: CenterCellCollectionViewFlowLayout = CenterCellCollectionViewFlowLayout()
         collectionViewLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        collectionViewLayout.minimumLineSpacing = 0
+        collectionViewLayout.minimumLineSpacing = 5
         collectionViewLayout.scrollDirection = .horizontal
         
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        let collectionView = InfiniteCollectionView(frame: .zero, collectionViewLayout: collectionViewLayout, frameCellWidth: UIScreen.main.bounds.width)
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.showsHorizontalScrollIndicator = false
+//        collectionView.showsHorizontalScrollIndicator = false
         
         return collectionView
     }()
@@ -40,11 +43,13 @@ class HeaderCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         backgroundColor = UIColor.clear
         
         addSubview(headerCollectionView)
-        
-        headerCollectionView.dataSource = self
-        headerCollectionView.delegate = self
-        
         headerCollectionView.register(BannerCell.self, forCellWithReuseIdentifier: cellId)
+        
+        headerCollectionView.infiniteDataSource = self
+        headerCollectionView.infiniteDelegate = self
+        
+        configAutoscrollTimer()
+        
         
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[v0]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": headerCollectionView]))
         
@@ -52,22 +57,74 @@ class HeaderCell: UICollectionViewCell, UICollectionViewDataSource, UICollection
         
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+    func numberOfItems(_ collectionView: UICollectionView) -> Int {
+        return 6
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! BannerCell
+    func cellForItemAtIndexPath(_ collectionView: UICollectionView, dequeueIndexPath: IndexPath, usableIndexPath: IndexPath)  -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: dequeueIndexPath) as! BannerCell
         cell.imageView.image = UIImage(named: "firsttwiteastside1")
         return cell
     }
+    func didSelectCellAtIndexPath(_ collectionView: UICollectionView, usableIndexPath: IndexPath) {
+        print("Selected cell with name test")
+    }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func sizeForItemAt(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, indexPath: IndexPath) -> CGSize {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return CGSize(width: 400, height: frame.height)
+        }
         return CGSize(width: frame.width, height: frame.height)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    func insetForSectionAt(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, section: Int) -> UIEdgeInsets {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return UIEdgeInsetsMake(0, 5, 0, 5)
+        }
         return UIEdgeInsetsMake(0, 0, 0, 0)
+    }
+    
+    func configAutoscrollTimer()
+    {
+        
+        timr=Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(autoScrollView), userInfo: nil, repeats: true)
+    }
+    func deconfigAutoscrollTimer()
+    {
+        timr.invalidate()
+        
+    }
+    func onTimer()
+    {
+        autoScrollView()
+    }
+    
+    func autoScrollView() {
+        
+        let initailPoint = CGPoint(x: w,y :0)
+        let halfWidth = self.headerCollectionView.bounds.size.width * 0.5
+        let centerCellCollectionViewFlowLayout = CenterCellCollectionViewFlowLayout()
+        UserDefaults.standard.set(true, forKey: "autoSlide")
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            let x = self.headerCollectionView.contentOffset.x + 300
+            let move = centerCellCollectionViewFlowLayout.autoOffset(proposedContentOffset: CGPoint(x: x, y: 0.0), collection: self.headerCollectionView)
+            
+            self.headerCollectionView.contentOffset = move
+            }) { (complete) in
+                UserDefaults.standard.set(false, forKey: "autoSlide")
+        }
+    }
+    
+    public func test() {
+        //let halfWidth = self.headerCollectionView.bounds.size.width * 0.5
+        let centerCellCollectionViewFlowLayout = CenterCellCollectionViewFlowLayout()
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            let x = self.headerCollectionView.contentOffset.x + 300
+            let move = centerCellCollectionViewFlowLayout.autoOffset(proposedContentOffset: CGPoint(x: x, y: 0.0), collection: self.headerCollectionView)
+      
+            self.headerCollectionView.contentOffset = move
+        }) { (complete) in
+        }
     }
 }
 

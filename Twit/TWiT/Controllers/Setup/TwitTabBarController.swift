@@ -27,11 +27,11 @@ class TwitTabBarController: UITabBarController {
         notificationNavController.tabBarItem.title = "Subscriptions"
         notificationNavController.tabBarItem.image = UIImage(named: "iconSubscriptions")
         
-        // Shows viewController
+        // Live viewController
         let showLayout = UIViewController()
         let showNavController = UINavigationController(rootViewController: showLayout)
-        showNavController.tabBarItem.title = "Downloads"
-        showNavController.tabBarItem.image = UIImage(named: "iconDownload")
+        showNavController.tabBarItem.title = "Live"
+        showNavController.tabBarItem.image = UIImage(named: "iconLive")
         
         // Twit viewController
         let twitController = UIViewController()

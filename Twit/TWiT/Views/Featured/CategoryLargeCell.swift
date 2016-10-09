@@ -34,7 +34,6 @@ class CategoryLargeCell: CategoryCell {
             if let cellname = (singleCastInEpisodeData?.showDetails.twitCastDetails[indexPath.row].pictureUrl300) {
                 
                     //cell.imageView.image = UIImage(named: cellname)
-                print(cellname)
                 cell.imageView.sd_setImage(with: URL(string: cellname), placeholderImage: UIImage(named: "twit1"))
                     return cell
                 
@@ -61,7 +60,6 @@ class CategoryLargeCell: CategoryCell {
             if let cellname = (castData?[indexPath.row].pictureUrl300) {
                 
                 //cell.imageView.image = UIImage(named: cellname)
-                print(cellname)
                 cell.imageView.sd_setImage(with: URL(string: cellname), placeholderImage: UIImage(named: "twit1"))
                 return cell
                 

@@ -43,7 +43,6 @@ extension VideoVC {
     }
     
     func playIndex(_ index: Int) {
-        print("Index \(index)")
         playerView.url = urls![index]
         playerView.play()
         progressIndicatorView.isHidden = false

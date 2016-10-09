@@ -40,16 +40,20 @@ PODS:
   - GoogleSymbolUtilities (1.1.1)
   - GoogleUtilities (1.3.1):
     - GoogleSymbolUtilities (~> 1.0)
+  - PopupDialog (0.5.0)
   - SDWebImage (3.8.1):
     - SDWebImage/Core (= 3.8.1)
   - SDWebImage/Core (3.8.1)
+  - SnapKit (3.0.2)
 
 DEPENDENCIES:
   - Firebase
   - Firebase/Auth
   - Firebase/Database
   - Firebase/Storage
+  - PopupDialog (~> 0.5)
   - SDWebImage (~> 3.8)
+  - SnapKit (~> 3.0.2)
 
 SPEC CHECKSUMS:
   Firebase: 94e63112efcad75226c0356a8f3032397b8547c9
@@ -63,8 +67,10 @@ SPEC CHECKSUMS:
   GoogleParsingUtilities: 30b3896f9ee167dc78747f013d3de157ced1cadf
   GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
+  PopupDialog: 9890441b81105b9076757af2afe2b037be682f3e
   SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
+  SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
 
-PODFILE CHECKSUM: 4c51e73fee2a941c3e3fc81d268cfd995c0f4457
+PODFILE CHECKSUM: ae96b29835b75f99add4e0f765a1df8c2c3dca30
 
 COCOAPODS: 1.1.0.rc.2

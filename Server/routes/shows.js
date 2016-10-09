@@ -29,13 +29,15 @@ var download = function(uri, filename, callback){
 
               if (shows[show] != null) {
                       // var heroUrl = shows[show]['heroImage']['url'];
+                      //var heroUrl = shows[show]['heroImage']['derivatives']['thumbnail'];
                       // var heroFileName = shows[show]['heroImage']['fileName'];
                       // console.log(heroUrl);
                       // console.log(heroFileName);
                       // download(heroUrl, heroFileName, function(){
                       // console.log('Hero Image done');
                       // });
-                      var coverUrl = shows[show]['coverArt']['url'];
+                      //var coverUrl = shows[show]['coverArt']['url'];
+                      var coverUrl = shows[show]['coverArt']['derivatives']['twit_album_art_600x600'];
                       var coverFileName = shows[show]['coverArt']['fileName'];
                       console.log(coverUrl);
                       console.log(coverFileName);

@@ -20,7 +20,6 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     var seasonOffersPic:Bool = false
     var episodeData: [TwitEpisodeDetails]? {
         didSet {
-            print(episodeData?.count)
             showsCollectionView.reloadData()
         }
     }
@@ -42,7 +41,6 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     }
     var castData: [TwitCastDetails]? {
         didSet {
-            print(castData)
             showsCollectionView.reloadData()
         }
     }
@@ -140,7 +138,6 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(castData?.count)
         if let count = episodeData?.count {
             return count
         } else if let count = showData?.count {
@@ -162,10 +159,11 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
             cell.episodeTitle = episodeData?[indexPath.row].label
             cell.showTitle = episodeData?[indexPath.row].showLabel
             if (episodeData?[indexPath.row].showPicture) != "" {
-                print(episodeData?[indexPath.row].showPicture)
-                cell.imageView.image = UIImage(named: (episodeData?[indexPath.row].showPicture)!)
+                cell.imageView.sd_setImage(with: URL(string: (episodeData?[indexPath.row].showDetails.showCoverImage.coverArt600)!), placeholderImage: UIImage(named: "twit1")) // = UIImage(named: (episodeData?[indexPath.row].showPicture)!)
             }
         }
+        cell.layer.shouldRasterize = true
+        cell.layer.rasterizationScale = UIScreen.main.scale
         return cell
     }
     
@@ -181,11 +179,9 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
         if episodeData != nil {
             if episodeData?[indexPath.row].showDetails.twitCastDetails.count == 0 {
                 if let show = episodeData?[indexPath.row] {
-                    print(show)
                     featuredVC?.showShowsDetail(show)
                 }
             } else if let show = episodeData?[indexPath.row] {
-                print(show)
                 featuredVC?.showSeasonDetail(show)
             }
         }

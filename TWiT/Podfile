@@ -11,5 +11,7 @@ target 'TWiT' do
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
   pod 'SDWebImage', '~>3.8'
+  pod 'SnapKit', '~> 3.0.2'
+  pod 'PopupDialog', '~> 0.5'
 
 end

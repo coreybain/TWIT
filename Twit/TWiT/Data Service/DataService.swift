@@ -40,14 +40,11 @@ class DataService {
             // Get user value
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
-                    print("NEW RELEASE")
                     if self.newEpisodeData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
                         self.newReleaseData = data
-                        print("Still downloading over episodes")
                     } else {
                         self.newReleaseData = data
-                        print("Download complete and ready for processing")
-                         
+                        
                         downloadComplete(self.newReleaseData, self.newEpisodeData, self.activeShowData, self.newReviewData, self.newTwitBitsData, self.newHelpData, self.activeCastData)
                         //downloadComplete(nil)
                     }
@@ -62,7 +59,7 @@ class DataService {
             // Get user value
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
-                    print("CATEGORY NEW EPISODES")
+                   
                     if self.newReleaseData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
                         self.newEpisodeData = data
                         

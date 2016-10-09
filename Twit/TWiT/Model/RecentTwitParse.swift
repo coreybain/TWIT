@@ -173,8 +173,6 @@ class TwitEpisodeParse {
             }
             twitParseShowDict.append(twitShow!)
         }
-        print(data.childrenCount)
-        print(twitParseShowDict.count)
         if Int(data.childrenCount) == twitParseShowDict.count {
             complete(twitParseShowDict)
             print("complete")
@@ -239,8 +237,6 @@ class TwitEpisodeParse {
                 twitParseCastDict.append(twitCast!)
             }
     }
-        print(data.childrenCount)
-        print(twitParseCastDict.count)
         if Int(data.childrenCount) == twitParseCastDict.count {
             complete(twitParseCastDict)
             print("complete")
@@ -274,7 +270,7 @@ class TwitEpisodeParse {
                 if let showsDict = embedded.value(forKey: "shows") as? NSDictionary {
                     showDict = parseEpisodeShow(showData: showsDict)
                     showLabel = showsDict.value(forKey: "label") as! String
-                    print(showLabel)
+                  
                     showID = showsDict.value(forKey: "id") as! String
                     if let picDict = showsDict.value(forKey: "coverArt") as? NSDictionary {
                         showPicture = picDict.value(forKey: "fileName") as! String
@@ -316,13 +312,10 @@ class TwitEpisodeParse {
                 twitParseEpisodeDict.append(twitEpisode!)
             } else {
                 twitEpisode = TwitEpisodeDetails(label: label, ID: ID, created: created, episodeNumber: episodeNumber, showNotes: showNotes, showLabel: showLabel, showPicture: showPicture, videoArray: nil, showDetails: showDict)
-               // print(label)
-              //  print(showLabel)
+               
                 twitParseEpisodeDict.append(twitEpisode!)
             }
         }
-        print(data.childrenCount)
-        print(twitParseEpisodeDict.count)
         if Int(data.childrenCount) == twitParseEpisodeDict.count {
             complete(twitParseEpisodeDict)
         }
