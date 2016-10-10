@@ -58,9 +58,12 @@ class SeasonsDetailCoverHeader: UICollectionViewCell {
         setupGradientLayer()
         addSubview(coverImage)
         addConstraintsWithFormat("H:|[v0]|", views: coverImage)
-        addConstraintsWithFormat("V:|[v0(185)]", views: coverImage)
-        
-        
+        if (UIDevice.current.userInterfaceIdiom == .pad) && UserDefaults.standard.bool(forKey: "isCast") {
+            addConstraintsWithFormat("V:|[v0(355)]", views: coverImage)
+        } else {
+            addConstraintsWithFormat("V:|[v0(185)]", views: coverImage)
+        }
+    
         
     }
     

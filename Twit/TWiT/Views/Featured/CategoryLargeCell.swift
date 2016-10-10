@@ -81,6 +81,14 @@ class CategoryLargeCell: CategoryCell {
         return cell
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if castData != nil {
+            if let cast = castData?[indexPath.row] {
+                featuredVC?.showCastDetail(cast)
+            }
+        }
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 200, height: frame.height - 32)
     }

@@ -723,6 +723,7 @@ struct TwitCastDetails {
     init(castID:String, castLabel:String, castBio:String, staff:Bool, positionTitle:String?, pictureFileName:String?, pictureFiletype:String?, pictureUrlFull:String?, pictureUrl1400:String?, pictureUrl600:String?, pictureUrl300:String?, pictureFileSize:String?, pictureWidth:String?, pictureHeight:String?, pictureTitle:String?, relatedLinks:[TwitCastRelatedLinks]?) {
         _castID = castID
         _castBio = castBio
+        _castLabel = castLabel
         _staff = staff
         _positionTitle = positionTitle
         _pictureFileName = pictureFileName

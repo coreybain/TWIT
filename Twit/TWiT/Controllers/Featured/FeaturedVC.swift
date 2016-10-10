@@ -164,6 +164,13 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         }
     }
     
+    func showCastDetail(_ app: TwitCastDetails) {
+        let layout = UICollectionViewFlowLayout()
+        let peopleVC = PeopleVC(collectionViewLayout: layout)
+        peopleVC.singleCastData = app
+        navigationController?.pushViewController(peopleVC, animated: true)
+    }
+    
     func loading(loading:Bool) {
         if loading {
             collectionView?.isHidden = true

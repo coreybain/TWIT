@@ -291,15 +291,21 @@ extension VideoVC {
             viewMinimizedFrame?.origin.y = trueOffset
             viewMinimizedFrame?.origin.x = xOffset - 6
             viewMinimizedFrame?.size.width = initialFirstViewFrame!.size.width
-            
+            print(viewMinimizedFrame)
+            print("------------------")
             playerViewMinimizedFrame!.size.width = self.view.bounds.size.width - xOffset
-            playerViewMinimizedFrame!.size.height = 200 - xOffset * 0.5
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                playerViewMinimizedFrame!.size.height = (self.view.bounds.size.width / (16/9)) - xOffset * 0.5
+            } else {
+                playerViewMinimizedFrame!.size.height = 200 - xOffset * 0.5
+            }
             
             let restrictY = initialFirstViewFrame!.size.height - playerView!.frame.size.height - 10
             
             if (self.tableView.frame.origin.y < restrictY && self.tableView.frame.origin.y > 0) {
                 UIView.animate(withDuration: 0.09, delay: 0.0, options: UIViewAnimationOptions(), animations: {
                     self.playerView.frame = self.playerViewMinimizedFrame!
+                    print(self.viewMinimizedFrame)
                     self.view.frame = self.viewMinimizedFrame!
                     
                     let percentage = (yPlayerLocation + 200) / self.initialFirstViewFrame!.size.height
