@@ -20,8 +20,16 @@ var serverCount = 0
 var twitCount = 0
 
 function deletefirebase() {
+  console.log('DELETING ALL DATA ENTRIES');
   db.ref("categories").remove();
   db.ref("episodes").remove();
+  db.ref("Shows").remove();
+  db.ref("cast").remove();
+  db.ref("activeShows").remove();
+  db.ref("categoryEpisodes").remove();
+  db.ref("roles").remove();
+  db.ref("people").remove();
+  db.ref("offers").remove();
   db.ref("fufufu").remove();
   db.ref("shows").remove();
   db.ref("test").remove();
@@ -324,6 +332,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       if (shows[show]['_embedded']['offers'][offer]['offerSponsor']['sponsorLogo'] != null) {
                         offersDict['offerSponsor'] = {
                           id: shows[show]['_embedded']['offers'][offer]['offerSponsor']['id'],
+                          showID: shows[show]['id'],
                           label: shows[show]['_embedded']['offers'][offer]['offerSponsor']['label'],
                           ttl: shows[show]['_embedded']['offers'][offer]['offerSponsor']['ttl'],
                           body: shows[show]['_embedded']['offers'][offer]['offerSponsor']['body'],
@@ -888,18 +897,61 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 }
               }
             };
-              
-              episodesRef.child(showNumber).child(shows[show]['id']).set(mainDict);
-              episodesRef.child("allEpisodes").child(shows[show]['id']).set(mainDict);
-              showRef.child(showsID).set(showDict);
+              showRef.child(showsID).child('info').set(showDict);
+              episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('info').set(mainDict);
+              episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('info').set(showDict);
+              episodesRef.child("allEpisodes").child(shows[show]['id']).child('info').set(mainDict);
+              episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('info').set(showDict);
+             
+              var seasonID = 0  
+              var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
+              var seasonRound = (Math.round(seasonRaw));
+              if  (seasonRaw <= 1) {
+                seasonRaw = 0
+                seasonID = (Math.round(seasonRaw) + 1);
+              } else if (seasonRaw > seasonRound) {
+                seasonID = (Math.round(seasonRaw) + 1);
+              } else {
+                seasonID = (Math.round(seasonRaw));
+              }
+              episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('info').set(mainDict);
+              episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('info').set(showDict);
+              showRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('info').set(mainDict);
+              if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                  activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('info').set(mainDict);
+              }
+
               for (test in peopleArray) {
-                peopleRef.child(peopleArray[test]['id']).set(peopleArray[test]);
+                showRef.child(showsID).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                showRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                    activeShowRef.child(showsID).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                    activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                }
+                episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+                peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(mainDict);
+                peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
                 if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
-                  castRef.child(peopleArray[test]['id']).set(peopleArray[test]);
+                  castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+                  castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(mainDict);
+                  castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
                 }
               }
               for (test in offersArray) {
+                console.log(offersArray[test]['label']);
                 offersRef.child(offersArray[test]['id']).set(offersArray[test]);
+                episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                showRef.child(showsID).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                    activeShowRef.child(showsID).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                    activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                }
               }
               for (test in categoriesArray) {
                 categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
@@ -908,7 +960,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 if (mainDict['embedded']['shows'] != null) {
                   if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
                     console.log('ACTIVE SHOW');
-                    activeShowRef.child(showsID).set(showDict);
+                    activeShowRef.child(showsID).child('info').set(showDict);
                   }
                 }
               }
@@ -921,7 +973,14 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     console.log(shows[show]['_embedded']['categories'][category]['label'])
                     console.log(shows[show]['id'])                    
                     var showID = shows[show]['_embedded']['categories'][category]['id']
-                    categoryEpisodesRef.child(showID).child(shows[show]['id']).set(mainDict);
+                    categoryEpisodesRef.child(showID).child(shows[show]['id']).child('info').set(mainDict);
+                      categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('info').set(showDict);
+                    for (test in peopleArray) {
+                      categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                    }
+                    for (test in offersArray) {
+                      categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                    }
                   }
                 }
               }

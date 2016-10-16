@@ -86,7 +86,7 @@ struct TwitEpisodeDetails {
     var showDetails:TwitShowDetails {
         get {
             if _showDetails == nil {
-                return TwitShowDetails(label: "", showID: "", description: "", active: nil, shortCode: nil, showContactInfo: nil, showDate: nil, tagline: nil, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: nil)
+                return TwitShowDetails(label: "", showID: "", description: "", active: nil, shortCode: nil, showContactInfo: nil, showDate: nil, tagline: nil, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: nil, showSeasonInfo: nil, showOffersInfo: nil)
             }
             return _showDetails!
         }
@@ -354,6 +354,8 @@ struct TwitShowDetails {
     private var _topicsID:Int?
     private var _topicsLabel:String?
     private var _twitCastDetails:[TwitCastDetails]?
+    private var _showSeasonInfo:NSArray?
+    private var _showOffersInfo:NSArray?
     private var _showHeroImage: ShowHeroImage?
     private var _showCoverImage: ShowCoverImage?
     
@@ -456,6 +458,24 @@ struct TwitShowDetails {
         }
     }
     
+    var showSeasonInfo:NSArray {
+        get {
+            if _showSeasonInfo == nil {
+                return []
+            }
+            return _showSeasonInfo!
+        }
+    }
+    
+    var showOffersInfo:NSArray {
+        get {
+            if _showOffersInfo == nil {
+                return []
+            }
+            return _showOffersInfo!
+        }
+    }
+    
     var twitCastDetails:[TwitCastDetails] {
         get {
             if _twitCastDetails == nil {
@@ -483,7 +503,7 @@ struct TwitShowDetails {
         }
     }
     
-    init(label:String, showID:String, description:String, active:Bool?, shortCode:String?, showContactInfo:String?, showDate:String?, tagline:String?, showHeroImage:ShowHeroImage?, showCoverImage:ShowCoverImage?, categoryID:Int?, categoryLabel:String?, topicsID:Int?, topicsLabel:String?, twitCastDetails:[TwitCastDetails]?) {
+    init(label:String, showID:String, description:String, active:Bool?, shortCode:String?, showContactInfo:String?, showDate:String?, tagline:String?, showHeroImage:ShowHeroImage?, showCoverImage:ShowCoverImage?, categoryID:Int?, categoryLabel:String?, topicsID:Int?, topicsLabel:String?, twitCastDetails:[TwitCastDetails]?, showSeasonInfo:NSArray?, showOffersInfo:NSArray?) {
         _label = label
         _ID = showID
         _description = description
@@ -499,6 +519,8 @@ struct TwitShowDetails {
         _twitCastDetails = twitCastDetails
         _showHeroImage = showHeroImage
         _showCoverImage = showCoverImage
+        _showSeasonInfo = showSeasonInfo
+        _showOffersInfo = showOffersInfo
     }
     
 }

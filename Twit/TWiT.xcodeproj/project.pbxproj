@@ -32,6 +32,9 @@
 		833907511DA3913700BA0004 /* YTFViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 833907451DA3913700BA0004 /* YTFViewController.xib */; };
 		8355CE9D1DAB85EE00BAF3F7 /* PeopleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355CE9C1DAB85EE00BAF3F7 /* PeopleVC.swift */; };
 		8355CE9F1DAB99B000BAF3F7 /* CastDiscCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355CE9E1DAB99B000BAF3F7 /* CastDiscCell.swift */; };
+		8355CEA11DB1D10E00BAF3F7 /* TwitParseEpisode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355CEA01DB1D10E00BAF3F7 /* TwitParseEpisode.swift */; };
+		8355CEA31DB1D16700BAF3F7 /* TwitParseCast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355CEA21DB1D16700BAF3F7 /* TwitParseCast.swift */; };
+		8355CEA51DB1D1D000BAF3F7 /* TwitParseEpisodeShow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355CEA41DB1D1D000BAF3F7 /* TwitParseEpisodeShow.swift */; };
 		835E6B591DA392AE002A1117 /* VideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835E6B581DA392AE002A1117 /* VideoPlayer.swift */; };
 		835E6B5B1DA39755002A1117 /* VideoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835E6B5A1DA39755002A1117 /* VideoVC.swift */; };
 		835E6B5D1DA39D9B002A1117 /* VideoProgressSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835E6B5C1DA39D9B002A1117 /* VideoProgressSlider.swift */; };
@@ -57,7 +60,7 @@
 		8397AB021D9755EF00009C01 /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB011D9755EF00009C01 /* HeaderCell.swift */; };
 		8397AB041D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB031D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift */; };
 		8397AB061D97BCF900009C01 /* UIGradientImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB051D97BCF900009C01 /* UIGradientImageView.swift */; };
-		8397AB081D97D87B00009C01 /* RecentTwitParse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB071D97D87B00009C01 /* RecentTwitParse.swift */; };
+		8397AB081D97D87B00009C01 /* TwitParseShow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8397AB071D97D87B00009C01 /* TwitParseShow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -98,6 +101,9 @@
 		833907451DA3913700BA0004 /* YTFViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = YTFViewController.xib; sourceTree = "<group>"; };
 		8355CE9C1DAB85EE00BAF3F7 /* PeopleVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeopleVC.swift; path = Controllers/Featured/PeopleVC.swift; sourceTree = "<group>"; };
 		8355CE9E1DAB99B000BAF3F7 /* CastDiscCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CastDiscCell.swift; path = Views/Featured/CastDiscCell.swift; sourceTree = "<group>"; };
+		8355CEA01DB1D10E00BAF3F7 /* TwitParseEpisode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TwitParseEpisode.swift; path = Model/TwitParseEpisode.swift; sourceTree = "<group>"; };
+		8355CEA21DB1D16700BAF3F7 /* TwitParseCast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TwitParseCast.swift; path = Model/TwitParseCast.swift; sourceTree = "<group>"; };
+		8355CEA41DB1D1D000BAF3F7 /* TwitParseEpisodeShow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TwitParseEpisodeShow.swift; path = Model/TwitParseEpisodeShow.swift; sourceTree = "<group>"; };
 		835E6B581DA392AE002A1117 /* VideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoPlayer.swift; path = Utils/Video/Classes/VideoPlayer.swift; sourceTree = "<group>"; };
 		835E6B5A1DA39755002A1117 /* VideoVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoVC.swift; path = Utils/Video/Classes/VideoVC.swift; sourceTree = "<group>"; };
 		835E6B5C1DA39D9B002A1117 /* VideoProgressSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoProgressSlider.swift; path = Utils/Video/Classes/VideoProgressSlider.swift; sourceTree = "<group>"; };
@@ -126,7 +132,7 @@
 		8397AB011D9755EF00009C01 /* HeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HeaderCell.swift; path = Views/Featured/HeaderCell.swift; sourceTree = "<group>"; };
 		8397AB031D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterCellCollectionViewFlowLayout.swift; path = Utils/CenterCellCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		8397AB051D97BCF900009C01 /* UIGradientImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIGradientImageView.swift; path = Utils/UIGradientImageView.swift; sourceTree = "<group>"; };
-		8397AB071D97D87B00009C01 /* RecentTwitParse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RecentTwitParse.swift; path = Model/RecentTwitParse.swift; sourceTree = "<group>"; };
+		8397AB071D97D87B00009C01 /* TwitParseShow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TwitParseShow.swift; path = Model/TwitParseShow.swift; sourceTree = "<group>"; };
 		AE29C1531FDBE3FBFD2FB5CF /* Pods-TWiT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TWiT.release.xcconfig"; path = "Pods/Target Support Files/Pods-TWiT/Pods-TWiT.release.xcconfig"; sourceTree = "<group>"; };
 		C2D6D8BA2F26FAD96B9071D6 /* Pods-TWiT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TWiT.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TWiT/Pods-TWiT.debug.xcconfig"; sourceTree = "<group>"; };
 		F5735FA9F5BB2724E91E9DCC /* Pods_TWiT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TWiT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -324,7 +330,10 @@
 			isa = PBXGroup;
 			children = (
 				8397AAFD1D97388600009C01 /* FeaturedPageDetails.swift */,
-				8397AB071D97D87B00009C01 /* RecentTwitParse.swift */,
+				8397AB071D97D87B00009C01 /* TwitParseShow.swift */,
+				8355CEA41DB1D1D000BAF3F7 /* TwitParseEpisodeShow.swift */,
+				8355CEA21DB1D16700BAF3F7 /* TwitParseCast.swift */,
+				8355CEA01DB1D10E00BAF3F7 /* TwitParseEpisode.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -508,11 +517,12 @@
 				8397AAFB1D972F9A00009C01 /* DataService.swift in Sources */,
 				8397AB041D975A8100009C01 /* CenterCellCollectionViewFlowLayout.swift in Sources */,
 				835E6B631DA3ACBC002A1117 /* VideoPlayerControls.swift in Sources */,
-				8397AB081D97D87B00009C01 /* RecentTwitParse.swift in Sources */,
+				8397AB081D97D87B00009C01 /* TwitParseShow.swift in Sources */,
 				8355CE9D1DAB85EE00BAF3F7 /* PeopleVC.swift in Sources */,
 				8397AAFE1D97388600009C01 /* FeaturedPageDetails.swift in Sources */,
 				8397AAF11D961FAE00009C01 /* FeaturedVC.swift in Sources */,
 				8302CA141D9CD1220018F982 /* QuickPlayCell.swift in Sources */,
+				8355CEA51DB1D1D000BAF3F7 /* TwitParseEpisodeShow.swift in Sources */,
 				8397AADA1D9606D400009C01 /* TWiT.xcdatamodeld in Sources */,
 				8397AB021D9755EF00009C01 /* HeaderCell.swift in Sources */,
 				835E6B5F1DA39DF6002A1117 /* PlayerView.swift in Sources */,
@@ -536,6 +546,8 @@
 				8397AAD21D9606D400009C01 /* AppDelegate.swift in Sources */,
 				8336E5761DA992B500E2AD35 /* LoadingView.swift in Sources */,
 				8397AB001D97514B00009C01 /* CategoryLargeCell.swift in Sources */,
+				8355CEA11DB1D10E00BAF3F7 /* TwitParseEpisode.swift in Sources */,
+				8355CEA31DB1D16700BAF3F7 /* TwitParseCast.swift in Sources */,
 				835E6B591DA392AE002A1117 /* VideoPlayer.swift in Sources */,
 				8336E57E1DA9A52700E2AD35 /* UIImageExtentions.swift in Sources */,
 				8397AAEE1D961F5F00009C01 /* TwitTabBarController.swift in Sources */,
