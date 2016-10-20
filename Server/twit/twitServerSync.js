@@ -26,6 +26,7 @@ function twitConnect(url, showID, pageNum, callback) {
 
     }else{
         console.log('error');
+        console.log(error)
         var shows = []
         callback(shows);
     } 

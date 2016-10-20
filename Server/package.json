@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --max-old-space-size=4076 ./bin/www"
+    "start": "node --max-old-space-size=14228 ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.15.1",

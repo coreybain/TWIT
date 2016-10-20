@@ -146,6 +146,8 @@ class DataService {
                         //downloadComplete(nil)
                     }
                 })
+            } else {
+                print("TWIT BITS NOT THERE")
             }
         }) { (error) in
             print(error.localizedDescription)

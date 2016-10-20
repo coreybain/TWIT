@@ -99,7 +99,7 @@ function onListening() {
   /*** This is where we start setting up the server ***/
   setupTwitServer();
   //runTwitServer();
-      //firebaseServerSync.deletefirebase();
+  //firebaseServerSync.deletefirebase();
 }
 
 function setupTwitServer() {
@@ -134,7 +134,7 @@ function downloadAllEpisodes() {
   //Check show listing fist
   twitServerSync.twitShowConnect(function(shows) {
       console.log('Server Started');
-      console.log(shows.length)
+      console.log('This is how many shows: ' + shows.length)
       for (var show in shows) {
         showArray.push((shows[show]['id']));
       }
@@ -156,7 +156,7 @@ function syncTwitEpisodes(active) {
   }
 
   console.log('showID: ' + showID);
-   twitServerSync.twitConnect("episodes", showID, (pageNumber++), function(result) {
+   twitServerSync.twitConnect("episodes", 1643, (pageNumber++), function(result) {
       
     // console.log(result['episodes']);
     if (result == null) {

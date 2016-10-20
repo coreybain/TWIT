@@ -1,6 +1,6 @@
 var firebase = require("firebase");
 
-firebase.initializeApp({
+var app = firebase.initializeApp({
   databaseURL: "https://twit-mobile.firebaseio.com/",
   serviceAccount: "./TWIT-MOBILE-febd239fd2d6.json"
 });
@@ -21,18 +21,15 @@ var twitCount = 0
 
 function deletefirebase() {
   console.log('DELETING ALL DATA ENTRIES');
-  db.ref("categories").remove();
-  db.ref("episodes").remove();
   db.ref("Shows").remove();
-  db.ref("cast").remove();
+  db.ref("episodes").remove();
   db.ref("activeShows").remove();
-  db.ref("categoryEpisodes").remove();
-  db.ref("roles").remove();
-  db.ref("people").remove();
-  db.ref("offers").remove();
-  db.ref("fufufu").remove();
-  db.ref("shows").remove();
-  db.ref("test").remove();
+  // db.ref("people").remove();
+  // db.ref("cast").remove();
+  // db.ref("roles").remove();
+  // db.ref("offers").remove();
+  // db.ref("categories").remove();
+  // db.ref("categoryEpisodes").remove();
 }
 
 function firebaseEpisodeSync(dbRef, showNumber, data) {
@@ -70,7 +67,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             var rolesID = 0;
             var categoriesID = 0;
 
-            var mainDict = {
+            var mainDict = {};
+
+            mainDict["info"] = {
                 id: shows[show]['id'],
                 label: shows[show]['label'],
                 showNotes: shows[show]['showNotes'],
@@ -84,7 +83,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               };
 
             if (shows[show]['video_audio'] != null) {
-                mainDict["video_audio"] = {
+                mainDict["info"]["video_audio"] = {
                     mediaUrl: shows[show]['video_audio']['mediaUrl'],
                     format: shows[show]['video_audio']['format'],
                     changed: shows[show]['video_audio']['changed'],
@@ -97,7 +96,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             };
 
             if (shows[show]['video_hd'] != null) {
-                mainDict["video_hd"] = {
+                mainDict["info"]["video_hd"] = {
                     mediaUrl: shows[show]['video_hd']['mediaUrl'],
                     format: shows[show]['video_hd']['format'],
                     changed: shows[show]['video_hd']['changed'],
@@ -110,7 +109,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             };
 
             if (shows[show]['video_large'] != null) {
-                mainDict["video_large"] = {
+                mainDict["info"]["video_large"] = {
                   mediaUrl: shows[show]['video_large']['mediaUrl'],
                   format: shows[show]['video_large']['format'],
                   changed: shows[show]['video_large']['changed'],
@@ -123,7 +122,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             };
 
             if (shows[show]['video_small'] != null) {
-                mainDict["video_small"] = {
+                mainDict["info"]["video_small"] = {
                   mediaUrl: shows[show]['video_small']['mediaUrl'],
                   format: shows[show]['video_small']['format'],
                   changed: shows[show]['video_small']['changed'],
@@ -134,43 +133,48 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                   size: shows[show]['video_small']['size']
                 };
             };
-
+              
+              //Upload information about shows based on episode
+              mainDict["show"] = {}
             if (shows[show]['_embedded'] != null) {
-              mainDict['embedded'] = {}
-                for (var credit in shows[show]['_embedded']['credits']) {
-                  mainDict['embedded']['credits'] = {
-                    [shows[show]['_embedded']['credits'][credit]['id']]: {
-                      id: shows[show]['_embedded']['credits'][credit]['id'],
-                      label: shows[show]['_embedded']['credits'][credit]['label'],
-                      ttl: shows[show]['_embedded']['credits'][credit]['ttl'],
-                      created: shows[show]['_embedded']['credits'][credit]['created']
-                    }
+              mainDict["show"]["credits"] = {}
+              mainDict["show"]["people"] = {}
+                //Upload cast credit information
+              for (var credit in shows[show]['_embedded']['credits']) {
+                mainDict["show"]["credits"][shows[show]['_embedded']['credits'][credit]['id']] = {
+                  id: shows[show]['_embedded']['credits'][credit]['id'],
+                  label: shows[show]['_embedded']['credits'][credit]['label'],
+                  ttl: shows[show]['_embedded']['credits'][credit]['ttl'],
+                  created: shows[show]['_embedded']['credits'][credit]['created']
+                }
+                //Upload Cast Roles
+                if (shows[show]['_embedded']['credits'][credit]['roles'] != null) {
+                  mainDict["show"]["credits"][shows[show]['_embedded']['credits'][credit]['id']]['roles'] = {
+                    id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
+                    label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
+                    ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
+                    weight: shows[show]['_embedded']['credits'][credit]['roles']['weight'],
+                    vid: shows[show]['_embedded']['credits'][credit]['roles']['vid'],
+                    type: shows[show]['_embedded']['credits'][credit]['roles']['type'],
+                    vocabularyName: shows[show]['_embedded']['credits'][credit]['roles']['vocabularyName'],
+                    termPath: shows[show]['_embedded']['credits'][credit]['roles']['termPath']
                   }
-                  if (shows[show]['_embedded']['credits'][credit]['roles'] != null) {
-                    mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['roles'] = {
-                      id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
-                      label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
-                      ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
-                      weight: shows[show]['_embedded']['credits'][credit]['roles']['weight'],
-                      vid: shows[show]['_embedded']['credits'][credit]['roles']['vid'],
-                      type: shows[show]['_embedded']['credits'][credit]['roles']['type'],
-                      vocabularyName: shows[show]['_embedded']['credits'][credit]['roles']['vocabularyName'],
-                      termPath: shows[show]['_embedded']['credits'][credit]['roles']['termPath']
-                    }
-                    rolesID = shows[show]['_embedded']['credits'][credit]['roles']['id']
-                    rolesDict = {
-                      id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
-                      label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
-                      ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
-                      weight: shows[show]['_embedded']['credits'][credit]['roles']['weight'],
-                      vid: shows[show]['_embedded']['credits'][credit]['roles']['vid'],
-                      type: shows[show]['_embedded']['credits'][credit]['roles']['type'],
-                      vocabularyName: shows[show]['_embedded']['credits'][credit]['roles']['vocabularyName'],
-                      termPath: shows[show]['_embedded']['credits'][credit]['roles']['termPath']
-                    }
+                  //Upload role information
+                  rolesID = shows[show]['_embedded']['credits'][credit]['roles']['id']
+                  rolesDict = {
+                    id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
+                    label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
+                    ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
+                    weight: shows[show]['_embedded']['credits'][credit]['roles']['weight'],
+                    vid: shows[show]['_embedded']['credits'][credit]['roles']['vid'],
+                    type: shows[show]['_embedded']['credits'][credit]['roles']['type'],
+                    vocabularyName: shows[show]['_embedded']['credits'][credit]['roles']['vocabularyName'],
+                    termPath: shows[show]['_embedded']['credits'][credit]['roles']['termPath']
                   }
+                }
+                //Upload Cast People Information
                   if (shows[show]['_embedded']['credits'][credit]['people'] != null) {
-                    mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people'] = {
+                    mainDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']] = {
                       id: shows[show]['_embedded']['credits'][credit]['people']['id'],
                       label: shows[show]['_embedded']['credits'][credit]['people']['label'],
                       ttl: shows[show]['_embedded']['credits'][credit]['people']['ttl'],
@@ -196,7 +200,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       staff: shows[show]['_embedded']['credits'][credit]['people']['staff']
                     }
                     if (shows[show]['_embedded']['credits'][credit]['people']['picture'] != null) {
-                      mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people']['picture'] = {
+                      mainDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['picture'] = {
                         fid: shows[show]['_embedded']['credits'][credit]['people']['picture']['fid'],
                         url: shows[show]['_embedded']['credits'][credit]['people']['picture']['url'],
                         fileName: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileName'],
@@ -242,36 +246,163 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       }
                     }
                     if (shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'] != null) {
+                      mainDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['relatedLinks'] = {}
                       for (var relatedLink in shows[show]['_embedded']['credits'][credit]['people']['relatedLinks']) {
-                        mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people']['relatedLinks'] = {
-                          relatedLink: {
+                         mainDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['relatedLinks'][Object.keys(shows[show]['_embedded']['credits'][credit]['people']['relatedLinks']).indexOf(relatedLink)] = {
                             title: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['title'],
                             url: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['url']
-                          }
                         }
-                        peopleDict['relatedLinks'] = {
-                          relatedLink: {
+                        peopleDict['relatedLinks'] = {}
+                        peopleDict['relatedLinks'][Object.keys(shows[show]['_embedded']['credits'][credit]['people']['relatedLinks']).indexOf(relatedLink)] = {
                             title: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['title'],
                             url: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['url']
-                          }
                         }
                       }
                     } 
                   peopleArray.push(peopleDict)
                 }
               }
+            }
+
+
+            if (shows[show]['_embedded'] != null) {
+              mainDict['embedded'] = {}
+              //   for (var credit in shows[show]['_embedded']['credits']) {
+              //     mainDict['embedded']['credits'] = {
+              //       [shows[show]['_embedded']['credits'][credit]['id']]: {
+              //         id: shows[show]['_embedded']['credits'][credit]['id'],
+              //         label: shows[show]['_embedded']['credits'][credit]['label'],
+              //         ttl: shows[show]['_embedded']['credits'][credit]['ttl'],
+              //         created: shows[show]['_embedded']['credits'][credit]['created']
+              //       }
+              //     }
+              //     // if (shows[show]['_embedded']['credits'][credit]['roles'] != null) {
+              //     //   mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['roles'] = {
+              //     //     id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
+              //     //     label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
+              //     //     ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
+              //     //     weight: shows[show]['_embedded']['credits'][credit]['roles']['weight'],
+              //     //     vid: shows[show]['_embedded']['credits'][credit]['roles']['vid'],
+              //     //     type: shows[show]['_embedded']['credits'][credit]['roles']['type'],
+              //     //     vocabularyName: shows[show]['_embedded']['credits'][credit]['roles']['vocabularyName'],
+              //     //     termPath: shows[show]['_embedded']['credits'][credit]['roles']['termPath']
+              //     //   }
+              //     //   rolesID = shows[show]['_embedded']['credits'][credit]['roles']['id']
+              //     //   rolesDict = {
+              //     //     id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
+              //     //     label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
+              //     //     ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
+              //     //     weight: shows[show]['_embedded']['credits'][credit]['roles']['weight'],
+              //     //     vid: shows[show]['_embedded']['credits'][credit]['roles']['vid'],
+              //     //     type: shows[show]['_embedded']['credits'][credit]['roles']['type'],
+              //     //     vocabularyName: shows[show]['_embedded']['credits'][credit]['roles']['vocabularyName'],
+              //     //     termPath: shows[show]['_embedded']['credits'][credit]['roles']['termPath']
+              //     //   }
+              //   //   // }
+              //   //   if (shows[show]['_embedded']['credits'][credit]['people'] != null) {
+              //   //     mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people'] = {
+              //   //       id: shows[show]['_embedded']['credits'][credit]['people']['id'],
+              //   //       label: shows[show]['_embedded']['credits'][credit]['people']['label'],
+              //   //       ttl: shows[show]['_embedded']['credits'][credit]['people']['ttl'],
+              //   //       bio: shows[show]['_embedded']['credits'][credit]['people']['bio'],
+              //   //       bioSummary: shows[show]['_embedded']['credits'][credit]['people']['bioSummary'],
+              //   //       published: shows[show]['_embedded']['credits'][credit]['people']['published'],
+              //   //       created: shows[show]['_embedded']['credits'][credit]['people']['created'],
+              //   //       changed: shows[show]['_embedded']['credits'][credit]['people']['changed'],
+              //   //       sticky: shows[show]['_embedded']['credits'][credit]['people']['sticky'],
+              //   //       staff: shows[show]['_embedded']['credits'][credit]['people']['staff']
+              //   //     }
+              //   //     peopleID = shows[show]['_embedded']['credits'][credit]['people']['id'];
+              //   //     peopleDict = {
+              //   //       id: shows[show]['_embedded']['credits'][credit]['people']['id'],
+              //   //       label: shows[show]['_embedded']['credits'][credit]['people']['label'],
+              //   //       ttl: shows[show]['_embedded']['credits'][credit]['people']['ttl'],
+              //   //       bio: shows[show]['_embedded']['credits'][credit]['people']['bio'],
+              //   //       bioSummary: shows[show]['_embedded']['credits'][credit]['people']['bioSummary'],
+              //   //       published: shows[show]['_embedded']['credits'][credit]['people']['published'],
+              //   //       created: shows[show]['_embedded']['credits'][credit]['people']['created'],
+              //   //       changed: shows[show]['_embedded']['credits'][credit]['people']['changed'],
+              //   //       sticky: shows[show]['_embedded']['credits'][credit]['people']['sticky'],
+              //   //       staff: shows[show]['_embedded']['credits'][credit]['people']['staff']
+              //   //     }
+              //   //     if (shows[show]['_embedded']['credits'][credit]['people']['picture'] != null) {
+              //   //       mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people']['picture'] = {
+              //   //         fid: shows[show]['_embedded']['credits'][credit]['people']['picture']['fid'],
+              //   //         url: shows[show]['_embedded']['credits'][credit]['people']['picture']['url'],
+              //   //         fileName: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileName'],
+              //   //         mimeType: shows[show]['_embedded']['credits'][credit]['people']['picture']['mimeType'],
+              //   //         fileSize: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileSize'],
+              //   //         width: shows[show]['_embedded']['credits'][credit]['people']['picture']['width'],
+              //   //         height: shows[show]['_embedded']['credits'][credit]['people']['picture']['height'],
+              //   //         status: shows[show]['_embedded']['credits'][credit]['people']['picture']['status'],
+              //   //         changed: shows[show]['_embedded']['credits'][credit]['people']['picture']['changed'],
+              //   //         created: shows[show]['_embedded']['credits'][credit]['people']['picture']['created'],
+              //   //         derivatives: {
+              //   //           thumbnail: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['thumbnail'],
+              //   //           twit_album_art_70x70: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_70x70'],
+              //   //           twit_album_art_144x144: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_144x144'],
+              //   //           twit_album_art_240x240: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_240x240'],
+              //   //           twit_album_art_300x300: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_300x300'],
+              //   //           twit_album_art_600x600: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_600x600'],
+              //   //           twit_album_art_1400x1400: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_1400x1400'],
+              //   //           twit_album_art_2048x2048: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_2048x2048']
+              //   //         }
+              //   //       }
+              //   //       peopleDict['picture'] = {
+              //   //         fid: shows[show]['_embedded']['credits'][credit]['people']['picture']['fid'],
+              //   //         url: shows[show]['_embedded']['credits'][credit]['people']['picture']['url'],
+              //   //         fileName: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileName'],
+              //   //         mimeType: shows[show]['_embedded']['credits'][credit]['people']['picture']['mimeType'],
+              //   //         fileSize: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileSize'],
+              //   //         width: shows[show]['_embedded']['credits'][credit]['people']['picture']['width'],
+              //   //         height: shows[show]['_embedded']['credits'][credit]['people']['picture']['height'],
+              //   //         status: shows[show]['_embedded']['credits'][credit]['people']['picture']['status'],
+              //   //         changed: shows[show]['_embedded']['credits'][credit]['people']['picture']['changed'],
+              //   //         created: shows[show]['_embedded']['credits'][credit]['people']['picture']['created'],
+              //   //         derivatives: {
+              //   //           thumbnail: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['thumbnail'],
+              //   //           twit_album_art_70x70: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_70x70'],
+              //   //           twit_album_art_144x144: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_144x144'],
+              //   //           twit_album_art_240x240: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_240x240'],
+              //   //           twit_album_art_300x300: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_300x300'],
+              //   //           twit_album_art_600x600: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_600x600'],
+              //   //           twit_album_art_1400x1400: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_1400x1400'],
+              //   //           twit_album_art_2048x2048: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_2048x2048']
+              //   //         }
+              //   //       }
+              //   //     }
+              //   //     if (shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'] != null) {
+              //   //       for (var relatedLink in shows[show]['_embedded']['credits'][credit]['people']['relatedLinks']) {
+              //   //         mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people']['relatedLinks'] = {
+              //   //           relatedLink: {
+              //   //             title: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['title'],
+              //   //             url: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['url']
+              //   //           }
+              //   //         }
+              //   //         peopleDict['relatedLinks'] = {
+              //   //           relatedLink: {
+              //   //             title: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['title'],
+              //   //             url: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['url']
+              //   //           }
+              //   //         }
+              //   //       }
+              //   //     } 
+              //   //   peopleArray.push(peopleDict)
+              //   // }
+              // }
+
+              //Upload information about shows based on episode
               if (shows[show]['_embedded']['offers'] != null) {
+              mainDict["show"]["offers"] = {}
                 for (var offer in shows[show]['_embedded']['offers']) {
                   if (mainDict['embedded'] != null) {
-                  mainDict['embedded']['offers'] = {
-                      [shows[show]['_embedded']['offers'][offer]['id']]: {
-                        id: shows[show]['_embedded']['offers'][offer]['id'],
-                        label: shows[show]['_embedded']['offers'][offer]['label'],
-                        ttl: shows[show]['_embedded']['offers'][offer]['ttl'],
-                        created: shows[show]['_embedded']['offers'][offer]['created'],
-                        published: shows[show]['_embedded']['offers'][offer]['published'],
-                        changed: shows[show]['_embedded']['offers'][offer]['changed']
-                      }
+                  mainDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']] = {
+                      id: shows[show]['_embedded']['offers'][offer]['id'],
+                      label: shows[show]['_embedded']['offers'][offer]['label'],
+                      ttl: shows[show]['_embedded']['offers'][offer]['ttl'],
+                      created: shows[show]['_embedded']['offers'][offer]['created'],
+                      published: shows[show]['_embedded']['offers'][offer]['published'],
+                      changed: shows[show]['_embedded']['offers'][offer]['changed']
                     }
                     offerID = shows[show]['_embedded']['offers'][offer]['id'];
                     offersDict = {
@@ -282,7 +413,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       published: shows[show]['_embedded']['offers'][offer]['published'],
                       changed: shows[show]['_embedded']['offers'][offer]['changed']
                     }
-                    mainDict['embedded']['offerLink'] = {
+                    mainDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']]['offerLink'] = {
                       url: shows[show]['_embedded']['offers'][offer]['offerLink']['url'],
                       title: shows[show]['_embedded']['offers'][offer]['offerLink']['title']
                     }
@@ -292,7 +423,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                     if (shows[show]['_embedded']['offers'][offer]['offerSponsor'] != null) {
                       if (shows[show]['_embedded']['offers'][offer]['offerSponsor']['sponsorLogo'] != null) {
-                        mainDict['embedded']['offerSponsor'] = {
+                        mainDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']]['offerSponsor'] = {
                           id: shows[show]['_embedded']['offers'][offer]['offerSponsor']['id'],
                           label: shows[show]['_embedded']['offers'][offer]['offerSponsor']['label'],
                           ttl: shows[show]['_embedded']['offers'][offer]['offerSponsor']['ttl'],
@@ -372,10 +503,10 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 }
               }
               if (shows[show]['_embedded']['categories'] != null) {
+                mainDict["show"]['categories'] = {}
                 for (var category in shows[show]['_embedded']['categories']) {
                   if (mainDict['embedded'] != null) {
-                  mainDict['embedded']['categories'] = {
-                    [shows[show]['_embedded']['categories'][category]['id']]: {
+                  mainDict["show"]['categories'][shows[show]['_embedded']['categories'][category]['id']] = {
                       id: shows[show]['_embedded']['categories'][category]['id'],
                       label: shows[show]['_embedded']['categories'][category]['label'],
                       ttl: shows[show]['_embedded']['categories'][category]['ttl'],
@@ -386,7 +517,6 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       vocabularyName: shows[show]['_embedded']['categories'][category]['vocabularyName'],
                       termPath: shows[show]['_embedded']['categories'][category]['termPath']
                     }
-                  }
                   }
                 }
               }
@@ -409,7 +539,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               if (shows[show]['_embedded']['shows'] != null) {
                 for (var embeddedShow in shows[show]['_embedded']['shows']) {
                   if (mainDict['embedded'] != null) {
-                  mainDict['embedded']['shows'] = {
+                  mainDict["show"]['info'] = {
                     id: shows[show]['_embedded']['shows'][embeddedShow]['id'],
                     label: shows[show]['_embedded']['shows'][embeddedShow]['label'],
                     ttl: shows[show]['_embedded']['shows'][embeddedShow]['ttl'],
@@ -460,7 +590,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions']) {
-                    mainDict['embedded']['shows']['hdVideoSubscriptionOption'] = {
+                    mainDict["show"]['info']['hdVideoSubscriptionOption'] = {
                       [shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options['id']]]: {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['label'],
@@ -478,7 +608,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions']) {
-                    mainDict['embedded']['shows']['sdVideoLargeSubscriptionOptions'] = {
+                    mainDict["show"]['info']['sdVideoLargeSubscriptionOptions'] = {
                       [shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options['id']]]: {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['label'],
@@ -496,7 +626,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions']) {
-                    mainDict['embedded']['shows']['sdVideoSmallSubscriptionOptions'] = {
+                    mainDict["show"]['info']['sdVideoSmallSubscriptionOptions'] = {
                       [shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options['id']]]: {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['label'],
@@ -513,7 +643,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions']) {
-                    mainDict['embedded']['shows']['audioSubscriptionOptions'] = {
+                    mainDict["show"]['info']['audioSubscriptionOptions'] = {
                       [shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options['id']]]: {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['label'],
@@ -530,52 +660,48 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                 if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'] != null) {
+                  mainDict["show"]['topics'] = {}
                   for (var embeddedTopic in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics']) {
-                    mainDict['embedded']['shows']['embedded'] = {
-                      topics: {
-                        [shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id']]: {
-                          id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id'],
-                          label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['label'],
-                          ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['ttl'],
-                          weight: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['weight'],
-                          vid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['vid'],
-                          type: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['type'],
-                          vocabularyName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['vocabularyName'],
-                          termPath: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['termPath']
-                        }
-                      }  
+                    mainDict["show"]['topics'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id']] = {
+                      id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id'],
+                      label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['label'],
+                      ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['ttl'],
+                      weight: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['weight'],
+                      vid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['vid'],
+                      type: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['type'],
+                      vocabularyName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['vocabularyName'],
+                      termPath: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['termPath']
                     }
                   }
                 }
-                if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'] != null) {
-                  for (var embeddedCategory in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories']) {
-                    if(mainDict['embedded']['shows']['embedded'] != null) {
-                      mainDict['embedded']['shows']['embedded']['categories'] = {
-                        [shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id']]: {
-                          id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id'],
-                          label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['label'],
-                          ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['ttl'],
-                          vid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['vid'],
-                          type: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['type'],
-                          vocabularyName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['vocabularyName'],
-                          termPath: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['termPath']
-                        }
-                      }
-                    }
-                  }
-                }
+                // if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'] != null) {
+                //   for (var embeddedCategory in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories']) {
+                //     if(mainDict['embedded']['shows']['embedded'] != null) {
+                //      mainDict["show"]['categories'] = {
+                //         [shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id']]: {
+                //           id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id'],
+                //           label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['label'],
+                //           ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['ttl'],
+                //           vid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['vid'],
+                //           type: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['type'],
+                //           vocabularyName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['vocabularyName'],
+                //           termPath: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['termPath']
+                //         }
+                //       }
+                //     }
+                //   }
+                // }
               if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'] != null) { 
+                mainDict["show"]['credits'] = {}
                 for (var embeddedCredit in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits']) {
-                  if(mainDict['embedded']['shows']['embedded'] != null) {
-                    mainDict['embedded']['shows']['embedded']['credits'] = {
-                      [shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]: {
-                        id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id'],
-                        label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['label'],
-                        ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['ttl']
-                      }
+                  if(mainDict["show"]['topics'] != null) {
+                    mainDict["show"]['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']] = {
+                      id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id'],
+                      label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['label'],
+                      ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['ttl']
                     }
                     if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles'] != null) {
-                      mainDict['embedded']['shows']['embedded']['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['roles'] = {
+                      mainDict["show"]['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['roles'] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['ttl'],
@@ -587,7 +713,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       }
                     }
                     if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people'] != null) {
-                      mainDict['embedded']['shows']['embedded']['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['people'] = {
+                      mainDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['ttl'],
@@ -598,7 +724,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                         staff: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['staff']
                       }
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture'] != null) {
-                        mainDict['embedded']['shows']['embedded']['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['people']['picture'] = {
+                        mainDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['picture'] = {
                           fid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['fid'],
                           url: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['url'],
                           fileName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['fileName'],
@@ -619,16 +745,17 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                         }
                       } 
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'] != null) {
+                        mainDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'] = {}
+                        var counter = 0
                         for (var relatedLink in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks']) {
-                          mainDict['embedded']['shows']['embedded']['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['people']['relatedLinks'] = {
-                            relatedLink: {
+                          mainDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'][counter] = {
                               title: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'][relatedLink]['title'],
                               url: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'][relatedLink]['url']
                             }
+                            counter++
                           }
                         }
                       } 
-                    }
                     }
                   }
                 }
@@ -897,12 +1024,24 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 }
               }
             };
-              showRef.child(showsID).child('info').set(showDict);
-              episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('info').set(mainDict);
-              episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('info').set(showDict);
-              episodesRef.child("allEpisodes").child(shows[show]['id']).child('info').set(mainDict);
-              episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('info').set(showDict);
+              // Upload basic show information to firebase
+              showRef.child(showNumber).child('info').set(showDict);
+
+              //Upload information about all shows
+              episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).set(mainDict);
+              //episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('info').set(showDict);
+              episodesRef.child("allEpisodes").child(shows[show]['id']).set(mainDict);
+              //episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('info').set(showDict);
              
+
+              if (mainDict["show"] != null) {
+                if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                  console.log('ACTIVE SHOW');
+                  activeShowRef.child(showNumber).child('info').set(showDict);
+                }
+              }
+
+             //Upload information about show seasons
               var seasonID = 0  
               var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
               var seasonRound = (Math.round(seasonRaw));
@@ -914,23 +1053,25 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               } else {
                 seasonID = (Math.round(seasonRaw));
               }
-              episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('info').set(mainDict);
-              episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('info').set(showDict);
-              showRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('info').set(mainDict);
+              episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(mainDict);
+              // episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('info').set(showDict);
+              //showRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(mainDict);
               if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                  activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('info').set(mainDict);
+                  //activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(mainDict);
               }
 
+              //Upload info about cast
               for (test in peopleArray) {
-                showRef.child(showsID).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                showRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                showRef.child(showNumber).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                //showRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
                 if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                    activeShowRef.child(showsID).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                    activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                    activeShowRef.child(showNumber).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                   // activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
                 }
-                episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                
+                // episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                // episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                // episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
                 peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
                 peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(mainDict);
                 peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
@@ -943,44 +1084,35 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               for (test in offersArray) {
                 console.log(offersArray[test]['label']);
                 offersRef.child(offersArray[test]['id']).set(offersArray[test]);
-                episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                showRef.child(showsID).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                // episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                // episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                // episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                // episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                showRef.child(showNumber).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
                 if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                    activeShowRef.child(showsID).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                    activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                    activeShowRef.child(showNumber).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                 //   activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
                 }
               }
               for (test in categoriesArray) {
                 categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
               }
-              if (mainDict['embedded'] != null) {
-                if (mainDict['embedded']['shows'] != null) {
-                  if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                    console.log('ACTIVE SHOW');
-                    activeShowRef.child(showsID).child('info').set(showDict);
-                  }
-                }
-              }
 
               //THIS IS WHERE WE CHECK FOR CATEGORY type
-              if (mainDict['embedded'] != null) {
-                if (mainDict['embedded']['categories'] != null) {
+              if (mainDict["show"] != null) {
+                if (mainDict["show"]['categories'] != null) {
                   for (var category in shows[show]['_embedded']['categories']) {
                     console.log(shows[show]['_embedded']['categories'][category]['id'])
                     console.log(shows[show]['_embedded']['categories'][category]['label'])
                     console.log(shows[show]['id'])                    
                     var showID = shows[show]['_embedded']['categories'][category]['id']
-                    categoryEpisodesRef.child(showID).child(shows[show]['id']).child('info').set(mainDict);
-                      categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('info').set(showDict);
-                    for (test in peopleArray) {
-                      categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                    }
-                    for (test in offersArray) {
-                      categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                    }
+                    categoryEpisodesRef.child(showID).child(shows[show]['id']).set(mainDict);
+                    // for (test in peopleArray) {
+                    //   categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
+                    // }
+                    // for (test in offersArray) {
+                    //   categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
+                    // }
                   }
                 }
               }
@@ -989,13 +1121,22 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               rolesRef.child(rolesID).set(rolesDict);
                 console.log('WORKING...');
           };
+
+         // app.delete();
           console.log('COMPLETE');
+          //setTimeout(function2, 30000);
+          
        /* } else {
           console.log('IT IS the same or smaller')
         } */
       }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
+
+      function function2() {
+        app.delete();
+        console.log('firebased closed');
+      }
 }
 module.exports.firebaseEpisodeSync = firebaseEpisodeSync;
 module.exports.deletefirebase = deletefirebase;
