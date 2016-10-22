@@ -108,7 +108,7 @@ function setupTwitServer() {
 }
 
 function runTwitServer() {
-    console.log('Hello Corey -- Starting TWiT server...');
+    console.log('Hello Corey -- Starting TWiT server... Please wait for the updating to begin...');
     downloadActiveEpisodes();
 }
 
@@ -119,6 +119,7 @@ function downloadActiveEpisodes() {
       console.log(shows.length)
       for (var show in shows) {
         if ((shows[show]['active']) == true) {
+          console.log((shows[show]['id']));
           showArray.push((shows[show]['id']));
         }
       }
@@ -141,13 +142,17 @@ function downloadAllEpisodes() {
       syncTwitEpisodes(false);
   });
 }
+var twitEpisodeTimer
 
 function syncTwitEpisodes(active) { 
   var pageNumber = 1;
   var showNumber = 0;
   var showID = 0;
+  console.log('here')
+  twitEpisodes();
 
   function twitEpisodes() {
+    clearInterval(twitEpisodeTimer);
   if (showArray[showNumber] != null) {
     showID = showArray[showNumber];
   } else {
@@ -156,26 +161,54 @@ function syncTwitEpisodes(active) {
   }
 
   console.log('showID: ' + showID);
-   twitServerSync.twitConnect("episodes", 1643, (pageNumber++), function(result) {
-      
-    // console.log(result['episodes']);
-    if (result == null) {
-        showNumber++;
-        pageNumber = 1;
-        console.log('There was an error downloading from the twit server and no information was returned to be parsed');
-    } else {
-      if (result['episodes'] == "") {
-        showNumber++;
-        pageNumber = 1;
-        console.log('Show has finished downloading all episodes');
-      } else {
-        firebaseServerSync.firebaseEpisodeSync("episodes", showID, result);
-        if (active == true) {
+  if (active != true) {
+    twitServerSync.twitConnect("episodes", showID, (pageNumber++), function(result) {
+        
+      // console.log(result['episodes']);
+      if (result == null) {
           showNumber++;
           pageNumber = 1;
-        console.log('Show has been updated');
+          console.log('There was an error downloading from the twit server and no information was returned to be parsed');
+          twitEpisodeTimer = setInterval(twitEpisodes,15000);
+      } else {
+        if (result['episodes'] == "") {
+          showNumber++;
+          pageNumber = 1;
+          console.log('Show has finished downloading all episodes');
+          twitEpisodeTimer = setInterval(twitEpisodes,15000);
+        } else {
+          firebaseServerSync.firebaseEpisodeSync("episodes", showID, result, function(finished) {
+        
+            if (finished == null) {
+                console.log('Something failed in uploading the episodes');
+                twitEpisodeTimer = setInterval(twitEpisodes,15000);
+            } else {
+              if (finished == true) {
+                console.log('Show has uploaded successfully');
+                twitEpisodeTimer = setInterval(twitEpisodes,15000);
+              }
+            }
+          }
+          )}
+    }});
+  } else {
+    twitServerSync.twitConnect("episodes", showID, (pageNumber), function(result) {
+        
+      // console.log(result['episodes']);
+      if (result == null) {
+          showNumber++;
+          console.log('There was an error downloading from the twit server and no information was returned to be parsed');
+      } else {
+        if (result['episodes'] == "") {
+          showNumber++;
+          console.log('Show has finished downloading all episodes');
+        } else {
+          showNumber++;
+          firebaseServerSync.firebaseEpisodeSync("episodes", showID, result);
+          console.log('Show has been updated');
         }
-      }
-   }})}
-  var twitEpisodeTimer = setInterval(twitEpisodes,15000);
+    }});
+  }
+  }
+  //var twitEpisodeTimer = setInterval(twitEpisodes,40000);
 }

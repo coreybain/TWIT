@@ -24,30 +24,28 @@ function deletefirebase() {
   db.ref("Shows").remove();
   db.ref("episodes").remove();
   db.ref("activeShows").remove();
-  // db.ref("people").remove();
-  // db.ref("cast").remove();
-  // db.ref("roles").remove();
-  // db.ref("offers").remove();
-  // db.ref("categories").remove();
-  // db.ref("categoryEpisodes").remove();
+  db.ref("people").remove();
+  db.ref("cast").remove();
+  db.ref("roles").remove();
+  db.ref("offers").remove();
+  db.ref("categories").remove();
+  db.ref("categoryEpisodes").remove();
 }
 
-function firebaseEpisodeSync(dbRef, showNumber, data) {
+function extend(target) {
+    var sources = [].slice.call(arguments, 1);
+    sources.forEach(function (source) {
+        for (var prop in source) {
+            target[prop] = source[prop];
+        }
+    });
+    return target;
+}
+
+function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
       var shows = data['episodes'];
     episodesRef.child('count').on("value", function(snapshot) {
-        /*
-        if (snapshot.exists()) {
-          serverCount = snapshot.val().count
-            console.log('there it is -- it exists')
-        } else {
-          serverCount = 0
-            console.log('didnt exist')
-        } 
-        if (data['count'] > serverCount) {
-          console.log('IT IS BIGGER')
-          episodesRef.child('count').set({
-            count: data['count']
-          });*/
+       var uploadCount = 0
           for (var show in shows) {
 
             var showDict = {}
@@ -66,10 +64,13 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             var offerID = 0;
             var rolesID = 0;
             var categoriesID = 0;
+            var episodeDict = {};
 
             var mainDict = {};
+            mainDict['episodes'] = {}
+            mainDict['episodes'][showNumber] = {}
 
-            mainDict["info"] = {
+            episodeDict["info"] = {
                 id: shows[show]['id'],
                 label: shows[show]['label'],
                 showNotes: shows[show]['showNotes'],
@@ -83,7 +84,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               };
 
             if (shows[show]['video_audio'] != null) {
-                mainDict["info"]["video_audio"] = {
+                episodeDict["info"]["video_audio"] = {
                     mediaUrl: shows[show]['video_audio']['mediaUrl'],
                     format: shows[show]['video_audio']['format'],
                     changed: shows[show]['video_audio']['changed'],
@@ -96,7 +97,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             };
 
             if (shows[show]['video_hd'] != null) {
-                mainDict["info"]["video_hd"] = {
+                episodeDict["info"]["video_hd"] = {
                     mediaUrl: shows[show]['video_hd']['mediaUrl'],
                     format: shows[show]['video_hd']['format'],
                     changed: shows[show]['video_hd']['changed'],
@@ -109,7 +110,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             };
 
             if (shows[show]['video_large'] != null) {
-                mainDict["info"]["video_large"] = {
+                episodeDict["info"]["video_large"] = {
                   mediaUrl: shows[show]['video_large']['mediaUrl'],
                   format: shows[show]['video_large']['format'],
                   changed: shows[show]['video_large']['changed'],
@@ -122,7 +123,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             };
 
             if (shows[show]['video_small'] != null) {
-                mainDict["info"]["video_small"] = {
+                episodeDict["info"]["video_small"] = {
                   mediaUrl: shows[show]['video_small']['mediaUrl'],
                   format: shows[show]['video_small']['format'],
                   changed: shows[show]['video_small']['changed'],
@@ -135,13 +136,13 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
             };
               
               //Upload information about shows based on episode
-              mainDict["show"] = {}
+              episodeDict["show"] = {}
             if (shows[show]['_embedded'] != null) {
-              mainDict["show"]["credits"] = {}
-              mainDict["show"]["people"] = {}
+              episodeDict["show"]["credits"] = {}
+              episodeDict["show"]["people"] = {}
                 //Upload cast credit information
               for (var credit in shows[show]['_embedded']['credits']) {
-                mainDict["show"]["credits"][shows[show]['_embedded']['credits'][credit]['id']] = {
+                episodeDict["show"]["credits"][shows[show]['_embedded']['credits'][credit]['id']] = {
                   id: shows[show]['_embedded']['credits'][credit]['id'],
                   label: shows[show]['_embedded']['credits'][credit]['label'],
                   ttl: shows[show]['_embedded']['credits'][credit]['ttl'],
@@ -149,7 +150,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 }
                 //Upload Cast Roles
                 if (shows[show]['_embedded']['credits'][credit]['roles'] != null) {
-                  mainDict["show"]["credits"][shows[show]['_embedded']['credits'][credit]['id']]['roles'] = {
+                  episodeDict["show"]["credits"][shows[show]['_embedded']['credits'][credit]['id']]['roles'] = {
                     id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
                     label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
                     ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
@@ -174,7 +175,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 }
                 //Upload Cast People Information
                   if (shows[show]['_embedded']['credits'][credit]['people'] != null) {
-                    mainDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']] = {
+                    episodeDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']] = {
                       id: shows[show]['_embedded']['credits'][credit]['people']['id'],
                       label: shows[show]['_embedded']['credits'][credit]['people']['label'],
                       ttl: shows[show]['_embedded']['credits'][credit]['people']['ttl'],
@@ -200,7 +201,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       staff: shows[show]['_embedded']['credits'][credit]['people']['staff']
                     }
                     if (shows[show]['_embedded']['credits'][credit]['people']['picture'] != null) {
-                      mainDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['picture'] = {
+                      episodeDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['picture'] = {
                         fid: shows[show]['_embedded']['credits'][credit]['people']['picture']['fid'],
                         url: shows[show]['_embedded']['credits'][credit]['people']['picture']['url'],
                         fileName: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileName'],
@@ -246,9 +247,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       }
                     }
                     if (shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'] != null) {
-                      mainDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['relatedLinks'] = {}
+                      episodeDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['relatedLinks'] = {}
                       for (var relatedLink in shows[show]['_embedded']['credits'][credit]['people']['relatedLinks']) {
-                         mainDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['relatedLinks'][Object.keys(shows[show]['_embedded']['credits'][credit]['people']['relatedLinks']).indexOf(relatedLink)] = {
+                         episodeDict["show"]["people"][shows[show]['_embedded']['credits'][credit]['people']['id']]['relatedLinks'][Object.keys(shows[show]['_embedded']['credits'][credit]['people']['relatedLinks']).indexOf(relatedLink)] = {
                             title: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['title'],
                             url: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['url']
                         }
@@ -266,137 +267,14 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
 
 
             if (shows[show]['_embedded'] != null) {
-              mainDict['embedded'] = {}
-              //   for (var credit in shows[show]['_embedded']['credits']) {
-              //     mainDict['embedded']['credits'] = {
-              //       [shows[show]['_embedded']['credits'][credit]['id']]: {
-              //         id: shows[show]['_embedded']['credits'][credit]['id'],
-              //         label: shows[show]['_embedded']['credits'][credit]['label'],
-              //         ttl: shows[show]['_embedded']['credits'][credit]['ttl'],
-              //         created: shows[show]['_embedded']['credits'][credit]['created']
-              //       }
-              //     }
-              //     // if (shows[show]['_embedded']['credits'][credit]['roles'] != null) {
-              //     //   mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['roles'] = {
-              //     //     id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
-              //     //     label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
-              //     //     ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
-              //     //     weight: shows[show]['_embedded']['credits'][credit]['roles']['weight'],
-              //     //     vid: shows[show]['_embedded']['credits'][credit]['roles']['vid'],
-              //     //     type: shows[show]['_embedded']['credits'][credit]['roles']['type'],
-              //     //     vocabularyName: shows[show]['_embedded']['credits'][credit]['roles']['vocabularyName'],
-              //     //     termPath: shows[show]['_embedded']['credits'][credit]['roles']['termPath']
-              //     //   }
-              //     //   rolesID = shows[show]['_embedded']['credits'][credit]['roles']['id']
-              //     //   rolesDict = {
-              //     //     id: shows[show]['_embedded']['credits'][credit]['roles']['id'],
-              //     //     label: shows[show]['_embedded']['credits'][credit]['roles']['label'],
-              //     //     ttl: shows[show]['_embedded']['credits'][credit]['roles']['ttl'],
-              //     //     weight: shows[show]['_embedded']['credits'][credit]['roles']['weight'],
-              //     //     vid: shows[show]['_embedded']['credits'][credit]['roles']['vid'],
-              //     //     type: shows[show]['_embedded']['credits'][credit]['roles']['type'],
-              //     //     vocabularyName: shows[show]['_embedded']['credits'][credit]['roles']['vocabularyName'],
-              //     //     termPath: shows[show]['_embedded']['credits'][credit]['roles']['termPath']
-              //     //   }
-              //   //   // }
-              //   //   if (shows[show]['_embedded']['credits'][credit]['people'] != null) {
-              //   //     mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people'] = {
-              //   //       id: shows[show]['_embedded']['credits'][credit]['people']['id'],
-              //   //       label: shows[show]['_embedded']['credits'][credit]['people']['label'],
-              //   //       ttl: shows[show]['_embedded']['credits'][credit]['people']['ttl'],
-              //   //       bio: shows[show]['_embedded']['credits'][credit]['people']['bio'],
-              //   //       bioSummary: shows[show]['_embedded']['credits'][credit]['people']['bioSummary'],
-              //   //       published: shows[show]['_embedded']['credits'][credit]['people']['published'],
-              //   //       created: shows[show]['_embedded']['credits'][credit]['people']['created'],
-              //   //       changed: shows[show]['_embedded']['credits'][credit]['people']['changed'],
-              //   //       sticky: shows[show]['_embedded']['credits'][credit]['people']['sticky'],
-              //   //       staff: shows[show]['_embedded']['credits'][credit]['people']['staff']
-              //   //     }
-              //   //     peopleID = shows[show]['_embedded']['credits'][credit]['people']['id'];
-              //   //     peopleDict = {
-              //   //       id: shows[show]['_embedded']['credits'][credit]['people']['id'],
-              //   //       label: shows[show]['_embedded']['credits'][credit]['people']['label'],
-              //   //       ttl: shows[show]['_embedded']['credits'][credit]['people']['ttl'],
-              //   //       bio: shows[show]['_embedded']['credits'][credit]['people']['bio'],
-              //   //       bioSummary: shows[show]['_embedded']['credits'][credit]['people']['bioSummary'],
-              //   //       published: shows[show]['_embedded']['credits'][credit]['people']['published'],
-              //   //       created: shows[show]['_embedded']['credits'][credit]['people']['created'],
-              //   //       changed: shows[show]['_embedded']['credits'][credit]['people']['changed'],
-              //   //       sticky: shows[show]['_embedded']['credits'][credit]['people']['sticky'],
-              //   //       staff: shows[show]['_embedded']['credits'][credit]['people']['staff']
-              //   //     }
-              //   //     if (shows[show]['_embedded']['credits'][credit]['people']['picture'] != null) {
-              //   //       mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people']['picture'] = {
-              //   //         fid: shows[show]['_embedded']['credits'][credit]['people']['picture']['fid'],
-              //   //         url: shows[show]['_embedded']['credits'][credit]['people']['picture']['url'],
-              //   //         fileName: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileName'],
-              //   //         mimeType: shows[show]['_embedded']['credits'][credit]['people']['picture']['mimeType'],
-              //   //         fileSize: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileSize'],
-              //   //         width: shows[show]['_embedded']['credits'][credit]['people']['picture']['width'],
-              //   //         height: shows[show]['_embedded']['credits'][credit]['people']['picture']['height'],
-              //   //         status: shows[show]['_embedded']['credits'][credit]['people']['picture']['status'],
-              //   //         changed: shows[show]['_embedded']['credits'][credit]['people']['picture']['changed'],
-              //   //         created: shows[show]['_embedded']['credits'][credit]['people']['picture']['created'],
-              //   //         derivatives: {
-              //   //           thumbnail: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['thumbnail'],
-              //   //           twit_album_art_70x70: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_70x70'],
-              //   //           twit_album_art_144x144: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_144x144'],
-              //   //           twit_album_art_240x240: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_240x240'],
-              //   //           twit_album_art_300x300: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_300x300'],
-              //   //           twit_album_art_600x600: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_600x600'],
-              //   //           twit_album_art_1400x1400: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_1400x1400'],
-              //   //           twit_album_art_2048x2048: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_2048x2048']
-              //   //         }
-              //   //       }
-              //   //       peopleDict['picture'] = {
-              //   //         fid: shows[show]['_embedded']['credits'][credit]['people']['picture']['fid'],
-              //   //         url: shows[show]['_embedded']['credits'][credit]['people']['picture']['url'],
-              //   //         fileName: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileName'],
-              //   //         mimeType: shows[show]['_embedded']['credits'][credit]['people']['picture']['mimeType'],
-              //   //         fileSize: shows[show]['_embedded']['credits'][credit]['people']['picture']['fileSize'],
-              //   //         width: shows[show]['_embedded']['credits'][credit]['people']['picture']['width'],
-              //   //         height: shows[show]['_embedded']['credits'][credit]['people']['picture']['height'],
-              //   //         status: shows[show]['_embedded']['credits'][credit]['people']['picture']['status'],
-              //   //         changed: shows[show]['_embedded']['credits'][credit]['people']['picture']['changed'],
-              //   //         created: shows[show]['_embedded']['credits'][credit]['people']['picture']['created'],
-              //   //         derivatives: {
-              //   //           thumbnail: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['thumbnail'],
-              //   //           twit_album_art_70x70: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_70x70'],
-              //   //           twit_album_art_144x144: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_144x144'],
-              //   //           twit_album_art_240x240: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_240x240'],
-              //   //           twit_album_art_300x300: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_300x300'],
-              //   //           twit_album_art_600x600: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_600x600'],
-              //   //           twit_album_art_1400x1400: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_1400x1400'],
-              //   //           twit_album_art_2048x2048: shows[show]['_embedded']['credits'][credit]['people']['picture']['derivatives']['twit_album_art_2048x2048']
-              //   //         }
-              //   //       }
-              //   //     }
-              //   //     if (shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'] != null) {
-              //   //       for (var relatedLink in shows[show]['_embedded']['credits'][credit]['people']['relatedLinks']) {
-              //   //         mainDict['embedded']['credits'][shows[show]['_embedded']['credits'][credit]['id']]['people']['relatedLinks'] = {
-              //   //           relatedLink: {
-              //   //             title: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['title'],
-              //   //             url: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['url']
-              //   //           }
-              //   //         }
-              //   //         peopleDict['relatedLinks'] = {
-              //   //           relatedLink: {
-              //   //             title: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['title'],
-              //   //             url: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['url']
-              //   //           }
-              //   //         }
-              //   //       }
-              //   //     } 
-              //   //   peopleArray.push(peopleDict)
-              //   // }
-              // }
-
+              episodeDict['embedded'] = {}
+              
               //Upload information about shows based on episode
               if (shows[show]['_embedded']['offers'] != null) {
-              mainDict["show"]["offers"] = {}
+              episodeDict["show"]["offers"] = {}
                 for (var offer in shows[show]['_embedded']['offers']) {
-                  if (mainDict['embedded'] != null) {
-                  mainDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']] = {
+                  if (episodeDict['embedded'] != null) {
+                  episodeDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']] = {
                       id: shows[show]['_embedded']['offers'][offer]['id'],
                       label: shows[show]['_embedded']['offers'][offer]['label'],
                       ttl: shows[show]['_embedded']['offers'][offer]['ttl'],
@@ -413,7 +291,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       published: shows[show]['_embedded']['offers'][offer]['published'],
                       changed: shows[show]['_embedded']['offers'][offer]['changed']
                     }
-                    mainDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']]['offerLink'] = {
+                    episodeDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']]['offerLink'] = {
                       url: shows[show]['_embedded']['offers'][offer]['offerLink']['url'],
                       title: shows[show]['_embedded']['offers'][offer]['offerLink']['title']
                     }
@@ -423,7 +301,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                     if (shows[show]['_embedded']['offers'][offer]['offerSponsor'] != null) {
                       if (shows[show]['_embedded']['offers'][offer]['offerSponsor']['sponsorLogo'] != null) {
-                        mainDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']]['offerSponsor'] = {
+                        episodeDict["show"]['offers'][shows[show]['_embedded']['offers'][offer]['id']]['offerSponsor'] = {
                           id: shows[show]['_embedded']['offers'][offer]['offerSponsor']['id'],
                           label: shows[show]['_embedded']['offers'][offer]['offerSponsor']['label'],
                           ttl: shows[show]['_embedded']['offers'][offer]['offerSponsor']['ttl'],
@@ -503,10 +381,10 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 }
               }
               if (shows[show]['_embedded']['categories'] != null) {
-                mainDict["show"]['categories'] = {}
+                episodeDict["show"]['categories'] = {}
                 for (var category in shows[show]['_embedded']['categories']) {
-                  if (mainDict['embedded'] != null) {
-                  mainDict["show"]['categories'][shows[show]['_embedded']['categories'][category]['id']] = {
+                  if (episodeDict['embedded'] != null) {
+                  episodeDict["show"]['categories'][shows[show]['_embedded']['categories'][category]['id']] = {
                       id: shows[show]['_embedded']['categories'][category]['id'],
                       label: shows[show]['_embedded']['categories'][category]['label'],
                       ttl: shows[show]['_embedded']['categories'][category]['ttl'],
@@ -538,8 +416,8 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               }
               if (shows[show]['_embedded']['shows'] != null) {
                 for (var embeddedShow in shows[show]['_embedded']['shows']) {
-                  if (mainDict['embedded'] != null) {
-                  mainDict["show"]['info'] = {
+                  if (episodeDict['embedded'] != null) {
+                  episodeDict["show"]['info'] = {
                     id: shows[show]['_embedded']['shows'][embeddedShow]['id'],
                     label: shows[show]['_embedded']['shows'][embeddedShow]['label'],
                     ttl: shows[show]['_embedded']['shows'][embeddedShow]['ttl'],
@@ -590,7 +468,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions']) {
-                    mainDict["show"]['info']['hdVideoSubscriptionOption'] = {
+                    episodeDict["show"]['info']['hdVideoSubscriptionOption'] = {
                       [shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options['id']]]: {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['label'],
@@ -608,7 +486,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions']) {
-                    mainDict["show"]['info']['sdVideoLargeSubscriptionOptions'] = {
+                    episodeDict["show"]['info']['sdVideoLargeSubscriptionOptions'] = {
                       [shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options['id']]]: {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['label'],
@@ -626,7 +504,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions']) {
-                    mainDict["show"]['info']['sdVideoSmallSubscriptionOptions'] = {
+                    episodeDict["show"]['info']['sdVideoSmallSubscriptionOptions'] = {
                       [shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options['id']]]: {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['label'],
@@ -643,7 +521,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions']) {
-                    mainDict["show"]['info']['audioSubscriptionOptions'] = {
+                    episodeDict["show"]['info']['audioSubscriptionOptions'] = {
                       [shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options['id']]]: {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['label'],
@@ -660,9 +538,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                 if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'] != null) {
-                  mainDict["show"]['topics'] = {}
+                  episodeDict["show"]['topics'] = {}
                   for (var embeddedTopic in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics']) {
-                    mainDict["show"]['topics'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id']] = {
+                    episodeDict["show"]['topics'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id']] = {
                       id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id'],
                       label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['label'],
                       ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['ttl'],
@@ -674,34 +552,17 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                     }
                   }
                 }
-                // if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'] != null) {
-                //   for (var embeddedCategory in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories']) {
-                //     if(mainDict['embedded']['shows']['embedded'] != null) {
-                //      mainDict["show"]['categories'] = {
-                //         [shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id']]: {
-                //           id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id'],
-                //           label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['label'],
-                //           ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['ttl'],
-                //           vid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['vid'],
-                //           type: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['type'],
-                //           vocabularyName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['vocabularyName'],
-                //           termPath: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['termPath']
-                //         }
-                //       }
-                //     }
-                //   }
-                // }
               if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'] != null) { 
-                mainDict["show"]['credits'] = {}
+                episodeDict["show"]['credits'] = {}
                 for (var embeddedCredit in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits']) {
-                  if(mainDict["show"]['topics'] != null) {
-                    mainDict["show"]['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']] = {
+                  if(episodeDict["show"]['topics'] != null) {
+                    episodeDict["show"]['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']] = {
                       id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id'],
                       label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['label'],
                       ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['ttl']
                     }
                     if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles'] != null) {
-                      mainDict["show"]['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['roles'] = {
+                      episodeDict["show"]['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['roles'] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['ttl'],
@@ -713,7 +574,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       }
                     }
                     if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people'] != null) {
-                      mainDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']] = {
+                      episodeDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['ttl'],
@@ -724,7 +585,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                         staff: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['staff']
                       }
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture'] != null) {
-                        mainDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['picture'] = {
+                        episodeDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['picture'] = {
                           fid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['fid'],
                           url: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['url'],
                           fileName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['fileName'],
@@ -745,10 +606,10 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                         }
                       } 
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'] != null) {
-                        mainDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'] = {}
+                        episodeDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'] = {}
                         var counter = 0
                         for (var relatedLink in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks']) {
-                          mainDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'][counter] = {
+                          episodeDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'][counter] = {
                               title: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'][relatedLink]['title'],
                               url: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'][relatedLink]['url']
                             }
@@ -766,9 +627,10 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               /**************** */
 
               if (shows[show]['_embedded']['shows'] != null) {
+                showDict = {}
                 for (var embeddedShow in shows[show]['_embedded']['shows']) {
                   showsID = shows[show]['_embedded']['shows'][embeddedShow]['id']
-                  showDict = {
+                  showDict['info'] = {
                     id: shows[show]['_embedded']['shows'][embeddedShow]['id'],
                     label: shows[show]['_embedded']['shows'][embeddedShow]['label'],
                     ttl: shows[show]['_embedded']['shows'][embeddedShow]['ttl'],
@@ -818,9 +680,10 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       }
                     }
                   }
-                  for (var options in shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions']) {
-                    showDict['hdVideoSubscriptionOption'] = {
-                      [shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options['id']]]: {
+                  if (shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'] != null) {
+                    showDict['info']['hdVideoSubscriptionOption'] = {}
+                    for (var options in shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions']) {
+                      showDict['info']['hdVideoSubscriptionOption'][shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options['id']]] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['ttl'],
@@ -836,27 +699,29 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       }
                     }
                   }
-                  for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions']) {
-                    showDict['sdVideoLargeSubscriptionOptions'] = {
-                      [shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options['id']]]: {
-                        id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['id'],
-                        label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['label'],
-                        ttl: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['ttl'],
-                        url: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['url'],
-                        type: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['type'],
-                        sticky: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['sticky'],
-                        feedProvider: {
-                          id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['feedProvider']['id'],
-                          label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['feedProvider']['label'],
-                          ttl: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['feedProvider']['ttl'],
-                          active: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['feedProvider']['active']
-                        }
+                  if (shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'] != null) {
+                    showDict['info']['sdVideoLargeSubscriptionOptions'] = {}
+                    for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions']) {
+                      showDict['info']['sdVideoLargeSubscriptionOptions'][shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options['id']]] = {
+                          id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['id'],
+                          label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['label'],
+                          ttl: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['ttl'],
+                          url: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['url'],
+                          type: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['type'],
+                          sticky: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['sticky'],
+                          feedProvider: {
+                            id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['feedProvider']['id'],
+                            label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['feedProvider']['label'],
+                            ttl: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['feedProvider']['ttl'],
+                            active: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['feedProvider']['active']
+                          }
                       }
                     }
                   }
+                  if (shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'] != null) {
+                  showDict['info']['sdVideoSmallSubscriptionOptions'] = {}
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions']) {
-                    showDict['sdVideoSmallSubscriptionOptions'] = {
-                      [shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options['id']]]: {
+                    showDict['info']['sdVideoSmallSubscriptionOptions'][shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options['id']]] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['ttl'],
@@ -871,9 +736,10 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       }
                     }
                   }
+                  if (shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'] != null) {
+                    showDict['info']['audioSubscriptionOptions'] = {}
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions']) {
-                    showDict['audioSubscriptionOptions'] = {
-                      [shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options['id']]]: {
+                    showDict['info']['audioSubscriptionOptions'][shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options['id']]] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['ttl'],
@@ -890,10 +756,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                   }
                 }
                 if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'] != null) {
+                  showDict['topics'] = {}
                   for (var embeddedTopic in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics']) {
-                    showDict['embedded'] = {
-                      topics: {
-                        [shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id']]: {
+                    showDict['topics'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id']] = {
                           id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id'],
                           label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['label'],
                           ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['ttl'],
@@ -903,15 +768,12 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                           vocabularyName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['vocabularyName'],
                           termPath: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['termPath']
                         }
-                      }  
-                    }
                   }
                 }
                 if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'] != null) {
+                  showDict['categories'] = {}
                   for (var embeddedCategory in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories']) {
-                    if (showDict['embedded'] != null) { 
-                      showDict['embedded']['categories'] = {
-                        [shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id']]: {
+                    showDict['categories'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id']] = {
                           id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id'],
                           label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['label'],
                           ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['ttl'],
@@ -920,22 +782,16 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                           vocabularyName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['vocabularyName'],
                           termPath: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['termPath']
                         }
-                      }
-                    }
                   }
                 }
               if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'] != null) { 
                 for (var embeddedCredit in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits']) {
-                  if (showDict['embedded'] != null) { 
-                    showDict['embedded']['credits'] = {
-                      [shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]: {
-                        id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id'],
-                        label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['label'],
-                        ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['ttl']
-                      }
-                    }
+                  
+
+
                     if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles'] != null) {
-                      showDict['embedded']['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['roles'] = {
+                      showDict['roles'] = {}
+                      showDict['roles'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['id']] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['ttl'],
@@ -947,7 +803,8 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                       }
                     }
                     if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people'] != null) {
-                      showDict['embedded']['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['people'] = {
+                      showDict['people'] = {}
+                      showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['ttl'],
@@ -958,7 +815,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                         staff: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['staff']
                       }
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture'] != null) {
-                        showDict['embedded']['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['people']['picture'] = {
+                        showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['picture'] = {
                           fid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['fid'],
                           url: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['url'],
                           fileName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['fileName'],
@@ -979,15 +836,15 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                         }
                       } 
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'] != null) {
+                        showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'] = {}
+                        var counter = 0
                         for (var relatedLink in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks']) {
-                          showDict['embedded']['credits'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['id']]['people']['relatedLinks'] = {
-                            relatedLink: {
+                          showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'][counter] = {
                               title: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'][relatedLink]['title'],
                               url: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'][relatedLink]['url']
                             }
-                          }
+                          counter++
                         }
-                      } 
                     }
                   }
                 }
@@ -997,11 +854,11 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
               /*************** */
             }
             if (shows[show]['video_youtube'] != null) {
-                mainDict["video_youtube"] = shows[show]['video_youtube'];
+                episodeDict["video_youtube"] = shows[show]['video_youtube'];
             };
 
             if (shows[show]['heroImage'] != null) {
-              mainDict["heroImage"] = {
+              episodeDict["heroImage"] = {
                 fid: shows[show]['heroImage']['fid'],
                 url: shows[show]['heroImage']['url'],
                 fileName: shows[show]['heroImage']['fileName'],
@@ -1014,7 +871,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 status: shows[show]['heroImage']['status']
               };
               if (shows[show]['heroImage']['derivatives'] != null) {
-                mainDict['heroImage']['derivatives'] = {
+                episodeDict['heroImage']['derivatives'] = {
                   thumbnail: shows[show]['heroImage']['derivatives']['thumbnail'],
                   twit_slideshow_1600x400: shows[show]['heroImage']['derivatives']['twit_slideshow_1600x400'],
                   twit_slideshow_1200x300: shows[show]['heroImage']['derivatives']['twit_slideshow_1200x300'],
@@ -1024,117 +881,286 @@ function firebaseEpisodeSync(dbRef, showNumber, data) {
                 }
               }
             };
+
+            var showRawID = shows[show]['_embedded']['shows'][embeddedShow]['id'];
+
               // Upload basic show information to firebase
-              showRef.child(showNumber).child('info').set(showDict);
+              console.log('WORKING...');
+              showRef.child(showNumber).set(showDict, function(error) {
+                if (error) {
+                  console.log("Data could not be saved." + error);
+                } else {
+                  console.log("Show Data saved successfully.");
+                  episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).set(episodeDict, function(error) {
+                    if (error) {
+                      console.log("Data could not be saved." + error);
+                    } else {
+                      console.log("Show Episode Data saved successfully.");
+                      episodesRef.child("allEpisodes").child(shows[show]['id']).set(episodeDict, function(error) {
+                        if (error) {
+                          console.log("Data could not be saved." + error);
+                        } else {
+                          console.log("AllEpisode Data saved successfully.");
+                          if (episodeDict["show"] != null) {
+                            if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                              console.log('ACTIVE SHOW');
+                              activeShowRef.child(showNumber).set(showDict, function(error) {
+                                if (error) {
+                                  console.log("Data could not be saved." + error);
+                                } else {
+                                  console.log("Active Show Data saved successfully.");
+                                  var seasonID = 0  
+                                  var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
+                                  var seasonRound = (Math.round(seasonRaw));
+                                  if  (seasonRaw <= 1) {
+                                    seasonRaw = 0
+                                    seasonID = (Math.round(seasonRaw) + 1);
+                                  } else if (seasonRaw > seasonRound) {
+                                    seasonID = (Math.round(seasonRaw) + 1);
+                                  } else {
+                                    seasonID = (Math.round(seasonRaw));
+                                  }
+                                  episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(episodeDict, function(error) {
+                                    if (error) {
+                                      console.log("Data could not be saved." + error);
+                                    } else {
+                                      console.log("Season episode info saved successfully.");
+                                      for (test in peopleArray) {
+                                        console.log('People info saved successfully.')
+                                        peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+                                        peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+                                        peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+                                        if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
+                                          console.log('Cast info saved successfully.')
+                                          castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+                                          castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+                                          castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+                                        }
+                                      }
+                                      for (test in offersArray) {
+                                        console.log('Offers info saved successfully.')
+                                        offersRef.child(offersArray[test]['id']).set(offersArray[test]);
+                                      }
+
+                                      for (test in categoriesArray) {
+                                        console.log('Categories info saved successfully.')
+                                        categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
+                                      }
+                                      if (episodeDict["show"] != null) {
+                                        console.log('SHOW IS HERE')
+                                        if (episodeDict["show"]['categories'] != null) {
+                                        console.log('CATEGORIES IS HERE')
+                                          for (var category in shows[show]['_embedded']['categories']) {    
+                                            categoryEpisodesRef.child(showNumber).child(shows[show]['id']).set(episodeDict, function(error) {
+                                              if (error) {
+                                                console.log("Data could not be saved." + error);
+                                              } else {
+                                                console.log("category/offers/people data saved successfully.");
+                                                rolesRef.child(rolesID).set(rolesDict, function(error) {
+                                                  if (error) {
+                                                    console.log("Data could not be saved." + error);
+                                                  } else {
+                                                    console.log("roles information saved successfully.");
+                                                    console.log('COMPLETE');
+                                                    uploadCount++
+                                                    if (uploadCount == shows.length) {
+                                                      console.log('COMPLETE');
+                                                      function2();
+                                                      callback(true);
+                                                    }
+                                                  }
+                                                });
+                                              }
+                                            });
+                                          }
+                                        } else {
+                                          rolesRef.child(rolesID).set(rolesDict, function(error) {
+                                            if (error) {
+                                              console.log("Data could not be saved." + error);
+                                            } else {
+                                              console.log("roles information saved successfully.");
+                                              console.log('COMPLETE');
+                                              uploadCount++
+                                              if (uploadCount == shows.length) {
+                                                console.log('COMPLETE');
+                                                function2();
+                                                callback(true);
+                                              }
+                                            }
+                                          });
+                                        }
+                                      }
+                                    }
+                                  });
+                                }
+                              });
+                            } else {
+                              var seasonID = 0  
+                              var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
+                              var seasonRound = (Math.round(seasonRaw));
+                              if  (seasonRaw <= 1) {
+                                seasonRaw = 0
+                                seasonID = (Math.round(seasonRaw) + 1);
+                              } else if (seasonRaw > seasonRound) {
+                                seasonID = (Math.round(seasonRaw) + 1);
+                              } else {
+                                seasonID = (Math.round(seasonRaw));
+                              }
+                              episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(episodeDict, function(error) {
+                                if (error) {
+                                  console.log("Data could not be saved." + error);
+                                } else {
+                                  console.log("Season episode info saved successfully.");
+                                  for (test in peopleArray) {
+                                    console.log('People info saved successfully.')
+                                    peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+                                    peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+                                    peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+                                    if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
+                                    console.log('Cast info saved successfully.')
+                                      castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+                                      castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+                                      castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+                                    }
+                                  }
+                                  for (test in offersArray) {
+                                    console.log('Offers info saved successfully.')
+                                    offersRef.child(offersArray[test]['id']).set(offersArray[test]);
+                                  }
+
+                                  for (test in categoriesArray) {
+                                    console.log('Categories info saved successfully.')
+                                    categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
+                                  }
+                                  if (episodeDict["show"] != null) {
+                                    if (episodeDict["show"]['categories'] != null) {
+                                      for (var category in shows[show]['_embedded']['categories']) {    
+                                        categoryEpisodesRef.child(showNumber).child(shows[show]['id']).set(episodeDict, function(error) {
+                                          if (error) {
+                                            console.log("Data could not be saved." + error);
+                                          } else {
+                                            console.log("category/offers/people data saved successfully.");
+                                            rolesRef.child(rolesID).set(rolesDict, function(error) {
+                                              if (error) {
+                                                console.log("Data could not be saved." + error);
+                                              } else {
+                                                console.log("roles information saved successfully.");
+                                                uploadCount++
+                                                if (uploadCount == shows.length) {
+                                                  console.log('COMPLETE');
+                                                  function2();
+                                                  callback(true);
+                                                }
+                                              }
+                                            });
+                                          }
+                                        });
+                                      }
+                                    } else {
+                                          rolesRef.child(rolesID).set(rolesDict, function(error) {
+                                            if (error) {
+                                              console.log("Data could not be saved." + error);
+                                            } else {
+                                              console.log("roles information saved successfully.");
+                                              console.log('COMPLETE');
+                                              uploadCount++
+                                              if (uploadCount == shows.length) {
+                                                console.log('COMPLETE');
+                                                function2();
+                                                callback(true);
+                                              }
+                                            }
+                                          });
+                                        }
+                                  }
+                                }
+                              });
+                            }
+                          }
+                        }
+                      });
+                    }
+                  });
+                }
+              });
 
               //Upload information about all shows
-              episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).set(mainDict);
-              //episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('info').set(showDict);
-              episodesRef.child("allEpisodes").child(shows[show]['id']).set(mainDict);
-              //episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('info').set(showDict);
+              // episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).set(episodeDict);
+              // episodesRef.child("allEpisodes").child(shows[show]['id']).set(episodeDict);
              
 
-              if (mainDict["show"] != null) {
-                if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                  console.log('ACTIVE SHOW');
-                  activeShowRef.child(showNumber).child('info').set(showDict);
-                }
-              }
+              // if (episodeDict["show"] != null) {
+              //   if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+              //     console.log('ACTIVE SHOW');
+              //     activeShowRef.child(showNumber).set(showDict);
+              //   }
+              // }
 
              //Upload information about show seasons
-              var seasonID = 0  
-              var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
-              var seasonRound = (Math.round(seasonRaw));
-              if  (seasonRaw <= 1) {
-                seasonRaw = 0
-                seasonID = (Math.round(seasonRaw) + 1);
-              } else if (seasonRaw > seasonRound) {
-                seasonID = (Math.round(seasonRaw) + 1);
-              } else {
-                seasonID = (Math.round(seasonRaw));
-              }
-              episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(mainDict);
-              // episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('info').set(showDict);
-              //showRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(mainDict);
-              if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                  //activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(mainDict);
-              }
+              // var seasonID = 0  
+              // var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
+              // var seasonRound = (Math.round(seasonRaw));
+              // if  (seasonRaw <= 1) {
+              //   seasonRaw = 0
+              //   seasonID = (Math.round(seasonRaw) + 1);
+              // } else if (seasonRaw > seasonRound) {
+              //   seasonID = (Math.round(seasonRaw) + 1);
+              // } else {
+              //   seasonID = (Math.round(seasonRaw));
+              // }
+              // episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(episodeDict);
 
               //Upload info about cast
-              for (test in peopleArray) {
-                showRef.child(showNumber).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                //showRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                    activeShowRef.child(showNumber).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                   // activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                }
-                
-                // episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                // episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                // episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
-                peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(mainDict);
-                peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
-                if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
-                  castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
-                  castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(mainDict);
-                  castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
-                }
-              }
-              for (test in offersArray) {
-                console.log(offersArray[test]['label']);
-                offersRef.child(offersArray[test]['id']).set(offersArray[test]);
-                // episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                // episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                // episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                // episodesRef.child("allEpisodes").child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                showRef.child(showNumber).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                    activeShowRef.child(showNumber).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                 //   activeShowRef.child(showsID).child('seasons').child('season ' + seasonID).child(shows[show]['id']).child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                }
-              }
-              for (test in categoriesArray) {
-                categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
-              }
+              // for (test in peopleArray) {
+              //   peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+              //   peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+              //   peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+              //   if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
+              //     castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+              //     castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+              //     castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+              //   }
+              // }
+              // for (test in offersArray) {
+              //   offersRef.child(offersArray[test]['id']).set(offersArray[test]);
+              // }
 
-              //THIS IS WHERE WE CHECK FOR CATEGORY type
-              if (mainDict["show"] != null) {
-                if (mainDict["show"]['categories'] != null) {
-                  for (var category in shows[show]['_embedded']['categories']) {
-                    console.log(shows[show]['_embedded']['categories'][category]['id'])
-                    console.log(shows[show]['_embedded']['categories'][category]['label'])
-                    console.log(shows[show]['id'])                    
-                    var showID = shows[show]['_embedded']['categories'][category]['id']
-                    categoryEpisodesRef.child(showID).child(shows[show]['id']).set(mainDict);
-                    // for (test in peopleArray) {
-                    //   categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('people').child(peopleArray[test]['id']).set(peopleArray[test]);
-                    // }
-                    // for (test in offersArray) {
-                    //   categoryEpisodesRef.child(showID).child(shows[show]['id']).child('show').child('offers').child(offersArray[test]['id']).set(offersArray[test]);
-                    // }
-                  }
-                }
-              }
+              // for (test in categoriesArray) {
+              //   categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
+              // }
+
+              // //THIS IS WHERE WE CHECK FOR CATEGORY type
+              // if (episodeDict["show"] != null) {
+              //   if (episodeDict["show"]['categories'] != null) {
+              //     for (var category in shows[show]['_embedded']['categories']) {    
+              //       var showID = shows[show]['_embedded']['categories'][category]['id']
+              //       categoryEpisodesRef.child(showID).child(shows[show]['id']).set(episodeDict);
+              //     }
+              //   }
+              // }
 
 
-              rolesRef.child(rolesID).set(rolesDict);
-                console.log('WORKING...');
+              // rolesRef.child(rolesID).set(rolesDict);
+              //   console.log('WORKING...');
           };
 
-         // app.delete();
-          console.log('COMPLETE');
-          //setTimeout(function2, 30000);
+          console.log(uploadCount)
+          console.log(shows.length)
+
+          if (uploadCount == shows.length) {
+            console.log('COMPLETE');
+            function2();
+            callback(true);
+          }
+        
+          // console.log('COMPLETE');
           
-       /* } else {
-          console.log('IT IS the same or smaller')
-        } */
       }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
 
       function function2() {
-        app.delete();
+       // app.delete();
         console.log('firebased closed');
       }
 }

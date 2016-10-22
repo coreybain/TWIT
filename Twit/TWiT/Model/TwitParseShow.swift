@@ -28,7 +28,7 @@ class TwitEpisodeParse {
             
             let showValue = show.value["info"] as! NSDictionary
             let showOffers = show.value["offers"] as? NSArray
-            let showSeasons = show.value["seasons"] as? NSArray
+           // let showSeasons = show.value["seasons"] as? NSArray
             
             //MARK: - Variables
             var showNotes = ""
@@ -114,15 +114,15 @@ class TwitEpisodeParse {
             }
             
             if showHero != nil || showCover != nil || showOffers != nil {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: showSeasons, showOffersInfo: showOffers)
+                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
             } else if showHero != nil {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: showSeasons, showOffersInfo: nil)
+                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
             } else if showCover != nil {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: showSeasons, showOffersInfo: nil)
+                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
             } else if showOffers != nil {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: showSeasons, showOffersInfo: showOffers)
+                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
             } else {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: showSeasons, showOffersInfo: nil)
+                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
             }
             twitParseShowDict.append(twitShow!)
         }
