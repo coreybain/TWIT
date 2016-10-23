@@ -888,6 +888,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             });
             if (episodeDict["show"] != null) {
               if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                console.log("here we are");
                 var activeShow = new ActiveShows({
                   _id: showNumber,
                   info: info,
@@ -898,81 +899,8 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
               }
             }
 
-            if (showDict['categories'] != null) {
-            var categoriesID = showDict['categories']['id']
-            var labelRaw = showDict['categories']['label']
-            var ttlRaw = showDict['categories']['ttl']
-            var weightRaw = showDict['categories']['weight']
-            var vidRaw = showDict['categories']['vid']
-            var typeRaw = showDict['categories']['type']
-            var vocabularyNameRaw = showDict['categories']['vocabularyName']
-            var termPathRaw = showDict['categories']['termPath']
-              var categorySchema = new Categories({
-                _id: categoriesID,
-                label: labelRaw,
-                ttl: ttlRaw,
-                weight: weightRaw,
-                vid: vidRaw,
-                type: typeRaw,
-                vocabularyName: vocabularyNameRaw,
-                termPath: termPathRaw
-              })
-            }
 
-
-
-
-
-
-            Shows.findOne({_id:showNumber}, function(err, show) {
-              if (err) {
-                console.log('error found')
-                console.log('COMPLETE without posting show');
-                function2();
-                callback(true);
-              }
-              if (!show) {
-                newShow.save(function(err) {
-                  if (err) {
-                    return console.log(err)
-                  } else {
-                  console.log('Show saved successfully to mongoDB!');
-                  if (showDict['categories'] != null) {
-                    categorySchema.save(function(err) {
-                      if (err) {
-                        return console.log(err)
-                      } else {
-                        if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                          activeShow.save(function(err) {
-                            if (err) {
-                              return console.log(err)
-                            } else {
-                            console.log('Active show saved successfully to mongoDB!');
-                            console.log('COMPLETE');
-                            function2();
-                            callback(true);
-                            }
-                          });
-                        } else {
-                        console.log('COMPLETE');
-                        function2();
-                        callback(true);
-                        }
-                      }
-                    });
-                  }
-                  console.log('COMPLETE');
-                  function2();
-                  callback(true);
-                  }
-                });
-              } else {
-
-                console.log('Show is already in the database --> skipping upload');
-                function2();
-                callback(true);
-              }
-            });
+          uploadCount++
 
 
 
@@ -1257,14 +1185,97 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             //   });
           };
 
-          console.log(uploadCount)
-          console.log(shows.length)
+          var showUpload = false
+          var categoryUpload = false
 
           if (uploadCount == shows.length) {
-            console.log('COMPLETE');
-            function2();
-            callback(true);
+
+            var activeshow = shows[show]['_embedded']['shows'][embeddedShow]['active']
+
+            Shows.findOne({_id:showNumber}, function(err, show) {
+              if (err) {
+                console.log('error found')
+                console.log('COMPLETE without posting show');
+                function2();
+                callback(true);
+              }
+              if (!show) {
+                newShow.save(function(err) {
+                  if (err) {
+                    return console.log(err)
+                  } else {
+                  console.log('Show saved successfully to mongoDB!');
+                  if (activeshow == true) {
+                    activeShow.save(function(err) {
+                      if (err) {
+                        return console.log(err)
+                      } else {
+                      console.log('Active show saved successfully to mongoDB!');
+                      showUpload = true
+                      if (showUpload && categoryUpload) {
+                        console.log('COMPLETE');
+                        function2();
+                        callback(true);
+                      }
+                      }
+                    });
+                  }
+                  showUpload = true
+                  if (showUpload && categoryUpload) {
+                    console.log('COMPLETE');
+                    function2();
+                    callback(true);
+                  }
+                  }
+                });
+              } else {
+              showUpload = true
+              if (showUpload && categoryUpload) {
+                console.log('COMPLETE');
+                function2();
+                callback(true);
+              }
+              }
+            });
+
+
+            if (showDict['categories'] != null) {
+              if (categoriesArray.length > 0) {
+              console.log('inside categories');
+              uploadCategory(categoriesArray, function(uploaded) {
+                if (!uploaded) {
+                  categoryUpload = true
+                  if (showUpload && categoryUpload) {
+                    console.log('COMPLETE');
+                    function2();
+                    callback(true);
+                  }
+                } else {
+                  categoryUpload = true
+                  if (showUpload && categoryUpload) {
+                    console.log('COMPLETE');
+                    function2();
+                    callback(true);
+                  }
+                }
+              });
+            } else {
+              categoryUpload = true
+              if (showUpload && categoryUpload) {
+                console.log('COMPLETE');
+                function2();
+                callback(true);
+              }
+            }
           }
+
+          }
+
+          // if (uploadCount == shows.length) {
+          //   console.log('COMPLETE');
+          //   function2();
+          //   callback(true);
+          // }
 
           // console.log('COMPLETE');
 
@@ -1280,16 +1291,21 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
 
       //** Categories upload to mongoDB
       function uploadCategory(catDict, callback) {
-        var catID = catDict['id']
-        var labelRaw = catDict['label']
-        var ttlRaw = catDict['ttl']
-        var weightRaw = catDict['weight']
-        var vidRaw = catDict['vid']
-        var typeRaw = catDict['type']
-        var vocabularyNameRaw = catDict['vocabularyName']
-        var termPathRaw = catDict['termPath']
+        var catCount = 0
+        console.log(catDict);
+        for (cat in catDict) {
+          console.log(cat);
+        var catID = catDict[cat]['id']
+        console.log(catID);
+        var labelRaw = catDict[cat]['label']
+        var ttlRaw = catDict[cat]['ttl']
+        var weightRaw = catDict[cat]['weight']
+        var vidRaw = catDict[cat]['vid']
+        var typeRaw = catDict[cat]['type']
+        var vocabularyNameRaw = catDict[cat]['vocabularyName']
+        var termPathRaw = catDict[cat]['termPath']
         var categorySchema = new Categories({
-          _id: categoriesID,
+          _id: catID,
           label: labelRaw,
           ttl: ttlRaw,
           weight: weightRaw,
@@ -1299,29 +1315,39 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
           termPath: termPathRaw
         })
 
-        Categories.findOne({_id:catID}, function(err, cat) {
-          if (err) {
-            console.log('error found')
-            console.log('COMPLETE without posting category');
-            function2();
-            callback(false);
-          }
-          if (!cat) {
-            categorySchema.save(function(err) {
-              if (err) {
-                return console.log(err)
-              } else {
-              console.log('category saved successfully to mongoDB!');
-              callback(true)
+          Categories.findOne({_id:catID}, function(err, cat) {
+            if (err) {
+              if (catCount == catDict.length) {
+              console.log('error found')
+              console.log('COMPLETE without posting category');
+              function2();
+              callback(false);
               }
-            });
-          } else {
+            }
+            if (!cat) {
+              categorySchema.save(function(err) {
+                if (err) {
+                  console.log("hehehehehe");
+                  return console.log(err)
+                } else {
+                  if (catCount == catDict.length) {
+                    console.log('category saved successfully to mongoDB!');
+                    callback(true)
+                  }
+                }
+              });
+            } else {
+              if (catCount == catDict.length) {
+                console.log('Show is already in the database --> skipping upload');
+                function2();
+                callback(false);
+              }
+            }
+          });
+          catCount++
+          //categoriesRef.child(categoriesArray[cat]['id']).set(categoriesArray[cat]);
+        }
 
-            console.log('Show is already in the database --> skipping upload');
-            function2();
-            callback(false);
-          }
-        });
       }
 }
 module.exports.firebaseEpisodeSync = firebaseEpisodeSync;

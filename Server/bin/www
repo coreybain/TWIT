@@ -124,7 +124,7 @@ function downloadActiveEpisodes() {
         }
       }
       syncTwitEpisodes(true);
-      function syncTwitEpisodesTimer() { 
+      function syncTwitEpisodesTimer() {
         syncTwitEpisodes(true);
       }
       //var activeTwitEpisodeTimer = setInterval(syncTwitEpisodesTimer, (10000 /*(1000 * 60) * 60*/ ))
@@ -144,7 +144,7 @@ function downloadAllEpisodes() {
 }
 var twitEpisodeTimer
 
-function syncTwitEpisodes(active) { 
+function syncTwitEpisodes(active) {
   var pageNumber = 1;
   var showNumber = 0;
   var showID = 0;
@@ -157,13 +157,13 @@ function syncTwitEpisodes(active) {
     showID = showArray[showNumber];
   } else {
     console.log('End of show array --> Stopping download');
-    clearInterval(twitEpisodeTimer);  
+    clearInterval(twitEpisodeTimer);
   }
 
   console.log('showID: ' + showID);
   if (active != true) {
     twitServerSync.twitConnect("episodes", showID, (pageNumber++), function(result) {
-        
+
       // console.log(result['episodes']);
       if (result == null) {
           showNumber++;
@@ -178,7 +178,7 @@ function syncTwitEpisodes(active) {
           twitEpisodeTimer = setInterval(twitEpisodes,15000);
         } else {
           firebaseServerSync.firebaseEpisodeSync("episodes", showID, result, function(finished) {
-        
+
             if (finished == null) {
                 console.log('Something failed in uploading the episodes');
                 twitEpisodeTimer = setInterval(twitEpisodes,15000);
@@ -193,7 +193,7 @@ function syncTwitEpisodes(active) {
     }});
   } else {
     twitServerSync.twitConnect("episodes", showID, (pageNumber), function(result) {
-        
+
       // console.log(result['episodes']);
       if (result == null) {
           showNumber++;
