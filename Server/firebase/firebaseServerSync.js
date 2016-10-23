@@ -1,4 +1,11 @@
 var firebase = require("firebase");
+var mongoose = require('mongoose');
+
+var Shows = require('../Schemas/showsSchema');
+var ActiveShows = require('../Schemas/activeShowSchema');
+var Categories = require('../Schemas/categorySchema');
+
+mongoose.connect('mongodb://localhost/TwitTest');
 
 var app = firebase.initializeApp({
   databaseURL: "https://twit-mobile.firebaseio.com/",
@@ -49,6 +56,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
           for (var show in shows) {
 
             var showDict = {}
+            showDict[showNumber] = {}
             var peopleDict = {}
             var rolesDict = {}
             var offersDict = {}
@@ -134,7 +142,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                   size: shows[show]['video_small']['size']
                 };
             };
-              
+
               //Upload information about shows based on episode
               episodeDict["show"] = {}
             if (shows[show]['_embedded'] != null) {
@@ -259,7 +267,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                             url: shows[show]['_embedded']['credits'][credit]['people']['relatedLinks'][relatedLink]['url']
                         }
                       }
-                    } 
+                    }
                   peopleArray.push(peopleDict)
                 }
               }
@@ -268,7 +276,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
 
             if (shows[show]['_embedded'] != null) {
               episodeDict['embedded'] = {}
-              
+
               //Upload information about shows based on episode
               if (shows[show]['_embedded']['offers'] != null) {
               episodeDict["show"]["offers"] = {}
@@ -375,7 +383,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                           }
                         }
                         offersArray.push(offersDict)
-                      }  
+                      }
                     }
                   }
                 }
@@ -552,7 +560,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                     }
                   }
                 }
-              if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'] != null) { 
+              if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'] != null) {
                 episodeDict["show"]['credits'] = {}
                 for (var embeddedCredit in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits']) {
                   if(episodeDict["show"]['topics'] != null) {
@@ -604,7 +612,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                             twit_album_art_1400x1400: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['derivatives']['twit_album_art_1400x1400'],
                             twit_album_art_2048x2048: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['derivatives']['twit_album_art_2048x2048']
                         }
-                      } 
+                      }
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'] != null) {
                         episodeDict["show"]['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'] = {}
                         var counter = 0
@@ -616,21 +624,20 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                             counter++
                           }
                         }
-                      } 
+                      }
                     }
                   }
                 }
-                }  
+                }
               }
                 }
               }
               /**************** */
 
               if (shows[show]['_embedded']['shows'] != null) {
-                showDict = {}
                 for (var embeddedShow in shows[show]['_embedded']['shows']) {
                   showsID = shows[show]['_embedded']['shows'][embeddedShow]['id']
-                  showDict['info'] = {
+                   showDict['info'] = {
                     id: shows[show]['_embedded']['shows'][embeddedShow]['id'],
                     label: shows[show]['_embedded']['shows'][embeddedShow]['label'],
                     ttl: shows[show]['_embedded']['shows'][embeddedShow]['ttl'],
@@ -681,9 +688,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                     }
                   }
                   if (shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'] != null) {
-                    showDict['info']['hdVideoSubscriptionOption'] = {}
+                     showDict['info']['hdVideoSubscriptionOption'] = {}
                     for (var options in shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions']) {
-                      showDict['info']['hdVideoSubscriptionOption'][shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options['id']]] = {
+                       showDict['info']['hdVideoSubscriptionOption'] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['hdVideoSubscriptionOptions'][options]['ttl'],
@@ -700,9 +707,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                     }
                   }
                   if (shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'] != null) {
-                    showDict['info']['sdVideoLargeSubscriptionOptions'] = {}
+                     showDict['info']['sdVideoLargeSubscriptionOptions'] = {}
                     for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions']) {
-                      showDict['info']['sdVideoLargeSubscriptionOptions'][shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options['id']]] = {
+                       showDict['info']['sdVideoLargeSubscriptionOptions'] = {
                           id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['id'],
                           label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['label'],
                           ttl: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoLargeSubscriptionOptions'][options]['ttl'],
@@ -719,9 +726,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                     }
                   }
                   if (shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'] != null) {
-                  showDict['info']['sdVideoSmallSubscriptionOptions'] = {}
+                   showDict['info']['sdVideoSmallSubscriptionOptions'] = {}
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions']) {
-                    showDict['info']['sdVideoSmallSubscriptionOptions'][shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options['id']]] = {
+                     showDict['info']['sdVideoSmallSubscriptionOptions'] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['sdVideoSmallSubscriptionOptions'][options]['ttl'],
@@ -737,9 +744,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                     }
                   }
                   if (shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'] != null) {
-                    showDict['info']['audioSubscriptionOptions'] = {}
+                     showDict['info']['audioSubscriptionOptions'] = {}
                   for (var options in shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions']) {
-                    showDict['info']['audioSubscriptionOptions'][shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options['id']]] = {
+                     showDict['info']['audioSubscriptionOptions'] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['audioSubscriptionOptions'][options]['ttl'],
@@ -756,9 +763,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                   }
                 }
                 if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'] != null) {
-                  showDict['topics'] = {}
+                   showDict['topics'] = {}
                   for (var embeddedTopic in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics']) {
-                    showDict['topics'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id']] = {
+                     showDict['topics'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id']] = {
                           id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['id'],
                           label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['label'],
                           ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['topics'][embeddedTopic]['ttl'],
@@ -771,9 +778,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                   }
                 }
                 if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'] != null) {
-                  showDict['categories'] = {}
+                   showDict['categories'] = {}
                   for (var embeddedCategory in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories']) {
-                    showDict['categories'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id']] = {
+                     showDict['categories'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id']] = {
                           id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['id'],
                           label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['label'],
                           ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['categories'][embeddedCategory]['ttl'],
@@ -784,27 +791,11 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                         }
                   }
                 }
-              if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'] != null) { 
+              if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'] != null) {
+                 showDict['people'] = {}
                 for (var embeddedCredit in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits']) {
-                  
-
-
-                    if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles'] != null) {
-                      showDict['roles'] = {}
-                      showDict['roles'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['id']] = {
-                        id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['id'],
-                        label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['label'],
-                        ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['ttl'],
-                        weight: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['weight'],
-                        vid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['vid'],
-                        type: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['type'],
-                        vocabularyName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['vocabularyName'],
-                        termPath: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['roles']['termPath']
-                      }
-                    }
                     if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people'] != null) {
-                      showDict['people'] = {}
-                      showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']] = {
+                       showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']] = {
                         id: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id'],
                         label: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['label'],
                         ttl: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['ttl'],
@@ -815,7 +806,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                         staff: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['staff']
                       }
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture'] != null) {
-                        showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['picture'] = {
+                         showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['picture'] = {
                           fid: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['fid'],
                           url: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['url'],
                           fileName: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['fileName'],
@@ -834,12 +825,12 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                             twit_album_art_1400x1400: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['derivatives']['twit_album_art_1400x1400'],
                             twit_album_art_2048x2048: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['picture']['derivatives']['twit_album_art_2048x2048']
                         }
-                      } 
+                      }
                       if (shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'] != null) {
-                        showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'] = {}
+                         showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'] = {}
                         var counter = 0
                         for (var relatedLink in shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks']) {
-                          showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'][counter] = {
+                           showDict['people'][shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['id']]['relatedLinks'][counter] = {
                               title: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'][relatedLink]['title'],
                               url: shows[show]['_embedded']['shows'][embeddedShow]['_embedded']['credits'][embeddedCredit]['people']['relatedLinks'][relatedLink]['url']
                             }
@@ -848,7 +839,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                     }
                   }
                 }
-                }  
+                }
               }
               }
               /*************** */
@@ -883,265 +874,387 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             };
 
             var showRawID = shows[show]['_embedded']['shows'][embeddedShow]['id'];
+            //var object = ObjectId.fromString(showNumber);
+            var info = showDict['info']
+            var topics = showDict['topics']
+            var categories = showDict['categories']
+            var people = showDict['people']
+            var newShow = new Shows({
+              _id: showNumber,
+              info: info,
+              topics: topics,
+              categories: categories,
+              people: people
+            });
+            if (episodeDict["show"] != null) {
+              if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                var activeShow = new ActiveShows({
+                  _id: showNumber,
+                  info: info,
+                  topics: topics,
+                  categories: categories,
+                  people: people
+                });
+              }
+            }
 
-              // Upload basic show information to firebase
-              console.log('WORKING...');
-              showRef.child(showNumber).set(showDict, function(error) {
-                if (error) {
-                  console.log("Data could not be saved." + error);
-                } else {
-                  console.log("Show Data saved successfully.");
-                  episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).set(episodeDict, function(error) {
-                    if (error) {
-                      console.log("Data could not be saved." + error);
-                    } else {
-                      console.log("Show Episode Data saved successfully.");
-                      episodesRef.child("allEpisodes").child(shows[show]['id']).set(episodeDict, function(error) {
-                        if (error) {
-                          console.log("Data could not be saved." + error);
-                        } else {
-                          console.log("AllEpisode Data saved successfully.");
-                          if (episodeDict["show"] != null) {
-                            if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                              console.log('ACTIVE SHOW');
-                              activeShowRef.child(showNumber).set(showDict, function(error) {
-                                if (error) {
-                                  console.log("Data could not be saved." + error);
-                                } else {
-                                  console.log("Active Show Data saved successfully.");
-                                  var seasonID = 0  
-                                  var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
-                                  var seasonRound = (Math.round(seasonRaw));
-                                  if  (seasonRaw <= 1) {
-                                    seasonRaw = 0
-                                    seasonID = (Math.round(seasonRaw) + 1);
-                                  } else if (seasonRaw > seasonRound) {
-                                    seasonID = (Math.round(seasonRaw) + 1);
-                                  } else {
-                                    seasonID = (Math.round(seasonRaw));
-                                  }
-                                  episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(episodeDict, function(error) {
-                                    if (error) {
-                                      console.log("Data could not be saved." + error);
-                                    } else {
-                                      console.log("Season episode info saved successfully.");
-                                      for (test in peopleArray) {
-                                        console.log('People info saved successfully.')
-                                        peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
-                                        peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
-                                        peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
-                                        if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
-                                          console.log('Cast info saved successfully.')
-                                          castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
-                                          castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
-                                          castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
-                                        }
-                                      }
-                                      for (test in offersArray) {
-                                        console.log('Offers info saved successfully.')
-                                        offersRef.child(offersArray[test]['id']).set(offersArray[test]);
-                                      }
+            if (showDict['categories'] != null) {
+            var categoriesID = showDict['categories']['id']
+            var labelRaw = showDict['categories']['label']
+            var ttlRaw = showDict['categories']['ttl']
+            var weightRaw = showDict['categories']['weight']
+            var vidRaw = showDict['categories']['vid']
+            var typeRaw = showDict['categories']['type']
+            var vocabularyNameRaw = showDict['categories']['vocabularyName']
+            var termPathRaw = showDict['categories']['termPath']
+              var categorySchema = new Categories({
+                _id: categoriesID,
+                label: labelRaw,
+                ttl: ttlRaw,
+                weight: weightRaw,
+                vid: vidRaw,
+                type: typeRaw,
+                vocabularyName: vocabularyNameRaw,
+                termPath: termPathRaw
+              })
+            }
 
-                                      for (test in categoriesArray) {
-                                        console.log('Categories info saved successfully.')
-                                        categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
-                                      }
-                                      if (episodeDict["show"] != null) {
-                                        console.log('SHOW IS HERE')
-                                        if (episodeDict["show"]['categories'] != null) {
-                                        console.log('CATEGORIES IS HERE')
-                                          for (var category in shows[show]['_embedded']['categories']) {    
-                                            categoryEpisodesRef.child(showNumber).child(shows[show]['id']).set(episodeDict, function(error) {
-                                              if (error) {
-                                                console.log("Data could not be saved." + error);
-                                              } else {
-                                                console.log("category/offers/people data saved successfully.");
-                                                rolesRef.child(rolesID).set(rolesDict, function(error) {
-                                                  if (error) {
-                                                    console.log("Data could not be saved." + error);
-                                                  } else {
-                                                    console.log("roles information saved successfully.");
-                                                    console.log('COMPLETE');
-                                                    uploadCount++
-                                                    if (uploadCount == shows.length) {
-                                                      console.log('COMPLETE');
-                                                      function2();
-                                                      callback(true);
-                                                    }
-                                                  }
-                                                });
-                                              }
-                                            });
-                                          }
-                                        } else {
-                                          rolesRef.child(rolesID).set(rolesDict, function(error) {
-                                            if (error) {
-                                              console.log("Data could not be saved." + error);
-                                            } else {
-                                              console.log("roles information saved successfully.");
-                                              console.log('COMPLETE');
-                                              uploadCount++
-                                              if (uploadCount == shows.length) {
-                                                console.log('COMPLETE');
-                                                function2();
-                                                callback(true);
-                                              }
-                                            }
-                                          });
-                                        }
-                                      }
-                                    }
-                                  });
-                                }
-                              });
+
+
+
+
+
+            Shows.findOne({_id:showNumber}, function(err, show) {
+              if (err) {
+                console.log('error found')
+                console.log('COMPLETE without posting show');
+                function2();
+                callback(true);
+              }
+              if (!show) {
+                newShow.save(function(err) {
+                  if (err) {
+                    return console.log(err)
+                  } else {
+                  console.log('Show saved successfully to mongoDB!');
+                  if (showDict['categories'] != null) {
+                    categorySchema.save(function(err) {
+                      if (err) {
+                        return console.log(err)
+                      } else {
+                        if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+                          activeShow.save(function(err) {
+                            if (err) {
+                              return console.log(err)
                             } else {
-                              var seasonID = 0  
-                              var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
-                              var seasonRound = (Math.round(seasonRaw));
-                              if  (seasonRaw <= 1) {
-                                seasonRaw = 0
-                                seasonID = (Math.round(seasonRaw) + 1);
-                              } else if (seasonRaw > seasonRound) {
-                                seasonID = (Math.round(seasonRaw) + 1);
-                              } else {
-                                seasonID = (Math.round(seasonRaw));
-                              }
-                              episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(episodeDict, function(error) {
-                                if (error) {
-                                  console.log("Data could not be saved." + error);
-                                } else {
-                                  console.log("Season episode info saved successfully.");
-                                  for (test in peopleArray) {
-                                    console.log('People info saved successfully.')
-                                    peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
-                                    peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
-                                    peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
-                                    if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
-                                    console.log('Cast info saved successfully.')
-                                      castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
-                                      castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
-                                      castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
-                                    }
-                                  }
-                                  for (test in offersArray) {
-                                    console.log('Offers info saved successfully.')
-                                    offersRef.child(offersArray[test]['id']).set(offersArray[test]);
-                                  }
-
-                                  for (test in categoriesArray) {
-                                    console.log('Categories info saved successfully.')
-                                    categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
-                                  }
-                                  if (episodeDict["show"] != null) {
-                                    if (episodeDict["show"]['categories'] != null) {
-                                      for (var category in shows[show]['_embedded']['categories']) {    
-                                        categoryEpisodesRef.child(showNumber).child(shows[show]['id']).set(episodeDict, function(error) {
-                                          if (error) {
-                                            console.log("Data could not be saved." + error);
-                                          } else {
-                                            console.log("category/offers/people data saved successfully.");
-                                            rolesRef.child(rolesID).set(rolesDict, function(error) {
-                                              if (error) {
-                                                console.log("Data could not be saved." + error);
-                                              } else {
-                                                console.log("roles information saved successfully.");
-                                                uploadCount++
-                                                if (uploadCount == shows.length) {
-                                                  console.log('COMPLETE');
-                                                  function2();
-                                                  callback(true);
-                                                }
-                                              }
-                                            });
-                                          }
-                                        });
-                                      }
-                                    } else {
-                                          rolesRef.child(rolesID).set(rolesDict, function(error) {
-                                            if (error) {
-                                              console.log("Data could not be saved." + error);
-                                            } else {
-                                              console.log("roles information saved successfully.");
-                                              console.log('COMPLETE');
-                                              uploadCount++
-                                              if (uploadCount == shows.length) {
-                                                console.log('COMPLETE');
-                                                function2();
-                                                callback(true);
-                                              }
-                                            }
-                                          });
-                                        }
-                                  }
-                                }
-                              });
+                            console.log('Active show saved successfully to mongoDB!');
+                            console.log('COMPLETE');
+                            function2();
+                            callback(true);
                             }
-                          }
+                          });
+                        } else {
+                        console.log('COMPLETE');
+                        function2();
+                        callback(true);
                         }
-                      });
-                    }
-                  });
-                }
-              });
+                      }
+                    });
+                  }
+                  console.log('COMPLETE');
+                  function2();
+                  callback(true);
+                  }
+                });
+              } else {
 
-              //Upload information about all shows
-              // episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).set(episodeDict);
-              // episodesRef.child("allEpisodes").child(shows[show]['id']).set(episodeDict);
-             
-
-              // if (episodeDict["show"] != null) {
-              //   if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-              //     console.log('ACTIVE SHOW');
-              //     activeShowRef.child(showNumber).set(showDict);
-              //   }
-              // }
-
-             //Upload information about show seasons
-              // var seasonID = 0  
-              // var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
-              // var seasonRound = (Math.round(seasonRaw));
-              // if  (seasonRaw <= 1) {
-              //   seasonRaw = 0
-              //   seasonID = (Math.round(seasonRaw) + 1);
-              // } else if (seasonRaw > seasonRound) {
-              //   seasonID = (Math.round(seasonRaw) + 1);
-              // } else {
-              //   seasonID = (Math.round(seasonRaw));
-              // }
-              // episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(episodeDict);
-
-              //Upload info about cast
-              // for (test in peopleArray) {
-              //   peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
-              //   peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
-              //   peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
-              //   if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
-              //     castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
-              //     castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
-              //     castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
-              //   }
-              // }
-              // for (test in offersArray) {
-              //   offersRef.child(offersArray[test]['id']).set(offersArray[test]);
-              // }
-
-              // for (test in categoriesArray) {
-              //   categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
-              // }
-
-              // //THIS IS WHERE WE CHECK FOR CATEGORY type
-              // if (episodeDict["show"] != null) {
-              //   if (episodeDict["show"]['categories'] != null) {
-              //     for (var category in shows[show]['_embedded']['categories']) {    
-              //       var showID = shows[show]['_embedded']['categories'][category]['id']
-              //       categoryEpisodesRef.child(showID).child(shows[show]['id']).set(episodeDict);
-              //     }
-              //   }
-              // }
+                console.log('Show is already in the database --> skipping upload');
+                function2();
+                callback(true);
+              }
+            });
 
 
-              // rolesRef.child(rolesID).set(rolesDict);
-              //   console.log('WORKING...');
+
+            //
+            // for (test in categoriesArray) {
+            //   console.log('Categories info saved successfully.')
+            //   categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
+            // }
+            //
+            //   // Upload basic show information to firebase
+            //   console.log('WORKING...');
+            //   showRef.child(showNumber).set(showDict, function(error) {
+            //     if (error) {
+            //       console.log("Data could not be saved." + error);
+            //     } else {
+            //       console.log("Show Data saved successfully.");
+            //       episodesRef.child(showNumber).child('allEpisodes').child(shows[show]['id']).set(episodeDict, function(error) {
+            //         if (error) {
+            //           console.log("Data could not be saved." + error);
+            //         } else {
+            //           console.log("Show Episode Data saved successfully.");
+            //           episodesRef.child("allEpisodes").child(shows[show]['id']).set(episodeDict, function(error) {
+            //             if (error) {
+            //               console.log("Data could not be saved." + error);
+            //             } else {
+            //               console.log("AllEpisode Data saved successfully.");
+            //               if (episodeDict["show"] != null) {
+            //                 if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+            //                   console.log('ACTIVE SHOW');
+            //                   activeShowRef.child(showNumber).set(showDict, function(error) {
+            //                     if (error) {
+            //                       console.log("Data could not be saved." + error);
+            //                     } else {
+            //                       console.log("Active Show Data saved successfully.");
+            //                       var seasonID = 0
+            //                       var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
+            //                       var seasonRound = (Math.round(seasonRaw));
+            //                       if  (seasonRaw <= 1) {
+            //                         seasonRaw = 0
+            //                         seasonID = (Math.round(seasonRaw) + 1);
+            //                       } else if (seasonRaw > seasonRound) {
+            //                         seasonID = (Math.round(seasonRaw) + 1);
+            //                       } else {
+            //                         seasonID = (Math.round(seasonRaw));
+            //                       }
+            //                       episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(episodeDict, function(error) {
+            //                         if (error) {
+            //                           console.log("Data could not be saved." + error);
+            //                         } else {
+            //                           console.log("Season episode info saved successfully.");
+            //                           for (test in peopleArray) {
+            //                             console.log('People info saved successfully.')
+            //                             peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+            //                             peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+            //                             peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+            //                             if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
+            //                               console.log('Cast info saved successfully.')
+            //                               castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+            //                               castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+            //                               castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+            //                             }
+            //                           }
+            //                           for (test in offersArray) {
+            //                             console.log('Offers info saved successfully.')
+            //                             offersRef.child(offersArray[test]['id']).set(offersArray[test]);
+            //                           }
+            //
+            //                           for (test in categoriesArray) {
+            //                             console.log('Categories info saved successfully.')
+            //                             categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
+            //                           }
+            //                           if (episodeDict["show"] != null) {
+            //                             console.log('SHOW IS HERE')
+            //                             if (episodeDict["show"]['categories'] != null) {
+            //                             console.log('CATEGORIES IS HERE')
+            //                               for (var category in shows[show]['_embedded']['categories']) {
+            //                                 categoryEpisodesRef.child(shows[show]['_embedded']['categories'][category]['id']).child(shows[show]['id']).set(episodeDict, function(error) {
+            //                                   if (error) {
+            //                                     console.log("Data could not be saved." + error);
+            //                                   } else {
+            //                                     console.log("category/offers/people data saved successfully.");
+            //                                     rolesRef.child(rolesID).set(rolesDict, function(error) {
+            //                                       if (error) {
+            //                                         console.log("Data could not be saved." + error);
+            //                                       } else {
+            //                                         console.log("roles information saved successfully.");
+            //                                         console.log('COMPLETE');
+            //                                         uploadCount++
+            //                                         if (uploadCount == shows.length) {
+            //                                           Shows.findOne({_id:showNumber}, function(err, show) {
+            //                                             if (err) {
+            //                                               console.log('error found')
+            //                                               console.log('COMPLETE without posting show');
+            //                                               function2();
+            //                                               callback(true);
+            //                                             }
+            //                                             if (!show) {
+            //                                               newShow.save(function(err) {
+            //                                                 if (err) {
+            //                                                   return console.log(err)
+            //                                                 } else {
+            //                                                 console.log('Show saved successfully to mongoDB!');
+            //                                                   if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+            //                                                     activeShow.save(function(err) {
+            //                                                       if (err) {
+            //                                                         return console.log(err)
+            //                                                       } else {
+            //                                                       console.log('Active show saved successfully to mongoDB!');
+            //                                                       console.log('COMPLETE');
+            //                                                       function2();
+            //                                                       callback(true);
+            //                                                       }
+            //                                                     });
+            //                                                   } else {
+            //                                                   console.log('COMPLETE');
+            //                                                   function2();
+            //                                                   callback(true);
+            //                                                   }
+            //                                                 console.log('COMPLETE');
+            //                                                 function2();
+            //                                                 callback(true);
+            //                                                 }
+            //                                               });
+            //                                             } else {
+            //                                               console.log('Show is already in the database --> skipping upload');
+            //                                               function2();
+            //                                               callback(true);
+            //                                             }
+            //                                           });
+            //                                         }
+            //                                       }
+            //                                     });
+            //                                   }
+            //                                 });
+            //                               }
+            //                             } else {
+            //                               rolesRef.child(rolesID).set(rolesDict, function(error) {
+            //                                 if (error) {
+            //                                   console.log("Data could not be saved." + error);
+            //                                 } else {
+            //                                   console.log("roles information saved successfully.");
+            //                                   console.log('COMPLETE');
+            //                                   uploadCount++
+            //                                   if (uploadCount == shows.length) {
+            //                                     console.log('COMPLETE');
+            //                                     function2();
+            //                                     callback(true);
+            //                                   }
+            //                                 }
+            //                               });
+            //                             }
+            //                           }
+            //                         }
+            //                       });
+            //                     }
+            //                   });
+            //                 } else {
+            //                   var seasonID = 0
+            //                   var seasonRaw = parseInt(shows[show]['episodeNumber']) / 25
+            //                   var seasonRound = (Math.round(seasonRaw));
+            //                   if  (seasonRaw <= 1) {
+            //                     seasonRaw = 0
+            //                     seasonID = (Math.round(seasonRaw) + 1);
+            //                   } else if (seasonRaw > seasonRound) {
+            //                     seasonID = (Math.round(seasonRaw) + 1);
+            //                   } else {
+            //                     seasonID = (Math.round(seasonRaw));
+            //                   }
+            //                   episodesRef.child(showNumber).child('seasons').child('season ' + seasonID).child(shows[show]['id']).set(episodeDict, function(error) {
+            //                     if (error) {
+            //                       console.log("Data could not be saved." + error);
+            //                     } else {
+            //                       console.log("Season episode info saved successfully.");
+            //                       for (test in peopleArray) {
+            //                         console.log('People info saved successfully.')
+            //                         peopleRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+            //                         peopleRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+            //                         peopleRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+            //                         if (shows[show]['_embedded']['credits'][credit]['people']['staff'] == true) {
+            //                         console.log('Cast info saved successfully.')
+            //                           castRef.child(peopleArray[test]['id']).child("info").set(peopleArray[test]);
+            //                           castRef.child(peopleArray[test]['id']).child("episodes").child(shows[show]['id']).set(episodeDict);
+            //                           castRef.child(peopleArray[test]['id']).child("shows").child(showsID).set(showDict);
+            //                         }
+            //                       }
+            //                       for (test in offersArray) {
+            //                         console.log('Offers info saved successfully.')
+            //                         offersRef.child(offersArray[test]['id']).set(offersArray[test]);
+            //                       }
+            //
+            //                       for (test in categoriesArray) {
+            //                         console.log('Categories info saved successfully.')
+            //                         categoriesRef.child(categoriesArray[test]['id']).set(categoriesArray[test]);
+            //                       }
+            //                       if (episodeDict["show"] != null) {
+            //                         if (episodeDict["show"]['categories'] != null) {
+            //                           for (var category in shows[show]['_embedded']['categories']) {
+            //                             categoryEpisodesRef.child(shows[show]['_embedded']['categories'][category]['id']).child(shows[show]['id']).set(episodeDict, function(error) {
+            //                               if (error) {
+            //                                 console.log("Data could not be saved." + error);
+            //                               } else {
+            //                                 console.log("category/offers/people data saved successfully.");
+            //                                 rolesRef.child(rolesID).set(rolesDict, function(error) {
+            //                                   if (error) {
+            //                                     console.log("Data could not be saved." + error);
+            //                                   } else {
+            //                                     console.log("roles information saved successfully.");
+            //                                     uploadCount++
+            //                                     if (uploadCount == shows.length) {
+            //                                       Shows.findOne({_id:showNumber}, function(err, show) {
+            //                                         if (err) {
+            //                                           console.log('error found')
+            //                                           console.log('COMPLETE without posting show');
+            //                                           function2();
+            //                                           callback(true);
+            //                                         }
+            //                                         if (!show) {
+            //                                           newShow.save(function(err) {
+            //                                             if (err) {
+            //                                               return console.log(err)
+            //                                             } else {
+            //                                             console.log('Show saved successfully to mongoDB!');
+            //                                               if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
+            //                                                 activeShow.save(function(err) {
+            //                                                   if (err) {
+            //                                                     return console.log(err)
+            //                                                   } else {
+            //                                                   console.log('Active show saved successfully to mongoDB!');
+            //                                                   console.log('COMPLETE');
+            //                                                   function2();
+            //                                                   callback(true);
+            //                                                   }
+            //                                                 });
+            //                                               } else {
+            //                                               console.log('COMPLETE');
+            //                                               function2();
+            //                                               callback(true);
+            //                                               }
+            //                                             console.log('COMPLETE');
+            //                                             function2();
+            //                                             callback(true);
+            //                                             }
+            //                                           });
+            //                                         } else {
+            //                                           console.log('Show is already in the database --> skipping upload');
+            //                                           function2();
+            //                                           callback(true);
+            //                                         }
+            //                                       });
+            //                                     }
+            //                                   }
+            //                                 });
+            //                               }
+            //                             });
+            //                           }
+            //                         } else {
+            //                               rolesRef.child(rolesID).set(rolesDict, function(error) {
+            //                                 if (error) {
+            //                                   console.log("Data could not be saved." + error);
+            //                                 } else {
+            //                                   console.log("roles information saved successfully.");
+            //                                   console.log('COMPLETE');
+            //                                   uploadCount++
+            //                                   if (uploadCount == shows.length) {
+            //                                     console.log('COMPLETE');
+            //                                     function2();
+            //                                     callback(true);
+            //                                   }
+            //                                 }
+            //                               });
+            //                             }
+            //                       }
+            //                     }
+            //                   });
+            //                 }
+            //               }
+            //             }
+            //           });
+            //         }
+            //       });
+            //     }
+            //   });
           };
 
           console.log(uploadCount)
@@ -1152,9 +1265,9 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             function2();
             callback(true);
           }
-        
+
           // console.log('COMPLETE');
-          
+
       }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
@@ -1162,6 +1275,53 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
       function function2() {
        // app.delete();
         console.log('firebased closed');
+      }
+
+
+      //** Categories upload to mongoDB
+      function uploadCategory(catDict, callback) {
+        var catID = catDict['id']
+        var labelRaw = catDict['label']
+        var ttlRaw = catDict['ttl']
+        var weightRaw = catDict['weight']
+        var vidRaw = catDict['vid']
+        var typeRaw = catDict['type']
+        var vocabularyNameRaw = catDict['vocabularyName']
+        var termPathRaw = catDict['termPath']
+        var categorySchema = new Categories({
+          _id: categoriesID,
+          label: labelRaw,
+          ttl: ttlRaw,
+          weight: weightRaw,
+          vid: vidRaw,
+          type: typeRaw,
+          vocabularyName: vocabularyNameRaw,
+          termPath: termPathRaw
+        })
+
+        Categories.findOne({_id:catID}, function(err, cat) {
+          if (err) {
+            console.log('error found')
+            console.log('COMPLETE without posting category');
+            function2();
+            callback(false);
+          }
+          if (!cat) {
+            categorySchema.save(function(err) {
+              if (err) {
+                return console.log(err)
+              } else {
+              console.log('category saved successfully to mongoDB!');
+              callback(true)
+              }
+            });
+          } else {
+
+            console.log('Show is already in the database --> skipping upload');
+            function2();
+            callback(false);
+          }
+        });
       }
 }
 module.exports.firebaseEpisodeSync = firebaseEpisodeSync;

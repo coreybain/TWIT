@@ -29,7 +29,7 @@ class DataService {
     var newEpisodeData: [TwitEpisodeDetails]!
     var activeShowData: [TwitShowDetails]!
     var newReviewData: [TwitEpisodeDetails]!
-    var newTwitBitsData: [TwitEpisodeDetails]!
+    var newTwitBitsData: [TwitEpisodeDetails] = []
     var newHelpData: [TwitEpisodeDetails]!
     var activeCastData: [TwitCastDetails]!
     
@@ -42,7 +42,7 @@ class DataService {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
                     
                     print("NEW EPISODES")
-                    if self.newEpisodeData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
+                    if self.newEpisodeData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newHelpData == nil {
                         self.newReleaseData = data
                         print("Still downloading over episodes")
                         
@@ -66,7 +66,7 @@ class DataService {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
                     
                     print("CATEGORY")
-                    if self.newReleaseData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newHelpData == nil {
                         self.newEpisodeData = data
                         
                         print("Still downloading over episodes")
@@ -89,7 +89,7 @@ class DataService {
             if snapshot.exists() {
                 self.twitEpisodeParse.parseShow(data: snapshot, complete: { (data) in
                     print("ACTIVE SHOWS")
-                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.newReviewData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.newReviewData == nil || self.newHelpData == nil {
                         self.activeShowData = data
                         print("Still downloading over episodes")
                     } else {
@@ -113,7 +113,7 @@ class DataService {
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
                     print("REVIEW EPS")
-                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newTwitBitsData == nil || self.newHelpData == nil {
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newHelpData == nil {
                         self.newReviewData = data
                         print("Still downloading over episodes")
                     } else {
@@ -159,7 +159,7 @@ class DataService {
             if snapshot.exists() {
                 self.twitEpisodeParse.parseEpisode(data: snapshot, complete: { (data) in
                     print("HOW TO")
-                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newTwitBitsData == nil {
+                    if self.newReleaseData == nil || self.activeCastData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil {
                         self.newHelpData = data
                         print("Still downloading over episodes")
                     } else {
@@ -182,7 +182,7 @@ class DataService {
                 
                 self.twitEpisodeParse.parseCast(data: snapshot, complete: { (data) in
                     print("CAST MEMBERS")
-                    if self.newReleaseData == nil || self.newTwitBitsData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newHelpData == nil {
+                    if self.newReleaseData == nil || self.newEpisodeData == nil || self.activeShowData == nil || self.newReviewData == nil || self.newHelpData == nil {
                         self.activeCastData = data
                         print("Still downloading over episodes")
                     } else {
