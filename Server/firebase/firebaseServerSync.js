@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var Shows = require('../Schemas/showsSchema');
 var ActiveShows = require('../Schemas/activeShowSchema');
 var Categories = require('../Schemas/categorySchema');
+var Episodes = require('../Schemas/episodesSchema');
 
 mongoose.connect('mongodb://localhost/TwitTest');
 
@@ -25,6 +26,10 @@ var categoriesRef = db.ref("categories");
 var categoryEpisodesRef = db.ref("categoryEpisodes");
 var serverCount = 0
 var twitCount = 0
+
+var showUpload = false
+var categoryUpload = false
+var episodeUpload = false
 
 function deletefirebase() {
   console.log('DELETING ALL DATA ENTRIES');
@@ -48,12 +53,15 @@ function extend(target) {
     });
     return target;
 }
-
 function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
       var shows = data['episodes'];
     episodesRef.child('count').on("value", function(snapshot) {
        var uploadCount = 0
+       var showCounter = 0
+       var reloadCount = 0
+       console.log(shows.length);
           for (var show in shows) {
+          console.log(uploadCount);
 
             var showDict = {}
             showDict[showNumber] = {}
@@ -72,11 +80,14 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             var offerID = 0;
             var rolesID = 0;
             var categoriesID = 0;
+            var allEpisodesDict = {};
+            allEpisodesDict[showNumber] = {};
             var episodeDict = {};
 
             var mainDict = {};
             mainDict['episodes'] = {}
             mainDict['episodes'][showNumber] = {}
+            var episodeId = shows[show]['id'];
 
             episodeDict["info"] = {
                 id: shows[show]['id'],
@@ -886,9 +897,22 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
               categories: categories,
               people: people
             });
+
+            // allEpisodes[showNumber]= episodeDict
+            //var allEpisodes = allEpisodes
+            //var seasons = showDict['topics']
+
+            // var newEpisode = new Episodes({
+            //   _id: showNumber,
+            //   allEpisodes: {
+            //     [episodeId]: episodeDict
+            //   }
+            // //  seasons: topics
+            // });
+
             if (episodeDict["show"] != null) {
               if (shows[show]['_embedded']['shows'][embeddedShow]['active'] == true) {
-                console.log("here we are");
+                // console.log("here we are");
                 var activeShow = new ActiveShows({
                   _id: showNumber,
                   info: info,
@@ -900,10 +924,57 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             }
 
 
-          uploadCount++
+            // Episodes.findOne({episodeId}, function(err, episode) {
+            //   if (err) {
+            //     console.log('error found')
+            //     if (uploadCount == shows.length) {
+            //     console.log('COMPLETE without posting epsiodes');
+            //     function2();
+            //     callback(true);
+            //   }
+            //   }
+            //   if (!episode) {
+            //     newEpisode.save(function(err) {
+            //       if (err) {
+            //         console.log("THERE WAS AN ERROR HERE");
+            //         //newEpisode.[showNumber].allEpisodes.push()
+            //       } else {
+            //       console.log('Epsiodes saved successfully to mongoDB!');
+            //       if (uploadCount == shows.length) {
+            //       episodeUpload = true
+            //       if (showUpload && categoryUpload && episodeUpload) {
+            //         console.log('COMPLETE');
+            //         function2();
+            //         callback(true);
+            //       }
+            //     }
+            //       }
+            //     });
+            //   } else {
+            //     console.log("HEHEHEHEHEHEHEH");
+            //     if (uploadCount == shows.length) {
+            //   episodeUpload = true
+            //   if (showUpload && categoryUpload && episodeUpload) {
+            //     console.log('COMPLETE');
+            //     function2();
+            //     callback(true);
+            //   }
+            // }
+            //   }
+            // });
 
 
 
+
+
+            episodeUploadFunction(episodeDict, episodeId);
+              uploadCount++
+              if(uploadCount == shows.length) {
+                episodeUpload = true
+                if (categoryUpload && episodeUpload && showUpload) {
+                  callback(true)
+                }
+              }
             //
             // for (test in categoriesArray) {
             //   console.log('Categories info saved successfully.')
@@ -1183,28 +1254,22 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             //       });
             //     }
             //   });
-          };
 
-          var showUpload = false
-          var categoryUpload = false
-
-          if (uploadCount == shows.length) {
 
             var activeshow = shows[show]['_embedded']['shows'][embeddedShow]['active']
 
             Shows.findOne({_id:showNumber}, function(err, show) {
               if (err) {
-                console.log('error found')
-                console.log('COMPLETE without posting show');
-                function2();
-                callback(true);
+                // console.log('error found')
+                // console.log('COMPLETE without posting show');
+
               }
               if (!show) {
                 newShow.save(function(err) {
                   if (err) {
                     return console.log(err)
                   } else {
-                  console.log('Show saved successfully to mongoDB!');
+                  console.log('New Show saved successfully to mongoDB!');
                   if (activeshow == true) {
                     activeShow.save(function(err) {
                       if (err) {
@@ -1212,64 +1277,44 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                       } else {
                       console.log('Active show saved successfully to mongoDB!');
                       showUpload = true
-                      if (showUpload && categoryUpload) {
-                        console.log('COMPLETE');
-                        function2();
-                        callback(true);
-                      }
                       }
                     });
                   }
                   showUpload = true
-                  if (showUpload && categoryUpload) {
-                    console.log('COMPLETE');
-                    function2();
-                    callback(true);
-                  }
                   }
                 });
               } else {
               showUpload = true
-              if (showUpload && categoryUpload) {
-                console.log('COMPLETE');
-                function2();
-                callback(true);
-              }
               }
             });
 
-
             if (showDict['categories'] != null) {
               if (categoriesArray.length > 0) {
-              console.log('inside categories');
+              // console.log('inside categories');
               uploadCategory(categoriesArray, function(uploaded) {
-                if (!uploaded) {
-                  categoryUpload = true
-                  if (showUpload && categoryUpload) {
-                    console.log('COMPLETE');
-                    function2();
-                    callback(true);
-                  }
-                } else {
-                  categoryUpload = true
-                  if (showUpload && categoryUpload) {
-                    console.log('COMPLETE');
-                    function2();
-                    callback(true);
-                  }
+                reloadCount++
+              if(reloadCount == shows.length) {
+                categoryUpload = true
+                if (categoryUpload && episodeUpload && showUpload) {
+                  console.log('CATEGORY CALLBACK')
+                  callback(true)
                 }
+              }
               });
             } else {
               categoryUpload = true
-              if (showUpload && categoryUpload) {
-                console.log('COMPLETE');
-                function2();
-                callback(true);
-              }
             }
           }
 
+          };
+
+          if (uploadCount == shows.length) {
+            console.log("COMPLETE HERE");
           }
+
+
+
+
 
           // if (uploadCount == shows.length) {
           //   console.log('COMPLETE');
@@ -1327,11 +1372,11 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             if (!cat) {
               categorySchema.save(function(err) {
                 if (err) {
-                  console.log("hehehehehe");
+                  // console.log("hehehehehe");
                   return console.log(err)
                 } else {
                   if (catCount == catDict.length) {
-                    console.log('category saved successfully to mongoDB!');
+                    // console.log('category saved successfully to mongoDB!');
                     callback(true)
                   }
                 }
@@ -1339,7 +1384,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             } else {
               if (catCount == catDict.length) {
                 console.log('Show is already in the database --> skipping upload');
-                function2();
+                //function2();
                 callback(false);
               }
             }
@@ -1348,6 +1393,53 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
           //categoriesRef.child(categoriesArray[cat]['id']).set(categoriesArray[cat]);
         }
 
+      }
+
+      function episodeUploadFunction(data, episodeID) {
+        Episodes.findById({_id:showNumber}, function(err, show) {
+          if (err) {
+            return console.log('error found');
+          }
+          if (!show) {
+            // console.log('NO SHOW');
+            var newEpisode = new Episodes({
+              _id: showNumber,
+              allEpisodes: {
+                [episodeID] : data
+              }
+            //  seasons: topics
+            });
+            newEpisode.save(function(err) {
+              if (err) {
+                Episodes.findById({_id:showNumber}, function(err, show) {
+                  if (err) {
+                    return console.log('error found');
+                  }
+                  show.allEpisodes.push({
+                    [episodeID] : data
+                  });
+                  show.save(function(err) {
+                    if (err) {
+                      // console.log("THIS IS THE ERROR:");
+                      return console.log(err);
+                    }
+                  });
+                });
+              }
+            });
+          } else {
+            // console.log('SHOW FOUND');
+            show.allEpisodes.push({
+              [episodeID] : data
+            });
+            show.save(function(err) {
+              if (err) {
+                // console.log("THIS IS THE ERROR:");
+                return console.log(err);
+              }
+            });
+          }
+        });
       }
 }
 module.exports.firebaseEpisodeSync = firebaseEpisodeSync;

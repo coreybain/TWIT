@@ -18,7 +18,7 @@ var showArray = [];
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3001');
+var port = normalizePort(process.env.PORT || '3002');
 app.set('port', port);
 
 /**
@@ -179,6 +179,7 @@ function syncTwitEpisodes(active) {
         } else {
           firebaseServerSync.firebaseEpisodeSync("episodes", showID, result, function(finished) {
 
+              clearInterval(twitEpisodeTimer);
             if (finished == null) {
                 console.log('Something failed in uploading the episodes');
                 twitEpisodeTimer = setInterval(twitEpisodes,15000);
@@ -194,6 +195,7 @@ function syncTwitEpisodes(active) {
   } else {
     twitServerSync.twitConnect("episodes", showID, (pageNumber), function(result) {
 
+        clearInterval(twitEpisodeTimer);
       // console.log(result['episodes']);
       if (result == null) {
           showNumber++;
