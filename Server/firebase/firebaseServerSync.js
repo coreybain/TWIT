@@ -5,6 +5,7 @@ var Shows = require('../Schemas/showsSchema');
 var ActiveShows = require('../Schemas/activeShowSchema');
 var Categories = require('../Schemas/categorySchema');
 var Episodes = require('../Schemas/episodesSchema');
+var People = require('../Schemas/peopleSchema');
 
 mongoose.connect('mongodb://localhost/TwitTest');
 
@@ -59,7 +60,6 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
        var uploadCount = 0
        var showCounter = 0
        var reloadCount = 0
-       console.log(shows.length);
           for (var show in shows) {
           console.log(uploadCount);
 
@@ -975,6 +975,13 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
                   callback(true)
                 }
               }
+
+              for (single in peopleArray) {
+                peopleUploadFunction(peopleArray[single], peopleArray[single]['id'])
+
+              }
+
+
             //
             // for (test in categoriesArray) {
             //   console.log('Categories info saved successfully.')
@@ -1260,9 +1267,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
 
             Shows.findOne({_id:showNumber}, function(err, show) {
               if (err) {
-                // console.log('error found')
-                // console.log('COMPLETE without posting show');
-
+                console.log(err);
               }
               if (!show) {
                 newShow.save(function(err) {
@@ -1428,16 +1433,47 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
               }
             });
           } else {
-            // console.log('SHOW FOUND');
-            show.allEpisodes.push({
-              [episodeID] : data
+          // console.log('SHOW FOUND');
+            Episodes.find({'allEpisodes': { $in: [mongoose.Types.ObjectId(episodeID)]}}, function(err, episode){
+              console.log(episode);
+              if (!episode) {
+              show.allEpisodes.push({
+                [episodeID] : data
+              });
+              show.save(function(err) {
+                if (err) {
+                  // console.log("THIS IS THE ERROR:");
+                  return console.log(err);
+                }
+              });
+            } else {
+              console.log('Episode Found')
+            }
+          });
+          }
+        });
+      }
+
+      function peopleUploadFunction(data, peopleID) {
+        console.log(peopleID);
+        People.findOne({_id:peopleID}, function(err, person) {
+          if (err) {
+            return console.log('error found');
+          }
+          if (!person) {
+            // console.log('NO SHOW');
+            var newPerson = new People({
+              _id: peopleID,
+              info: data
+            //  seasons: topics
             });
-            show.save(function(err) {
+            newPerson.save(function(err) {
               if (err) {
-                // console.log("THIS IS THE ERROR:");
-                return console.log(err);
+                console.log('Error creating person');
               }
             });
+          } else {
+            console.log('Person exists on the server');
           }
         });
       }
