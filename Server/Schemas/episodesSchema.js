@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var episodesSchema = new Schema({
-  _id: Number,
+  _id: Number, 
   allEpisodes: [
     {  }, { strict: false }
 ]

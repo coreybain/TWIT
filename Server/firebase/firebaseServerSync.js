@@ -5,6 +5,7 @@ var Shows = require('../Schemas/showsSchema');
 var ActiveShows = require('../Schemas/activeShowSchema');
 var Categories = require('../Schemas/categorySchema');
 var Episodes = require('../Schemas/episodesSchema');
+var AllEpisodes = require('../Schemas/allEpisodesSchema');
 var People = require('../Schemas/peopleSchema');
 
 mongoose.connect('mongodb://localhost/TwitTest');
@@ -1313,9 +1314,6 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
 
           };
 
-          if (uploadCount == shows.length) {
-            console.log("COMPLETE HERE");
-          }
 
 
 
@@ -1437,7 +1435,7 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
             Episodes.find({'allEpisodes': { $in: [mongoose.Types.ObjectId(episodeID)]}}, function(err, episode){
               console.log(episode);
               if (!episode) {
-              show.allEpisodes.push({
+              Episodes.allEpisodes.push({
                 [episodeID] : data
               });
               show.save(function(err) {
@@ -1452,6 +1450,28 @@ function firebaseEpisodeSync(dbRef, showNumber, data, callback) {
           });
           }
         });
+
+        AllEpisodes.findOne({_id:episodeID}, function(err, epid) {
+          if (!epid) {
+            console.log('Episode not found on server --> Adding now');
+          var info = data['info']
+          var show = data['show']
+            var newEp = new AllEpisodes({
+              _id: episodeID,
+              info: info,
+              show: show
+            });
+            newEp.save(function(err) {
+              if (err) {
+                // console.log("THIS IS THE ERROR:");
+                return console.log(err);
+              }
+            });
+          } else {
+            console.log("EPISODE ALREADY IN ALL EPISODES SECTION OF SERVER");
+          }
+        });
+
       }
 
       function peopleUploadFunction(data, peopleID) {

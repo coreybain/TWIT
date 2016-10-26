@@ -162,7 +162,7 @@ function syncTwitEpisodes(active) {
 
   console.log('showID: ' + showID);
   if (active != true) {
-    twitServerSync.twitConnect("episodes", showID, (pageNumber++), function(result) {
+    twitServerSync.twitConnect("episodes", 1683, (pageNumber++), function(result) {
 
       // console.log(result['episodes']);
       if (result == null) {
@@ -177,7 +177,7 @@ function syncTwitEpisodes(active) {
           console.log('Show has finished downloading all episodes');
           twitEpisodeTimer = setInterval(twitEpisodes,15000);
         } else {
-          firebaseServerSync.firebaseEpisodeSync("episodes", showID, result, function(finished) {
+          firebaseServerSync.firebaseEpisodeSync("episodes", 1683, result, function(finished) {
 
               clearInterval(twitEpisodeTimer);
             if (finished == null) {
