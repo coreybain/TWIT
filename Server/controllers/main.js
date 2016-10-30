@@ -29,9 +29,6 @@ exports.index = function(req, res, next) {
       json.pastShows = pastShows
       People.find().sort({'_id': +1}).limit(20).exec(function(err, people) {
         json.people = people
-        Episodes.find({'_id': '1683'}).exec(function(err, allBits) {
-          for (var bit in allBits) {
-            json.bit = allBits[bit]['allEpisodes'];
             AllEpisodes.find({'show.categories.93.id': '93'}).sort({'_id': -1}).limit(20).exec(function(err, newsCat) {
               json.newsCat = newsCat;
               AllEpisodes.find({'show.categories.92.id': '92'}).sort({'_id': -1}).limit(20).exec(function(err, reviewCat) {
@@ -44,8 +41,6 @@ exports.index = function(req, res, next) {
                   });
                 });
               });
-            });
-          }
         });
       });
 
@@ -73,7 +68,7 @@ exports.seasons = function(req, res, next) {
         }
         return beta - alpha;
       });
-      json.newEpisodes = sorted; //.slice(0, 16);
+      json.newEpisodes = sorted.slice(0, 16);
     }
     Episodes.find({'_id': req.params.showid}).sort().exec(function(err, trendingEpisodes) {
       for (var episode in trendingEpisodes) {
