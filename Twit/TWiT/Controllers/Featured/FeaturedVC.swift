@@ -21,6 +21,7 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     var newRelease: [TwitEpisodeDetails]?
     var newEpisode: [TwitEpisodeDetails]?
     var activeShow: [TwitShowDetails]?
+    var pastShow: [TwitShowDetails]?
     var newReview: [TwitEpisodeDetails]?
     var newTwitBits: [TwitEpisodeDetails]?
     var newHelp: [TwitEpisodeDetails]?
@@ -54,11 +55,12 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
     
     func downloadUI() {
         loading(loading: true)
-        DataService.ds().downloadFeaturedPage { (newReleaseData, newEpisodeData, activeShowData, newReviewData, newTwitBitsData, newHelpData, activeCastData) in
+        DataService.ds().downloadFeaturedPage { (newReleaseData, newEpisodeData, activeShowData, pastShowData, newReviewData, newTwitBitsData, newHelpData, activeCastData) in
             print("WE GOT HERE")
             self.newRelease = newReleaseData
             self.newEpisode = newEpisodeData
             self.activeShow = activeShowData
+            self.pastShow = pastShowData
             self.newReview = newReviewData
             self.newTwitBits = newTwitBitsData
             self.newHelp = newHelpData
@@ -97,8 +99,8 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
             cell.nameLabel.text = "Product Reviews"
             cell.episodeData = newReview
         } else if (indexPath as NSIndexPath).item == 4 {
-            cell.nameLabel.text = "TWiT Bits & Specials"
-            cell.episodeData = newTwitBits
+            cell.nameLabel.text = "Past Shows"
+            cell.pastShowData = pastShow
         } else if (indexPath as NSIndexPath).item == 5 {
             cell.nameLabel.text = "Help and How-To's"
             cell.episodeData = newHelp
@@ -134,17 +136,25 @@ class FeaturedVC: UICollectionViewController, UICollectionViewDelegateFlowLayout
         return header
     }
     
-    func showSeasonDetail(_ app: TwitEpisodeDetails) {
+    func showSeasonDetail(_ app: TwitEpisodeDetails?, _ show: TwitShowDetails?) {
         if UIDevice.current.userInterfaceIdiom == .pad {
             let layout = UICollectionViewFlowLayout()
             let seasonsDetailVC = SeasonsDetailVC(collectionViewLayout: layout)
-            seasonsDetailVC.episodeData = app
+            if app != nil {
+                seasonsDetailVC.episodeData = app
+            } else if show != nil {
+                seasonsDetailVC.showData = show
+            }
             seasonsDetailVC.modalPresentationStyle = .formSheet
             self.present(seasonsDetailVC, animated: true, completion: nil)
         } else {
             let layout = UICollectionViewFlowLayout()
             let seasonsDetailVC = SeasonsDetailVC(collectionViewLayout: layout)
-            seasonsDetailVC.episodeData = app
+            if app != nil {
+                seasonsDetailVC.episodeData = app
+            } else if show != nil {
+                seasonsDetailVC.showData = show
+            }
             navigationController?.pushViewController(seasonsDetailVC, animated: true)
         }
     }

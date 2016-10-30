@@ -98,18 +98,18 @@ extension TwitEpisodeParse {
             showCover = ShowCoverImage(coverArtFileName: coverArtFileName, coverArtFileSize: coverArtSize, coverArtFileID: coverArtID, coverArtHeight: coverArtHeight, coverArtWidth: coverArtWidth, coverArtUrl: coverArtUrl, coverArtType: coverArttype, coverArt2048: coverArt2048, coverArt1400: coverArt1400, coverArt600: coverArt600)
         }
         
-        if let showCast = showData.value(forKey: "people") as? NSArray {
-            twitParseShowCastDict = parseCast(data: showCast)
+        if let showCast = showData.value(forKey: "people") as? NSDictionary {
+            twitParseShowCastDict = parseCast(rawData: showCast)
         }
-        
+        print(twitParseShowCastDict.count)
         if showHero != nil || showCover != nil {
-            twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
+            twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
         } else if showHero != nil {
-            twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
+            twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
         } else if showCover != nil {
-            twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
+            twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
         } else {
-            twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
+            twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
         }
         
         return twitShow!

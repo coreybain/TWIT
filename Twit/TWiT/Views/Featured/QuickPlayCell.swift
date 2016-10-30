@@ -13,12 +13,29 @@ class QuickPlayCell: UICollectionViewCell {
     
     var episodeData: TwitEpisodeDetails? {
         didSet {
-            if let imageName = episodeData?.showPicture {
-                imageView.image = UIImage(named: imageName)
+            if episodeData != nil {
+                loadingSpinner.stopAnimating()
+                playButton.isHidden = false
+                imageView.isHidden = false
+                nameLabel.isHidden = false
+                episodeLabel.isHidden = false
+                descriptionLabel.isHidden = false
+                audioButton.isHidden = false
+                if let imageName = episodeData?.showPicture {
+                    imageView.image = UIImage(named: imageName)
+                }
+                episodeLabel.text = "Episode: \((episodeData?.episodeNumber)!)"
+                descriptionLabel.text = (episodeData?.showNotes)!
+                nameLabel.text = episodeData?.label
+            } else {
+                loadingSpinner.startAnimating()
+                playButton.isHidden = true
+                imageView.isHidden = true
+                nameLabel.isHidden = true
+                episodeLabel.isHidden = true
+                descriptionLabel.isHidden = true
+                audioButton.isHidden = true
             }
-            episodeLabel.text = "Episode: \((episodeData?.episodeNumber)!)"
-            descriptionLabel.text = (episodeData?.showNotes)!
-            nameLabel.text = episodeData?.label
         }
     }
     
@@ -67,6 +84,13 @@ class QuickPlayCell: UICollectionViewCell {
         label.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    let loadingSpinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.hidesWhenStopped = true
+        spinner.activityIndicatorViewStyle = .white
+        return spinner
     }()
     
     let nameLabel: UILabel = {
@@ -138,6 +162,7 @@ class QuickPlayCell: UICollectionViewCell {
         addSubview(episodeLabel)
         addSubview(audioButton)
         addSubview(dividerLineView)
+        addSubview(loadingSpinner)
         
         addConstraintsWithFormat("H:|-14-[v0]|", views: titleLabel)
         addConstraintsWithFormat("V:|[v0(30)]", views: titleLabel)
@@ -157,7 +182,8 @@ class QuickPlayCell: UICollectionViewCell {
         addConstraintsWithFormat("H:|[v0]|", views: dividerLineView)
         addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
         
-        
+        addConstraintsWithFormat("H:|-\(Int((UIScreen.main.bounds.width / 2) / 2))-[v0]-\(Int((UIScreen.main.bounds.width / 2) / 2))-|", views: loadingSpinner)
+        addConstraintsWithFormat("V:|[v0][v1]|", views: titleLabel, loadingSpinner)
         
         playButton.centerXAnchor.constraint(equalTo: imageView.centerXAnchor).isActive = true
         playButton.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true

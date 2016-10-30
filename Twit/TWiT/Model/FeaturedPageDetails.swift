@@ -785,3 +785,111 @@ struct TwitCastRelatedLinks {
     }
 }
 
+
+struct TwitOfferDetails {
+    private var _id:String!
+    private var _url:String!
+    private var _label:String!
+    private var _imageUrl:String?
+    private var _imageType:String?
+    private var _image1600:String?
+    private var _image1200:String?
+    private var _image800:String?
+    private var _image600:String?
+    private var _image400:String?
+    
+    var id:String {
+        get {
+            return _id
+        }
+    }
+    
+    var url:String {
+        get {
+            return _url
+        }
+    }
+    
+    var label:String {
+        get {
+            return _label
+        }
+    }
+    
+    var imageUrl:String {
+        get {
+            if _imageUrl == nil {
+                return ""
+            }
+            return _imageUrl!
+        }
+    }
+    
+    var imageType:String {
+        get {
+            if _imageType == nil {
+                return ""
+            }
+            return _imageType!
+        }
+    }
+    
+    var image1600:String {
+        get {
+            if _image1600 == nil {
+                return ""
+            }
+            return _image1600!
+        }
+    }
+    
+    var image1200:String {
+        get {
+            if _image1200 == nil {
+                return ""
+            }
+            return _image1200!
+        }
+    }
+    
+    var image800:String {
+        get {
+            if _image800 == nil {
+                return ""
+            }
+            return _image800!
+        }
+    }
+    
+    var image600:String {
+        get {
+            if _image600 == nil {
+                return ""
+            }
+            return _image600!
+        }
+    }
+    
+    var image400:String {
+        get {
+            if _image400 == nil {
+                return ""
+            }
+            return _image400!
+        }
+    }
+    
+    init(ID:String, url:String, label:String, imageUrl:String?, imageType:String?, image1600:String?, image1200:String?, image800:String?, image600:String?, image400:String?) {
+        _id = ID
+        _url = url
+        _label = label
+        _imageUrl = imageUrl
+        _imageType = imageType
+        _image1600 = image1600
+        _image1200 = image1200
+        _image800 = image800
+        _image600 = image600
+        _image400 = image400
+    }
+}
+

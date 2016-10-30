@@ -17,126 +17,138 @@ class TwitEpisodeParse {
     var twitCastRelatedLinks: [TwitCastRelatedLinks] = []
     var twitCastDict: [TwitCastDetails] = []
     var castDict: [TwitCastDetails] = []
+    var twitOffers: [TwitOfferDetails] = []
     
-    func parseShow(data:FIRDataSnapshot, complete:([TwitShowDetails]) -> ()) {
-        let showData = data.value as! [String : AnyObject]
+    func parseShow(data:NSArray, complete:([TwitShowDetails]) -> ()) {
+        //let showData = data.value as! [String : AnyObject]
         
         var twitParseShowDict: [TwitShowDetails] = []
         var twitParseShowCastDict: [TwitCastDetails] = []
         
-        for show in showData {
-            
-            let showValue = show.value["info"] as! NSDictionary
-            let showOffers = show.value["offers"] as? NSArray
-           // let showSeasons = show.value["seasons"] as? NSArray
-            
-            //MARK: - Variables
-            var showNotes = ""
-            var showDate = ""
-            
-            var heroImageUrl = ""
-            var heroImageID = ""
-            var heroImageFileName = ""
-            var heroImagetype = ""
-            var heroImageSize = ""
-            var heroImageWidth = ""
-            var heroImageHeight = ""
-            var heroImage1600 = ""
-            var heroImage1200 = ""
-            var heroImage800 = ""
-            
-            var coverArtUrl = ""
-            var coverArtID = ""
-            var coverArtFileName = ""
-            var coverArttype = ""
-            var coverArtSize = ""
-            var coverArtWidth = ""
-            var coverArtHeight = ""
-            var coverArt2048 = ""
-            var coverArt1400 = ""
-            var coverArt600 = ""
-            
-            var twitCastLinks:TwitCastRelatedLinks?
-            var twitCast:TwitCastDetails?
-            var twitShow:TwitShowDetails?
-            var showHero:ShowHeroImage?
-            var showCover:ShowCoverImage?
+        for showInfo in data {
             
             
+            if let show = showInfo as? NSDictionary {
             
-            let ID = showValue.value(forKey: "id") as! String
-            let label = showValue.value(forKey: "label") as! String
-            let description = showValue.value(forKey: "description") as! String
-            if showValue.value(forKey: "showNotes") as? String != nil {
-                showNotes = showValue.value(forKey: "showNotes") as! String
-            }
-            if showValue.value(forKey: "showDate") as? String != nil {
-                showNotes = showValue.value(forKey: "showDate") as! String
-            }
-            let tagLine = showValue.value(forKey: "tagLine") as! String
-            let shortCode = showValue.value(forKey: "shortCode") as! String
-            let active = showValue.value(forKey: "active") as! Bool
-            
-            if let heroImage = showValue.value(forKey: "heroImage") as? NSDictionary {
-                heroImageUrl = heroImage.value(forKey: "url") as! String
-                heroImageID = heroImage.value(forKey: "fid") as! String
-                heroImageFileName = heroImage.value(forKey: "fileName") as! String
-                heroImagetype = heroImage.value(forKey: "urmimeTypel") as! String
-                heroImageSize = heroImage.value(forKey: "fileSize") as! String
-                heroImageWidth = heroImage.value(forKey: "width") as! String
-                heroImageHeight = heroImage.value(forKey: "height") as! String
-                if let derivatives = heroImage.value(forKey: "derivatives") as? NSDictionary {
-                    heroImage1600 = derivatives.value(forKey: "twit_slideshow_1600x400") as! String
-                    heroImage1200 = derivatives.value(forKey: "twit_slideshow_1200x300") as! String
-                    heroImage800 = derivatives.value(forKey: "twit_slideshow_800x200") as! String
+                let showValue = show.value(forKey: "info") as! NSDictionary
+                let showOffers = show.value(forKey: "offers") as? NSArray
+               // let showSeasons = show.value["seasons"] as? NSArray
+                
+                //MARK: - Variables
+                var showNotes = ""
+                var showDate = ""
+                
+                var heroImageUrl = ""
+                var heroImageID = ""
+                var heroImageFileName = ""
+                var heroImagetype = ""
+                var heroImageSize = ""
+                var heroImageWidth = ""
+                var heroImageHeight = ""
+                var heroImage1600 = ""
+                var heroImage1200 = ""
+                var heroImage800 = ""
+                
+                var coverArtUrl = ""
+                var coverArtID = ""
+                var coverArtFileName = ""
+                var coverArttype = ""
+                var coverArtSize = ""
+                var coverArtWidth = ""
+                var coverArtHeight = ""
+                var coverArt2048 = ""
+                var coverArt1400 = ""
+                var coverArt600 = ""
+                
+                var twitCastLinks:TwitCastRelatedLinks?
+                var twitCast:TwitCastDetails?
+                var twitShow:TwitShowDetails?
+                var showHero:ShowHeroImage?
+                var showCover:ShowCoverImage?
+                
+                
+                
+                let ID = "\(showValue.value(forKey: "id") as! Int)"
+                let label = showValue.value(forKey: "label") as! String
+                let description = showValue.value(forKey: "description") as! String
+                if showValue.value(forKey: "showNotes") as? String != nil {
+                    showNotes = showValue.value(forKey: "showNotes") as! String
                 }
-                showHero = ShowHeroImage(heroImageFileName: heroImageFileName, heroImageFileSize: heroImageSize, heroImageFileID: heroImageID, heroImageHeight: heroImageHeight, heroImageWidth: heroImageWidth, heroImageUrl: heroImageUrl, heroImageType: heroImagetype, heroImage1600: heroImage1600, heroImage1200: heroImage1200, heroImage800: heroImage800)
-            }
-            
-            if let coverArt = showValue.value(forKey: "coverArt") as? NSDictionary {
-                coverArtUrl = coverArt.value(forKey: "url") as! String
-                coverArtFileName = coverArt.value(forKey: "fileName") as! String
-                coverArtID = coverArt.value(forKey: "fid") as! String
-                coverArttype = coverArt.value(forKey: "urmimeTypel") as! String
-                coverArtSize = coverArt.value(forKey: "fileSize") as! String
-                coverArtWidth = coverArt.value(forKey: "width") as! String
-                coverArtHeight = coverArt.value(forKey: "height") as! String
-                if let derivatives = coverArt.value(forKey: "derivatives") as? NSDictionary {
-                    coverArt2048 = derivatives.value(forKey: "twit_album_art_2048x2048") as! String
-                    coverArt1400 = derivatives.value(forKey: "twit_album_art_1400x1400") as! String
-                    coverArt600 = derivatives.value(forKey: "twit_album_art_600x600") as! String
+                if showValue.value(forKey: "showDate") as? String != nil {
+                    showNotes = showValue.value(forKey: "showDate") as! String
                 }
-                showCover = ShowCoverImage(coverArtFileName: coverArtFileName, coverArtFileSize: coverArtSize, coverArtFileID: coverArtID, coverArtHeight: coverArtHeight, coverArtWidth: coverArtWidth, coverArtUrl: coverArtUrl, coverArtType: coverArttype, coverArt2048: coverArt2048, coverArt1400: coverArt1400, coverArt600: coverArt600)
+                let tagLine = showValue.value(forKey: "tagLine") as! String
+                let shortCode = showValue.value(forKey: "shortCode") as! String
+                let active = showValue.value(forKey: "active") as! Bool
+                
+                if let heroImage = showValue.value(forKey: "heroImage") as? NSDictionary {
+                    heroImageUrl = heroImage.value(forKey: "url") as! String
+                    heroImageID = heroImage.value(forKey: "fid") as! String
+                    heroImageFileName = heroImage.value(forKey: "fileName") as! String
+                    heroImagetype = heroImage.value(forKey: "urmimeTypel") as! String
+                    heroImageSize = heroImage.value(forKey: "fileSize") as! String
+                    heroImageWidth = heroImage.value(forKey: "width") as! String
+                    heroImageHeight = heroImage.value(forKey: "height") as! String
+                    if let derivatives = heroImage.value(forKey: "derivatives") as? NSDictionary {
+                        heroImage1600 = derivatives.value(forKey: "twit_slideshow_1600x400") as! String
+                        heroImage1200 = derivatives.value(forKey: "twit_slideshow_1200x300") as! String
+                        heroImage800 = derivatives.value(forKey: "twit_slideshow_800x200") as! String
+                    }
+                    showHero = ShowHeroImage(heroImageFileName: heroImageFileName, heroImageFileSize: heroImageSize, heroImageFileID: heroImageID, heroImageHeight: heroImageHeight, heroImageWidth: heroImageWidth, heroImageUrl: heroImageUrl, heroImageType: heroImagetype, heroImage1600: heroImage1600, heroImage1200: heroImage1200, heroImage800: heroImage800)
+                }
+                
+                if let coverArt = showValue.value(forKey: "coverArt") as? NSDictionary {
+                    coverArtUrl = coverArt.value(forKey: "url") as! String
+                    coverArtFileName = coverArt.value(forKey: "fileName") as! String
+                    coverArtID = coverArt.value(forKey: "fid") as! String
+                    coverArttype = coverArt.value(forKey: "urmimeTypel") as! String
+                    coverArtSize = coverArt.value(forKey: "fileSize") as! String
+                    coverArtWidth = coverArt.value(forKey: "width") as! String
+                    coverArtHeight = coverArt.value(forKey: "height") as! String
+                    if let derivatives = coverArt.value(forKey: "derivatives") as? NSDictionary {
+                        coverArt2048 = derivatives.value(forKey: "twit_album_art_2048x2048") as! String
+                        coverArt1400 = derivatives.value(forKey: "twit_album_art_1400x1400") as! String
+                        coverArt600 = derivatives.value(forKey: "twit_album_art_600x600") as! String
+                    }
+                    showCover = ShowCoverImage(coverArtFileName: coverArtFileName, coverArtFileSize: coverArtSize, coverArtFileID: coverArtID, coverArtHeight: coverArtHeight, coverArtWidth: coverArtWidth, coverArtUrl: coverArtUrl, coverArtType: coverArttype, coverArt2048: coverArt2048, coverArt1400: coverArt1400, coverArt600: coverArt600)
+                }
+                
+                if let showCast = show.value(forKey: "people") as? NSDictionary {
+                    twitParseShowCastDict = parseCast(rawData: showCast)
+                }
+                
+                if showHero != nil || showCover != nil || showOffers != nil {
+                    twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
+                } else if showHero != nil {
+                    twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
+                } else if showCover != nil {
+                    twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
+                } else if showOffers != nil {
+                    twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
+                } else {
+                    twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
+                }
+                twitParseShowDict.append(twitShow!)
             }
-            
-            if let showCast = show.value["people"] as? NSArray {
-                twitParseShowCastDict = parseCast(data: showCast)
-            }
-            
-            if showHero != nil || showCover != nil || showOffers != nil {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
-            } else if showHero != nil {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: showHero, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
-            } else if showCover != nil {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: showCover, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
-            } else if showOffers != nil {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: showOffers)
-            } else {
-                twitShow = TwitShowDetails(label: label, showID: ID, description: description, active: active, shortCode: shortCode, showContactInfo: nil, showDate: showDate, tagline: tagLine, showHeroImage: nil, showCoverImage: nil, categoryID: nil, categoryLabel: nil, topicsID: nil, topicsLabel: nil, twitCastDetails: twitParseShowCastDict, showSeasonInfo: nil, showOffersInfo: nil)
-            }
-            twitParseShowDict.append(twitShow!)
         }
-        if Int(data.childrenCount) == twitParseShowDict.count {
+        if Int(data.count) == twitParseShowDict.count {
             complete(twitParseShowDict)
             print("complete")
         }
     }
     
-    func parseCast(data:NSArray) -> [TwitCastDetails] {
+    func parseCast(rawData:NSDictionary) -> [TwitCastDetails] {
         
         var twitParseShowCastDict: [TwitCastDetails] = []
-        
-        for people in data {
+        let data = rawData as! [String:AnyObject]
+//        var array = [NSDictionary]()
+//        for (key, value) in data {
+//            print(key)
+//            array.append(["\(key)":value])
+//        }
+//        print(array)
+//        print(array.count)
+        for (key, value) in data {
             
             var castArt2048 = ""
             var castArt1400 = ""
@@ -153,7 +165,7 @@ class TwitEpisodeParse {
             var twitCastLinks:TwitCastRelatedLinks?
             var twitCast:TwitCastDetails?
             
-            let showPeople = people as! NSDictionary
+            let showPeople = value as! NSDictionary
             
             let castID = showPeople.value(forKey: "id") as! String
             let castLabel = showPeople.value(forKey: "label") as! String
@@ -203,7 +215,12 @@ class TwitEpisodeParse {
         let minutes = data.value(forKey: "minutes") as! String
         let seconds = data.value(forKey: "seconds") as! String
         let mediaUrl = data.value(forKey: "mediaUrl") as! String
-        let size = data.value(forKey: "size") as! String
-        return TwitVideoDetails(formatString: format, mediaUrlString: mediaUrl, runningTimeString: runningTime, hoursString: hours, minutesString: minutes, secondsString: seconds, sizeString: size)
+        var size:String?
+        if let dataSize = data.value(forKey: "size") as? String {
+            size = data.value(forKey: "size") as? String
+        } else {
+            size = ""
+        }
+        return TwitVideoDetails(formatString: format, mediaUrlString: mediaUrl, runningTimeString: runningTime, hoursString: hours, minutesString: minutes, secondsString: seconds, sizeString: size!)
     }
 }

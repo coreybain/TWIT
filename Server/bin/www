@@ -97,8 +97,8 @@ function onListening() {
   //This is used to sync data from the twit servers to Spiritdevs Firebase account.
 
   /*** This is where we start setting up the server ***/
-  setupTwitServer();
-  //runTwitServer();
+  //setupTwitServer();
+  runTwitServer();
   //firebaseServerSync.deletefirebase();
 }
 
@@ -162,7 +162,7 @@ function syncTwitEpisodes(active) {
 
   console.log('showID: ' + showID);
   if (active != true) {
-    twitServerSync.twitConnect("episodes", 1683, (pageNumber++), function(result) {
+    twitServerSync.twitConnect("episodes", showID, (pageNumber++), function(result) {
 
       // console.log(result['episodes']);
       if (result == null) {
@@ -177,7 +177,7 @@ function syncTwitEpisodes(active) {
           console.log('Show has finished downloading all episodes');
           twitEpisodeTimer = setInterval(twitEpisodes,15000);
         } else {
-          firebaseServerSync.firebaseEpisodeSync("episodes", 1683, result, function(finished) {
+          firebaseServerSync.firebaseEpisodeSync("episodes", showID, result, function(finished) {
 
               clearInterval(twitEpisodeTimer);
             if (finished == null) {
@@ -205,10 +205,22 @@ function syncTwitEpisodes(active) {
           showNumber++;
           console.log('Show has finished downloading all episodes');
         } else {
-          showNumber++;
-          firebaseServerSync.firebaseEpisodeSync("episodes", showID, result);
-          console.log('Show has been updated');
-        }
+          firebaseServerSync.firebaseEpisodeSync("episodes", showID, result, function(finished) {
+
+              clearInterval(twitEpisodeTimer);
+            if (finished == null) {
+                console.log('Something failed in uploading the episodes');
+                  showNumber++;
+                twitEpisodeTimer = setInterval(twitEpisodes,15000);
+            } else {
+              if (finished == true) {
+                console.log('Show has uploaded successfully');
+                  showNumber++;
+                twitEpisodeTimer = setInterval(twitEpisodes,15000);
+              }
+            }
+          }
+          )}
     }});
   }
   }

@@ -13,22 +13,41 @@ import QuartzCore
 class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
     
     //MARK: -- Variables
+    fileprivate let homeCellID = "HomeCell"
     fileprivate let headerId = "headerId"
     fileprivate let topShowDetailsId = "headerId"
     fileprivate let baseCellId = "baseCell"
     fileprivate let quickEpisodeCell = "quickEpisodeCell"
     fileprivate let categoryCell = "categoryCell"
     fileprivate let largeCellId = "largeCellId"
+    
+    var recentEpisodesData: [TwitEpisodeDetails]?
+    var trendingEpisodesData: [TwitEpisodeDetails]?
+    var offersData: [TwitOfferDetails]?
+    
     var tapBGGesture: UITapGestureRecognizer!
     
     var episodeData: TwitEpisodeDetails? {
         didSet {
+            DataService.ds().downloadSeasonShowPage(showID: (episodeData?.showDetails.ID)!) { (recentEps, trendingEps, offers) in
+                self.recentEpisodesData = recentEps
+                self.trendingEpisodesData = trendingEps
+                self.offersData = offers
+                self.collectionView?.reloadData()
+            }
             collectionView?.reloadData()
         }
     }
     
     var showData: TwitShowDetails? {
         didSet {
+            print((showData?.ID)!)
+            DataService.ds().downloadSeasonShowPage(showID: (showData?.ID)!) { (recentEps, trendingEps, offers) in
+                self.recentEpisodesData = recentEps
+                self.trendingEpisodesData = trendingEps
+                self.offersData = offers
+                self.collectionView?.reloadData()
+            }
             collectionView?.reloadData()
         }
     }
@@ -83,13 +102,19 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = episodeData?.showLabel
+        if let title = episodeData?.showLabel {
+            navigationItem.title = title
+        } else if let title = showData?.label {
+            navigationItem.title = title
+        }
         
         collectionView?.alwaysBounceVertical = true
         navigationController?.navigationBar.barStyle = .black
         collectionView?.backgroundColor = UIColor(red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0) //UIColor(colorLiteralRed: 29, green: 29, blue: 28, alpha: 1.0)
         collectionView?.showsVerticalScrollIndicator = false
         
+        
+        collectionView?.register(CategoryCell.self, forCellWithReuseIdentifier: homeCellID)
         collectionView?.register(BaseCell.self, forCellWithReuseIdentifier: baseCellId)
         collectionView?.register(TopShowDetailsId.self, forCellWithReuseIdentifier: topShowDetailsId)
         collectionView?.register(QuickPlayCell.self, forCellWithReuseIdentifier: quickEpisodeCell)
@@ -111,26 +136,17 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
                 return cell
             }
             if (indexPath as NSIndexPath).item == 1 {
-                if showData != nil {
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! CategoryCell
-                    cell.showData = seasonInfo
-                    cell.nameLabel.text = "Current Seasons"
-                    return cell
-                } else {
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: categoryCell, for: indexPath as IndexPath) as! CategoryCell
-                    //cell.showData = seasonInfo
-                    cell.cellLoading = true
-                    cell.loadingLabel.text = "Loading current seasons"
-                    cell.nameLabel.text = "Current Seasons"
-                    return cell
-                }
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: categoryCell, for: indexPath as IndexPath) as! CategoryCell
+                cell.episodeData = recentEpisodesData
+                cell.cellLoading = true
+                cell.nameLabel.text = "Current Episodes"
+                return cell
             }
             if (indexPath as NSIndexPath).item == 2 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: categoryCell, for: indexPath as IndexPath) as! CategoryCell
-                //cell.showData = seasonInfo
+                cell.episodeData = trendingEpisodesData
                 cell.cellLoading = true
-                cell.loadingLabel.text = "Loading current seasons"
-                cell.nameLabel.text = "Past Seasons"
+                cell.nameLabel.text = "Trending Episodes"
                 return cell
             }
             if (indexPath as NSIndexPath).item == 3 {
@@ -142,7 +158,7 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
             
             if (indexPath as NSIndexPath).item == 4 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
-                cell.singleSponsorsInEpisodeData = episodeData
+                cell.offersData = offersData
                 cell.nameLabel.text = "Sponsors"
                 return cell
             }
@@ -151,31 +167,31 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
         if showData != nil {
             if (indexPath as NSIndexPath).item == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
-                cell.episodeData = episodeData
+                cell.episodeData = recentEpisodesData?[0]
                 return cell
             }
             if (indexPath as NSIndexPath).item == 1 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
-                cell.episodeData = episodeData
-                cell.titleLabel.text = "Current Seasons"
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: homeCellID, for: indexPath as IndexPath) as! CategoryCell
+                cell.episodeData = recentEpisodesData
+                cell.nameLabel.text = "Current Episodes"
                 return cell
             }
             if (indexPath as NSIndexPath).item == 2 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: quickEpisodeCell, for: indexPath as IndexPath) as! QuickPlayCell
-                cell.episodeData = episodeData
-                cell.titleLabel.text = "Past Seasons"
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: homeCellID, for: indexPath as IndexPath) as! CategoryCell
+                cell.episodeData = trendingEpisodesData
+                cell.nameLabel.text = "Trending Episodes"
                 return cell
             }
             if (indexPath as NSIndexPath).item == 3 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
-                cell.singleCastInEpisodeData = episodeData
+                cell.singleCastInShowData = showData
                 cell.nameLabel.text = "Cast and Crew"
                 return cell
             }
             
             if (indexPath as NSIndexPath).item == 4 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: largeCellId, for: indexPath as IndexPath) as! CategoryLargeCell
-                cell.singleEpisodeData = episodeData
+                cell.offersData = offersData
                 cell.nameLabel.text = "Sponsors"
                 return cell
             }
@@ -187,10 +203,12 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if episodeData != nil {
-            if (indexPath as NSIndexPath).item == 0 {
-                return CGSize(width: view.frame.width, height: 130)
-            }
+        
+        if (indexPath as NSIndexPath).item == 0 {
+            return CGSize(width: view.frame.width, height: 130)
+        }
+        if (indexPath as NSIndexPath).item == 1 || (indexPath as NSIndexPath).item == 2 {
+            return CGSize(width: view.frame.width, height: 200)
         }
         
         return CGSize(width: view.frame.width, height: 170)
@@ -199,7 +217,12 @@ class SeasonsDetailVC: UICollectionViewController, UICollectionViewDelegateFlowL
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! SeasonsDetailCoverHeader
-        header.coverImage.image = UIImage(named: "\((episodeData?.showDetails.showHeroImage.heroImageFileName)!)")
+        
+        if let headerImage = episodeData?.showDetails.showHeroImage.heroImageFileName {
+            header.coverImage.image = UIImage(named: "\(headerImage)")
+        } else if let headerImage = showData?.showHeroImage.heroImageFileName {
+            header.coverImage.image = UIImage(named: "\(headerImage)")
+        }
         
         return header
     }

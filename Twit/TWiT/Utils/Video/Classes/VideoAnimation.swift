@@ -47,6 +47,9 @@ extension VideoVC {
                 self.backPlayerControlsView.alpha = 0.55
                 self.playerControlsView.alpha = 1.0
                 self.minimizeButton.alpha = 1.0
+                if !self.isFullscreen {
+                    UIApplication.shared.setStatusBarHidden(false, with: .slide)
+                }
                 
                 }, completion: nil)
             hideTimer?.invalidate()
@@ -65,6 +68,9 @@ extension VideoVC {
                     self.backPlayerControlsView.alpha = 0.0
                     self.playerControlsView.alpha = 0.0
                     self.minimizeButton.alpha = 0.0
+                    if !self.isFullscreen {
+                        UIApplication.shared.setStatusBarHidden(true, with: .slide)
+                    }
                     
                     }, completion: nil)
             }

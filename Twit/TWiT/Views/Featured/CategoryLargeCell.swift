@@ -41,6 +41,17 @@ class CategoryLargeCell: CategoryCell {
                 cell.imageView.image = UIImage(named: "leo_1")
                 return cell
             }
+        } else if singleCastInShowData != nil {
+            if let cellname = (singleCastInShowData?.twitCastDetails[indexPath.row].pictureUrl300) {
+                
+                //cell.imageView.image = UIImage(named: cellname)
+                cell.imageView.sd_setImage(with: URL(string: cellname), placeholderImage: UIImage(named: "twit1"))
+                return cell
+                
+            } else {
+                cell.imageView.image = UIImage(named: "twit1")
+                return cell
+            }
         } else if episodeData != nil {
             for cast in (episodeData?[indexPath.row].showDetails.twitCastDetails)! {
                 if cast.pictureUrl300 != "" {
@@ -48,11 +59,20 @@ class CategoryLargeCell: CategoryCell {
                     cell.imageView.sd_setImage(with: URL(string: cellname), placeholderImage: UIImage(named: "twit1"))
                     return cell
                 } else {
-                    cell.imageView.image = UIImage(named: "leo_1")
+                    cell.imageView.image = UIImage(named: "twit1")
                     return cell
                 }
             }
+        } else if offersData != nil {
+            if let cellname = offersData?[indexPath.row].image800 {
+                cell.imageView.sd_setImage(with: URL(string: cellname), placeholderImage: UIImage(named: "twit1"))
+                return cell
+            } else {
+                cell.imageView.image = UIImage(named: "twit1")
+                return cell
+            }
         }
+        
         if seasonOffersPic {
             //OFFERS WILL GO IN HERE
         }
@@ -74,6 +94,12 @@ class CategoryLargeCell: CategoryCell {
             } else {
                 cell.imageView.image = UIImage(named: "banner-bits1400")
             }
+        } else if let cellname = (pastShowData?[indexPath.row].showCoverImage.coverArtFileName) {
+            if UIImage(named: "banner-\(cellname)") != nil {
+                cell.imageView.image = UIImage(named: "banner-\(cellname)")
+            } else {
+                cell.imageView.image = UIImage(named: "banner-bits1400")
+            }
         } else {
             cell.imageView.image = UIImage(named: "banner-bits1400")
         }
@@ -86,6 +112,10 @@ class CategoryLargeCell: CategoryCell {
             if let cast = castData?[indexPath.row] {
                 featuredVC?.showCastDetail(cast)
             }
+        } else if let show = showData?[indexPath.row] {
+            featuredVC?.showSeasonDetail(nil, show)
+        } else if let show = pastShowData?[indexPath.row] {
+            featuredVC?.showSeasonDetail(nil, show)
         }
     }
     

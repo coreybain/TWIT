@@ -28,7 +28,18 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
             showsCollectionView.reloadData()
         }
     }
+    var offersData: [TwitOfferDetails]? {
+        didSet {
+            showsCollectionView.reloadData()
+        }
+    }
     var singleCastInEpisodeData: TwitEpisodeDetails? {
+        didSet {
+            seasonCastPic = true
+            showsCollectionView.reloadData()
+        }
+    }
+    var singleCastInShowData: TwitShowDetails? {
         didSet {
             seasonCastPic = true
             showsCollectionView.reloadData()
@@ -44,7 +55,14 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
             showsCollectionView.reloadData()
         }
     }
+    
     var showData: [TwitShowDetails]? {
+        didSet {
+            showsCollectionView.reloadData()
+        }
+    }
+    
+    var pastShowData: [TwitShowDetails]? {
         didSet {
             showsCollectionView.reloadData()
         }
@@ -142,11 +160,17 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
             return count
         } else if let count = showData?.count {
             return count
+        } else if let count = pastShowData?.count {
+            return count
         } else if let count = castData?.count {
             return count
         } else if let count = singleEpisodeData?.showDetails.twitCastDetails.count {
             return count
         } else if let count = singleCastInEpisodeData?.showDetails.twitCastDetails.count {
+            return count
+        } else if let count = singleCastInShowData?.twitCastDetails.count {
+            return count
+        } else if let count = offersData?.count {
             return count
         } else {
             return 0
@@ -177,13 +201,16 @@ class CategoryCell: UICollectionViewCell, UICollectionViewDataSource, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if episodeData != nil {
+            print(episodeData?[indexPath.row].showDetails.twitCastDetails.count)
             if episodeData?[indexPath.row].showDetails.twitCastDetails.count == 0 {
                 if let show = episodeData?[indexPath.row] {
                     featuredVC?.showShowsDetail(show)
                 }
             } else if let show = episodeData?[indexPath.row] {
-                featuredVC?.showSeasonDetail(show)
+                featuredVC?.showSeasonDetail(show, nil)
             }
+        } else {
+            print("HELLO")
         }
         
         
