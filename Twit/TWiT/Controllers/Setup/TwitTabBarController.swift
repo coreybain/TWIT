@@ -14,37 +14,40 @@ class TwitTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Home viewController
+        // Featured viewController
         let homeLayout = UICollectionViewFlowLayout()
         let homeVC = FeaturedVC(collectionViewLayout: homeLayout)
         let homeNavController = UINavigationController(rootViewController: homeVC)
         homeNavController.tabBarItem.title = "Featured"
         homeNavController.tabBarItem.image = UIImage(named: "iconFeatured")
         
-        // Shows viewController
-        let notificationLayout = UIViewController()
-        let notificationNavController = UINavigationController(rootViewController: notificationLayout)
-        notificationNavController.tabBarItem.title = "Subscriptions"
-        notificationNavController.tabBarItem.image = UIImage(named: "iconSubscriptions")
+        // Subscriptions viewController
+        let subscriptionLayout = UICollectionViewFlowLayout()
+        let subscriptionVC = SubscriptionsVC(collectionViewLayout: subscriptionLayout)
+        let subscriptionNavController = UINavigationController(rootViewController: subscriptionVC)
+        subscriptionNavController.tabBarItem.title = "Subscriptions"
+        subscriptionNavController.tabBarItem.image = UIImage(named: "iconSubscriptions")
         
         // Live viewController
-        let showLayout = UIViewController()
-        let showNavController = UINavigationController(rootViewController: showLayout)
-        showNavController.tabBarItem.title = "Live"
-        showNavController.tabBarItem.image = UIImage(named: "iconLive")
+        let liveViewController = LiveVC()
+        let liveNavController = UINavigationController(rootViewController: liveViewController)
+        liveNavController.tabBarItem.title = "Live"
+        liveNavController.tabBarItem.image = UIImage(named: "iconLive")
         
-        // Twit viewController
-        let twitController = UIViewController()
-        let twitNavController = UINavigationController(rootViewController: twitController)
-        twitNavController.tabBarItem.title = "Trending"
-        twitNavController.tabBarItem.image = UIImage(named: "iconTrending")
+        // Trending viewController
+        let trendingLayout = UICollectionViewFlowLayout()
+        let trendingVC = TrendingVC(collectionViewLayout: trendingLayout)
+        let trendingNavController = UINavigationController(rootViewController: trendingVC)
+        trendingNavController.tabBarItem.title = "Trending"
+        trendingNavController.tabBarItem.image = UIImage(named: "iconTrending")
         
         // Accounts viewController
-        let accountController = UIViewController()
-        let accountNavController = UINavigationController(rootViewController: accountController)
+        let accountLayout = UICollectionViewFlowLayout()
+        let accountVC = AccountVC(collectionViewLayout: accountLayout)
+        let accountNavController = UINavigationController(rootViewController: accountVC)
         accountNavController.tabBarItem.title = "Account"
         accountNavController.tabBarItem.image = UIImage(named: "iconAccount")
         
-        viewControllers = [homeNavController, notificationNavController, showNavController, twitNavController, accountNavController]
+        viewControllers = [homeNavController, subscriptionNavController, liveNavController, trendingNavController, accountNavController]
     }
 }
