@@ -18,6 +18,7 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     let guideLuncher = GuideLauncher()
     var irc: GMIRCClient!
     var messages: [TwitLiveMessage] = []
+    var cellSize: [CGSize] = []
     fileprivate let liveCellID = "liveCell"
     
     //MARK: -- UI Elements
@@ -67,6 +68,7 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     let chatSendButton: UIButton = {
         let button = UIButton()
         button.setTitle("Send", for: .normal)
+        //button.addG
         return button
     }()
     
@@ -126,15 +128,22 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         collectionView.dataSource = self
         
         showLiveView()
-        
-        let socket = GMSocket(host: "irc.twit.tv", port: 6667)
-        irc = GMIRCClient(socket: socket)
-        irc.delegate = self
-        irc.register("coreybaines", user: "coreybain23", realName: "corey tony")
-        
-
+        showChatView()
     }
     
+    func showChatView() {
+        
+        if let username = UserDefaults.standard.object(forKey: "username") {
+            self.setupChatView()
+            let socket = GMSocket(host: "irc.twit.tv", port: 6667)
+            irc = GMIRCClient(socket: socket)
+            irc.delegate = self
+            irc.register((username as! String), user: (username as! String), realName: (username as! String))
+        } else {
+            
+        }
+        
+    }
     
     func keyboardWillAppear(notification: NSNotification){
         UserDefaults.standard.set(true, forKey: "keyboardVisable")
@@ -195,8 +204,27 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
         
         controlsContainerView.frame = videoFrame
-        collectionView.frame = CGRect(x: 0, y: (offsetHeight + height), width: view.frame.width, height: (view.frame.height - (offsetHeight + height + (tabBarController?.tabBar.frame.size.height)!) - (tabBarController?.tabBar.frame.size.height)!))
         
+        view.addSubview(controlsContainerView)
+        
+        controlsContainerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LiveVC.touching)))
+        
+        controlsContainerView.addSubview(activityIndicatorView)
+        activityIndicatorView.centerXAnchor.constraint(equalTo: controlsContainerView.centerXAnchor).isActive = true
+        activityIndicatorView.centerYAnchor.constraint(equalTo: controlsContainerView.centerYAnchor).isActive = true
+        
+        
+    }
+    
+    
+    func setupChatView() {
+        
+        let height = view.frame.width * 9/16
+        let offsetHeight = UIApplication.shared.statusBarFrame.height + (navigationController?.navigationBar.frame.size.height)!
+        let videoFrame = CGRect(x: 0, y: offsetHeight, width: view.frame.width, height: height)
+        
+        collectionView.frame = CGRect(x: 0, y: (offsetHeight + height), width: view.frame.width, height: (view.frame.height - (offsetHeight + height + (tabBarController?.tabBar.frame.size.height)!) - (tabBarController?.tabBar.frame.size.height)!))
+        collectionView.contentInset = UIEdgeInsetsMake(0, 0, 14, 0)
         chatEntryTab.frame = CGRect(x: 0, y: (offsetHeight + height + (collectionView.frame.height)), width: view.frame.height, height: (tabBarController?.tabBar.frame.size.height)!)
         
         
@@ -217,8 +245,6 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         chatSadButton.frame = CGRect(x: (70 + (view.frame.width - 150) + 50 + ((tabBarController?.tabBar.frame.size.height)! - 15) + ((tabBarController?.tabBar.frame.size.height)! - 15) + ((tabBarController?.tabBar.frame.size.height)! - 15) + ((tabBarController?.tabBar.frame.size.height)! - 15)), y: rightY, width: ((tabBarController?.tabBar.frame.size.height)! - 15), height: ((tabBarController?.tabBar.frame.size.height)! - 15))
         
         
-        
-        view.addSubview(controlsContainerView)
         view.addSubview(collectionView)
         view.addSubview(chatEntryTab)
         chatEntryTab.addSubview(chatTextBar)
@@ -229,14 +255,9 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         chatEntryTab.addSubview(chatSupriseButton)
         chatEntryTab.addSubview(chatSadButton)
         chatEntryTab.addSubview(chatSendButton)
+
         
-        controlsContainerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LiveVC.touching)))
-        
-        controlsContainerView.addSubview(activityIndicatorView)
-        activityIndicatorView.centerXAnchor.constraint(equalTo: controlsContainerView.centerXAnchor).isActive = true
-        activityIndicatorView.centerYAnchor.constraint(equalTo: controlsContainerView.centerYAnchor).isActive = true
-        
-        
+
     }
     
     func touching() {
@@ -303,7 +324,14 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: liveCellID, for: indexPath as IndexPath) as! LiveChatCell
-        cell.textLabel.text = "\(messages[indexPath.row].user): \(messages[indexPath.row].message)"
+        
+        var userString = messages[indexPath.row].user
+        var messageString = messages[indexPath.row].message
+        
+        cell.textLabel.text = String(messageString.characters.dropFirst())
+        cell.userLabel.text = String(userString.characters.dropFirst())
+        cell.timeLabel.text = " - monday at 11:54 AM"
+        
         return cell
     }
     
@@ -312,7 +340,31 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 20)
+        var height: CGFloat = 50
+        
+        //we are just measuring height so we add a padding constant to give the label some room to breathe!
+        var padding: CGFloat = 14
+        
+        //estimate each cell's height
+        
+        let text = messages[indexPath.item].message
+        let string = text.characters.dropFirst()
+        height = estimateFrameForText(text: String(string)).height + padding
+        print(height)
+        return CGSize(width: view.frame.width, height: (height + 8))
+        
+        //return CGSize(width: view.frame.width, height: 20)
+    }
+    
+    private func estimateFrameForText(text: String) -> CGRect {
+        //we make the height arbitrarily large so we don't undershoot height in calculation
+        let height: CGFloat = 5000
+        
+        let size = CGSize(width: (view.frame.width - 32), height: height)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 14, weight: UIFontWeightRegular)]
+        
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: attributes, context: nil)
     }
 }
 
@@ -341,6 +393,6 @@ extension LiveVC: GMIRCClientDelegate {
         collectionView.reloadData()
         let item = self.collectionView(collectionView, numberOfItemsInSection: 0) - 1
         let lastItemIndex = NSIndexPath(item: item, section: 0)
-        collectionView.scrollToItem(at: lastItemIndex as IndexPath, at: UICollectionViewScrollPosition.top, animated: false)
+        collectionView.scrollToItem(at: lastItemIndex as IndexPath, at: UICollectionViewScrollPosition.top, animated: true)
     }
 }
