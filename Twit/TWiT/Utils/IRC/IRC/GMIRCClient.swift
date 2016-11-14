@@ -191,11 +191,32 @@ private extension GMIRCClient {
         case "PRIVMSG":
             delegate?.didReceivePrivateMessage(ircMsg!.params!.textToBeSent!, from: ircMsg!.prefix!.nickName!)
         case "VERSION":
-            _sendCommand("NOTICE \((ircMsg?.user)!) VERSION TWiTApp v0.8 Spiritdevs Australia - www.spiritdevs.com / \(UIDevice.current.model)")
-            //sendMessageToChannel("TWiTApp v0.8 Spiritdevs Australia", channel: "#helpdesk")
+            _sendCommand(":\(UserDefaults.standard.object(forKey: "username")!) NOTICE \((ircMsg?.user)!) :\0VERSION TWiTApp : v0.8 : Spiritdevs Australia - www.spiritdevs.com / \(UIDevice.current.model)\0")
+            
+        case "TIME":
+            let date = NSDate()
+            let calendar = NSCalendar.current
+            let hour = calendar.component(.hour, from: date as Date)
+            let minutes = calendar.component(.minute, from: date as Date)
+            
+            print(calendar)
+            let timestamp = Int64(date.timeIntervalSince1970 * 1000.0)
+            _sendCommand(":\(UserDefaults.standard.object(forKey: "username")!) NOTICE \((ircMsg?.user)!) \001 : TIME \(timestamp) \001 ")
         default:
             //            print("Message not handled: \(msg)")
             break;
+        }
+    }
+    
+    func getDayOfWeek(_ today:String) -> Int? {
+        let formatter  = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        if let todayDate = formatter.date(from: today) {
+            let myCalendar = Calendar(identifier: .gregorian)
+            let weekDay = myCalendar.component(.weekday, from: todayDate)
+            return weekDay
+        } else {
+            return nil
         }
     }
 }

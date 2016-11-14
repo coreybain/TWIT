@@ -63,6 +63,20 @@ open class GMIRCMessage: NSObject {
                 } else {
                      return nil
                 }
+            } else if (msg.range(of: "TIME") != nil) {  //legat
+                if subString[1] == "PRIVMSG" {
+                    if ((prefix?.nickName)!.range(of: "legat") != nil) {
+                        user = String((prefix?.nickName)!.characters.dropFirst())
+                        command = "TIME"
+                    } else if subString[2] == "\(UserDefaults.standard.object(forKey: "username")!)" {
+                        user = String((prefix?.nickName)!.characters.dropFirst())
+                        command = "TIME"
+                    } else {
+                        return nil
+                    }
+                } else {
+                    return nil
+                }
             } else {
                 command = subString[1]
             }
