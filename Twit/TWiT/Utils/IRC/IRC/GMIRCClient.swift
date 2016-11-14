@@ -63,6 +63,12 @@ extension GMIRCClient: GMIRCClientProtocol {
         _socket.open()
     }
     
+    public func closeIRC() {
+        
+        _socket.delegate = self
+        _socket.close()
+    }
+    
     public func join(_ channel: String) {
         guard !channel.isEmpty && channel.hasPrefix("#") else {
             return
@@ -83,6 +89,7 @@ extension GMIRCClient: GMIRCClientProtocol {
             print("Invalid channel")
             return
         }
+        
         _sendCommand("PRIVMSG \(channel) :\(message)")
     }
 }
@@ -108,9 +115,15 @@ extension GMIRCClient: GMSocketDelegate {
     
     public func didReceiveMessage(_ msg: String) {
         
-        print("\(msg)")
+       // print("\(msg)")
+        
+        if msg.range(of: "Nickname is already in use") != nil {
+            print("NICK EXISTS")
+            delegate?.nickAlreadyExists()
+        }
         
         let msgList = msg.components(separatedBy: ENDLINE)
+
         for line in msgList {
             if line.hasPrefix("PING") {
                 _pong(msg)
@@ -132,6 +145,7 @@ private extension GMIRCClient {
     
     func _sendCommand(_ command: String) {
         let msg = command + ENDLINE
+        print(msg)
         _socket.sendMessage(msg)
     }
     
@@ -176,6 +190,9 @@ private extension GMIRCClient {
             //delegate?.didJoin(ircMsg!.params!.unparsed!)
         case "PRIVMSG":
             delegate?.didReceivePrivateMessage(ircMsg!.params!.textToBeSent!, from: ircMsg!.prefix!.nickName!)
+        case "VERSION":
+            _sendCommand("NOTICE \((ircMsg?.user)!) VERSION TWiTApp v0.8 Spiritdevs Australia - www.spiritdevs.com / \(UIDevice.current.model)")
+            //sendMessageToChannel("TWiTApp v0.8 Spiritdevs Australia", channel: "#helpdesk")
         default:
             //            print("Message not handled: \(msg)")
             break;

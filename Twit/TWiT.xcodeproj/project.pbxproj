@@ -17,6 +17,7 @@
 		83199F901DC6FDC8009A507B /* LiveVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83199F8F1DC6FDC8009A507B /* LiveVC.swift */; };
 		83199F921DC6FF90009A507B /* TrendingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83199F911DC6FF90009A507B /* TrendingVC.swift */; };
 		83199F941DC7002B009A507B /* AccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83199F931DC7002B009A507B /* AccountVC.swift */; };
+		831BEABB1DD7BC710099FB05 /* UIIntExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831BEABA1DD7BC710099FB05 /* UIIntExtentions.swift */; };
 		8323936C1D9B09DC00A85474 /* VideoLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323936B1D9B09DC00A85474 /* VideoLauncher.swift */; };
 		8336E5761DA992B500E2AD35 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336E5751DA992B500E2AD35 /* LoadingView.swift */; };
 		8336E57C1DA995CF00E2AD35 /* RPCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336E57B1DA995CF00E2AD35 /* RPCircularProgress.swift */; };
@@ -102,6 +103,7 @@
 		83199F8F1DC6FDC8009A507B /* LiveVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiveVC.swift; path = Controllers/Live/LiveVC.swift; sourceTree = "<group>"; };
 		83199F911DC6FF90009A507B /* TrendingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendingVC.swift; sourceTree = "<group>"; };
 		83199F931DC7002B009A507B /* AccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
+		831BEABA1DD7BC710099FB05 /* UIIntExtentions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIIntExtentions.swift; path = Utils/UIIntExtentions.swift; sourceTree = "<group>"; };
 		8323936B1D9B09DC00A85474 /* VideoLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoLauncher.swift; path = Utils/VideoLauncher.swift; sourceTree = "<group>"; };
 		8336E5751DA992B500E2AD35 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingView.swift; path = Views/LoadingView.swift; sourceTree = "<group>"; };
 		8336E57B1DA995CF00E2AD35 /* RPCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RPCircularProgress.swift; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 				8397AB051D97BCF900009C01 /* UIGradientImageView.swift */,
 				8323936B1D9B09DC00A85474 /* VideoLauncher.swift */,
 				8336E57D1DA9A52700E2AD35 /* UIImageExtentions.swift */,
+				831BEABA1DD7BC710099FB05 /* UIIntExtentions.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -608,6 +611,7 @@
 				8397AB081D97D87B00009C01 /* TwitParseShow.swift in Sources */,
 				8355CE9D1DAB85EE00BAF3F7 /* PeopleVC.swift in Sources */,
 				8397AAFE1D97388600009C01 /* FeaturedPageDetails.swift in Sources */,
+				831BEABB1DD7BC710099FB05 /* UIIntExtentions.swift in Sources */,
 				8397AAF11D961FAE00009C01 /* FeaturedVC.swift in Sources */,
 				8302CA141D9CD1220018F982 /* QuickPlayCell.swift in Sources */,
 				8370478C1DCFC3A300A90592 /* GMIRCMessagePrefix.swift in Sources */,

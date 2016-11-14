@@ -45,8 +45,9 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     let chatEntryTab: UIScrollView = {
         let layout = UIScrollView()
-        layout.backgroundColor = UIColor.blue // UIColor(red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
+        layout.backgroundColor = UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1.0)
         layout.isScrollEnabled = true
+        layout.addBorder(edge: .top, color: UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 0.5), thickness: 10.0)
         layout.showsVerticalScrollIndicator = false
         layout.showsHorizontalScrollIndicator = false
         return layout
@@ -54,8 +55,10 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     let chatTextBar: UITextField = {
         let tf = UITextField()
-        tf.backgroundColor = UIColor.red
-        tf.placeholder = "Tap to enter text..."
+        tf.backgroundColor = UIColor.clear
+        //tf.placeholder = "Tap to enter text..."
+        tf.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
+        tf.attributedPlaceholder = NSAttributedString(string: "Tap to enter text...", attributes: [NSForegroundColorAttributeName: UIColor.white])
         return tf
     }()
     
@@ -68,7 +71,6 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     let chatSendButton: UIButton = {
         let button = UIButton()
         button.setTitle("Send", for: .normal)
-        //button.addG
         return button
     }()
     
@@ -108,6 +110,28 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         return button
     }()
     
+    let chatIconView: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: "chatIcon")
+        return image
+    }()
+    
+    let chatUsernameBar: UITextField = {
+        let tf = UITextField()
+        tf.backgroundColor = UIColor.red
+        tf.placeholder = "Choose your username"
+        return tf
+    }()
+    
+    let chatJoinButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Join", for: .normal)
+        button.backgroundColor = UIColor.blue
+        button.isUserInteractionEnabled = true
+        
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
@@ -134,13 +158,14 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     func showChatView() {
         
         if let username = UserDefaults.standard.object(forKey: "username") {
-            self.setupChatView()
+            setupChatView()
             let socket = GMSocket(host: "irc.twit.tv", port: 6667)
             irc = GMIRCClient(socket: socket)
             irc.delegate = self
             irc.register((username as! String), user: (username as! String), realName: (username as! String))
         } else {
-            
+            setupChatView()
+            setupChatUsernameView()
         }
         
     }
@@ -255,9 +280,28 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         chatEntryTab.addSubview(chatSupriseButton)
         chatEntryTab.addSubview(chatSadButton)
         chatEntryTab.addSubview(chatSendButton)
+        
+        
+        chatSendButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LiveVC.sendButtonPressed)))
 
         
 
+    }
+    
+    func setupChatUsernameView() {
+        
+        chatIconView.frame = CGRect(x: (view.frame.width / 2) - 50, y: (view.frame.height / 2), width: 100, height: 100)
+        chatUsernameBar.frame = CGRect(x: (view.frame.width / 2) - 125, y: (view.frame.height / 2) + 120, width: 200, height: 30)
+        chatJoinButton.frame = CGRect(x: (view.frame.width / 2) + 85, y: (view.frame.height / 2) + 120, width: 50, height: 30)
+        
+        view.addSubview(chatIconView)
+        view.addSubview(chatUsernameBar)
+        view.addSubview(chatJoinButton)
+        
+        chatJoinButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LiveVC.joinIRC)))
+        
+        collectionView.isHidden = true
+        chatEntryTab.isHidden = true
     }
     
     func touching() {
@@ -278,6 +322,7 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     func chatBarType(typing:Bool) {
         if typing {
+            view.bringSubview(toFront: chatEntryTab)
             chatSadButton.isHidden = true
             chatSupriseButton.isHidden = true
             chatDislikeButton.isHidden = true
@@ -285,8 +330,18 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
             chatLikeButton.isHidden = true
             chatShareButton.isHidden = true
             chatSendButton.isHidden = false
+            chatTextBar.isHidden = false
+            chatEntryTab.isHidden = false
             chatTextBar.frame = CGRect(x: 10, y: (((tabBarController?.tabBar.frame.size.height)! / 2) - (((tabBarController?.tabBar.frame.size.height)! - 15) / 2)), width: (view.frame.width - 80), height: ((tabBarController?.tabBar.frame.size.height)! - 15))
             chatEntryTab.contentSize = CGSize(width: view.frame.width, height: (tabBarController?.tabBar.frame.size.height)!)
+            if UserDefaults.standard.object(forKey: "username") == nil {
+                chatTextBar.text = chatUsernameBar.text
+                chatTextBar.placeholder = "Choose your username"
+                chatSendButton.titleLabel?.text = "Join"
+            } else {
+                chatTextBar.placeholder = "Tap to enter text..."
+                chatSendButton.titleLabel?.text = "Send"
+            }
             
         } else {
             let farRight = (70 + (view.frame.width - 150) + 50 + ((tabBarController?.tabBar.frame.size.height)! - 15) + ((tabBarController?.tabBar.frame.size.height)! - 15) + ((tabBarController?.tabBar.frame.size.height)! - 15))
@@ -299,7 +354,10 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
             chatSendButton.isHidden = true
             chatTextBar.frame = CGRect(x: 70, y: (((tabBarController?.tabBar.frame.size.height)! / 2) - (((tabBarController?.tabBar.frame.size.height)! - 15) / 2)), width: (view.frame.width - 150), height: ((tabBarController?.tabBar.frame.size.height)! - 15))
             chatEntryTab.contentSize = CGSize(width: view.frame.width + farRight, height: (tabBarController?.tabBar.frame.size.height)!)
-            
+            if UserDefaults.standard.object(forKey: "username") == nil {
+                chatEntryTab.isHidden = true
+                chatUsernameBar.text = chatTextBar.text
+            }
         }
     }
     
@@ -327,9 +385,18 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         
         var userString = messages[indexPath.row].user
         var messageString = messages[indexPath.row].message
+        if messageString.characters.first == ":" {
+            cell.textLabel.text = String(messageString.characters.dropFirst())
+        } else {
+            cell.textLabel.text = messageString
+        }
+        if userString.characters.first == ":" {
+            cell.userLabel.text = String(userString.characters.dropFirst())
+        } else {
+            cell.userLabel.text = userString
+        }
         
-        cell.textLabel.text = String(messageString.characters.dropFirst())
-        cell.userLabel.text = String(userString.characters.dropFirst())
+        
         cell.timeLabel.text = " - monday at 11:54 AM"
         
         return cell
@@ -366,6 +433,45 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         
         return NSString(string: text).boundingRect(with: size, options: options, attributes: attributes, context: nil)
     }
+    
+    func sendButtonPressed() {
+        if UserDefaults.standard.object(forKey: "username") == nil {
+            joinIRC()
+        } else {
+            let whitespaceSet = NSCharacterSet.whitespaces
+            if !(chatTextBar.text?.trimmingCharacters(in: whitespaceSet).isEmpty)! {
+                print(chatTextBar.text!)
+                self.irc.sendMessageToChannel(chatTextBar.text!, channel: "#helpdesk")
+                let username = UserDefaults.standard.object(forKey: "username") as! String
+                let message = TwitLiveMessage(user: username, message: chatTextBar.text!)
+                messages.append(message)
+                print(messages.count)
+                self.chatTextBar.text = ""
+                self.chatTextBar.resignFirstResponder()
+                collectionView.reloadData()
+            }
+        }
+    }
+    
+    func joinIRC() {
+        let whitespaceSet = NSCharacterSet.whitespaces
+        if !(chatUsernameBar.text?.trimmingCharacters(in: whitespaceSet).isEmpty)! {
+            UserDefaults.standard.set(chatUsernameBar.text, forKey: "username")
+            
+            collectionView.isHidden = false
+            chatEntryTab.isHidden = false
+            chatIconView.isHidden = true
+            chatJoinButton.isHidden = true
+            chatUsernameBar.isHidden = true
+            let socket = GMSocket(host: "irc.twit.tv", port: 6667)
+            irc = GMIRCClient(socket: socket)
+            irc.delegate = self
+            irc.register(chatUsernameBar.text!, user: chatUsernameBar.text!, realName: chatUsernameBar.text!)
+            collectionView.reloadData()
+        } else {
+            print("NEED TO HAVE SOMETHING IN THE TEXT BAR")
+        }
+    }
 }
 
 
@@ -373,13 +479,13 @@ extension LiveVC: GMIRCClientDelegate {
     
     func didWelcome() {
         print("Received welcome message - ready to join a chat room")
-        irc.join("#twitlive")
+        irc.join("#helpdesk")
     }
     
     func didJoin(_ channel: String) {
         print("Joined chat room: \(channel)")
         
-        irc.sendMessageToNickName("Hi, I'm eugenio_ios. Nice to meet you!", nickName: "eugenio79")
+        //irc.sendMessageToNickName("Hi, I'm eugenio_ios. Nice to meet you!", nickName: "eugenio79")
     }
     
     func didReceivePrivateMessage(_ text: String, from: String) {
@@ -394,5 +500,34 @@ extension LiveVC: GMIRCClientDelegate {
         let item = self.collectionView(collectionView, numberOfItemsInSection: 0) - 1
         let lastItemIndex = NSIndexPath(item: item, section: 0)
         collectionView.scrollToItem(at: lastItemIndex as IndexPath, at: UICollectionViewScrollPosition.top, animated: true)
+    }
+    
+    func nickAlreadyExists() {
+        irc.closeIRC()
+        let alert = UIAlertController(title: "Username in use", message: "Choose and alternative username from the list below", preferredStyle: UIAlertControllerStyle.alert)
+        let user1 = "\(UserDefaults.standard.object(forKey: "username")!)\(UInt64.random(lower: 1, upper: 7))\(UInt64.random(lower: 1, upper: 7))\(UInt64.random(lower: 1, upper: 7))"
+        let user2 = "\(UserDefaults.standard.object(forKey: "username")!)\(UInt64.random(lower: 1, upper: 7))\(UInt64.random(lower: 1, upper: 7))"
+        alert.addAction(UIAlertAction(title: user1, style: .default, handler: { Void in
+            UserDefaults.standard.set(user1, forKey: "username")
+            print(user1)
+            let socket = GMSocket(host: "irc.twit.tv", port: 6667)
+            self.irc = GMIRCClient(socket: socket)
+            self.irc.delegate = self
+            self.irc.register(user1, user: user1, realName: user1)
+            self.collectionView.reloadData()
+        }))
+        alert.addAction(UIAlertAction(title: user2, style: .default, handler: { Void in
+            UserDefaults.standard.set(user2, forKey: "username")
+            let socket = GMSocket(host: "irc.twit.tv", port: 6667)
+            self.irc = GMIRCClient(socket: socket)
+            self.irc.delegate = self
+            self.irc.register(user2, user: user2, realName: user2)
+            self.collectionView.reloadData()
+        }))
+        alert.addAction(UIAlertAction(title: "Choose your own", style: .default, handler: { [unowned self] Void in
+            self.chatUsernameBar.text = ""
+            self.chatUsernameBar.placeholder = "Choose another username"
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
 }

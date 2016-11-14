@@ -76,6 +76,8 @@ extension GMSocket: GMSocketProtocol {
         let data = NSData(data: message.data(using: String.Encoding.ascii)!) as Data
         let buffer = (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count)
         
+        print(buffer)
+        print(data.count)
         outputStream!.write(buffer, maxLength: data.count)
     }
 }

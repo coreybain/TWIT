@@ -13,6 +13,8 @@ open class GMIRCMessage: NSObject {
     
     fileprivate(set) var prefix: GMIRCMessagePrefix?
     fileprivate(set) var command: String?
+    fileprivate(set) var user: String?
+    
     //    private(set) var parameters: String?
     fileprivate(set) var params: GMIRCMessageParams?
     
@@ -34,6 +36,8 @@ open class GMIRCMessage: NSObject {
                 //msg = msg.substring(from: idx.samePosition(in: idx))
                 //msg = msg.substring(from: <#T##String.CharacterView corresponding to `idx`##String.CharacterView#>.index(after: idx))
                 msg = msg.substring(from: idx)
+                print(msg)
+                print(prefix?.nickName)
             } else {
                 return nil
             }
@@ -42,13 +46,27 @@ open class GMIRCMessage: NSObject {
         // command
         if let idx = msg.characters.index(of: " ") {
             print(msg)
+            var subTrue:Bool = false
             //command = msg.substring(to: idx)
-            let subString = msg.components(separatedBy: " ") //split(msg, isSeparator: " ")[1]
-            command = subString[1]
-            print(subString[1])
+            let subString = msg.components(separatedBy: " ")
+            if (msg.range(of: "ERSIO") != nil) {  //legat
+                if subString[1] == "PRIVMSG" {
+                    if ((prefix?.nickName)!.range(of: "legat") != nil) {
+                        user = String((prefix?.nickName)!.characters.dropFirst())
+                        command = "VERSION"
+                    } else if subString[2] == "\(UserDefaults.standard.object(forKey: "username")!)" {
+                        user = String((prefix?.nickName)!.characters.dropFirst())
+                        command = "VERSION"
+                    } else {
+                        return nil
+                    }
+                } else {
+                     return nil
+                }
+            } else {
+                command = subString[1]
+            }
             
-            
-           // msg = msg
         } else {
             return nil
         }
@@ -57,4 +75,5 @@ open class GMIRCMessage: NSObject {
         params = GMIRCMessageParams(stringToParse: msg)
         //        parameters = msg
     }
+    
 }

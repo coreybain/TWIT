@@ -22,4 +22,6 @@ public protocol GMIRCClientDelegate: NSObjectProtocol {
     /// @param text The text sent by the user
     /// @param from The nickName of who sent you the message
     func didReceivePrivateMessage(_ text: String, from: String)
+    
+    func nickAlreadyExists()
 }
