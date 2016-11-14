@@ -191,7 +191,7 @@ private extension GMIRCClient {
         case "PRIVMSG":
             delegate?.didReceivePrivateMessage(ircMsg!.params!.textToBeSent!, from: ircMsg!.prefix!.nickName!)
         case "VERSION":
-            _sendCommand(":\(UserDefaults.standard.object(forKey: "username")!) NOTICE \((ircMsg?.user)!) :\0VERSION TWiTApp : v0.8 : Spiritdevs Australia - www.spiritdevs.com / \(UIDevice.current.model)\0")
+            _sendCommand(":\(UserDefaults.standard.object(forKey: "username")!) NOTICE \((ircMsg?.user)!) :\u{0001}VERSION TWiTApp v0.8 Spiritdevs Australia - www.spiritdevs.com / \(UIDevice.current.model)\u{0001}")
             
         case "TIME":
             let date = NSDate()
@@ -201,7 +201,7 @@ private extension GMIRCClient {
             
             print(calendar)
             let timestamp = Int64(date.timeIntervalSince1970 * 1000.0)
-            _sendCommand(":\(UserDefaults.standard.object(forKey: "username")!) NOTICE \((ircMsg?.user)!) \001 : TIME \(timestamp) \001 ")
+            _sendCommand(":\(UserDefaults.standard.object(forKey: "username")!) NOTICE \((ircMsg?.user)!) :\u{0001}TIME \(timestamp)\u{0001}")
         default:
             //            print("Message not handled: \(msg)")
             break;
