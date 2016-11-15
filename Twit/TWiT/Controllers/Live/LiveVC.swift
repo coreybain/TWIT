@@ -441,7 +441,7 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
             let whitespaceSet = NSCharacterSet.whitespaces
             if !(chatTextBar.text?.trimmingCharacters(in: whitespaceSet).isEmpty)! {
                 print(chatTextBar.text!)
-                self.irc.sendMessageToChannel(chatTextBar.text!, channel: "#helpdesk")
+                self.irc.sendMessageToChannel(chatTextBar.text!, channel: "#twitlive")
                 let username = UserDefaults.standard.object(forKey: "username") as! String
                 let message = TwitLiveMessage(user: username, message: chatTextBar.text!)
                 messages.append(message)
@@ -479,7 +479,7 @@ extension LiveVC: GMIRCClientDelegate {
     
     func didWelcome() {
         print("Received welcome message - ready to join a chat room")
-        irc.join("#helpdesk")
+        irc.join("#twitlive")
     }
     
     func didJoin(_ channel: String) {
