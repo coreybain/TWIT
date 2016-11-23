@@ -118,15 +118,17 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     
     let chatUsernameBar: UITextField = {
         let tf = UITextField()
-        tf.backgroundColor = UIColor.red
-        tf.placeholder = "Choose your username"
+        tf.backgroundColor = UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1.0)
+        //tf.placeholder = "Choose your username"
+        tf.attributedPlaceholder = NSAttributedString(string: "Choose your username", attributes: [NSForegroundColorAttributeName: UIColor.white.withAlphaComponent(0.5)])
+        tf.textColor = UIColor.white
         return tf
     }()
     
     let chatJoinButton: UIButton = {
         let button = UIButton()
         button.setTitle("Join", for: .normal)
-        button.backgroundColor = UIColor.blue
+        button.backgroundColor = UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1.0)
         button.isUserInteractionEnabled = true
         
         return button
@@ -336,7 +338,8 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
             chatEntryTab.contentSize = CGSize(width: view.frame.width, height: (tabBarController?.tabBar.frame.size.height)!)
             if UserDefaults.standard.object(forKey: "username") == nil {
                 chatTextBar.text = chatUsernameBar.text
-                chatTextBar.placeholder = "Choose your username"
+                chatTextBar.attributedPlaceholder = NSAttributedString(string: "Choose your username", attributes: [NSForegroundColorAttributeName: UIColor.white.withAlphaComponent(0.5)])
+                
                 chatSendButton.titleLabel?.text = "Join"
             } else {
                 chatTextBar.placeholder = "Tap to enter text..."

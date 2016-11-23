@@ -42,8 +42,8 @@ class TwitTabBarController: UITabBarController {
         trendingNavController.tabBarItem.image = UIImage(named: "iconTrending")
         
         // Accounts viewController
-        let accountLayout = UICollectionViewFlowLayout()
-        let accountVC = AccountVC(collectionViewLayout: accountLayout)
+//        let accountLayout = UITableViewController()
+        let accountVC = AccountVC()
         let accountNavController = UINavigationController(rootViewController: accountVC)
         accountNavController.tabBarItem.title = "Account"
         accountNavController.tabBarItem.image = UIImage(named: "iconAccount")
