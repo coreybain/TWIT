@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import AVKit
 import AVFoundation
+import MediaPlayer
 
 class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
@@ -221,8 +222,17 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         let tempUrl = URL(string: "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/twit_demo.smil/playlist.m3u8")
         
         player = AVPlayer(url: tempUrl!)
+        player?.allowsExternalPlayback = true
+        player?.usesExternalPlaybackWhileExternalScreenIsActive = true
+        
+        var volumeView = MPVolumeView()
+        volumeView.showsVolumeSlider = false
+        volumeView.sizeToFit()
+        volumeView.frame = videoFrame
+        view.addSubview(volumeView)
+        
         let playerLayer = AVPlayerLayer(player: player)
-        playerLayer.backgroundColor = UIColor.blue.cgColor
+        playerLayer.backgroundColor = UIColor.black.cgColor
         
         view.layer.addSublayer(playerLayer)
         playerLayer.frame = videoFrame
@@ -310,10 +320,11 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         print("hehehehe")
         if UserDefaults.standard.bool(forKey: "keyboardVisable") {
             dismissKeyboard()
+            UserDefaults.standard.set(false, forKey: "keyboardVisable")
         } else {
             let offsetHeight = UIApplication.shared.statusBarFrame.height + (navigationController?.navigationBar.frame.size.height)!
             let tabHeight = (tabBarController?.tabBar.frame.size.height)!
-            guideLuncher.showGuide(offsetHeight: offsetHeight, videoHeight: view.frame.width * 9/16)
+            guideLuncher.showGuide(offsetHeight: offsetHeight, videoHeight: view.frame.width * 9/16, player: player)
         }
         
     }

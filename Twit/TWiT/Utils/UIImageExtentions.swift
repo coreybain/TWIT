@@ -163,3 +163,12 @@ extension UIScrollView {
       //  self.addSublayer(border)
     }
 }
+
+func imageWithImage(image:UIImage,scaledToSize newSize:CGSize)->UIImage{
+    
+    UIGraphicsBeginImageContext( newSize )
+    image.draw(in: CGRect(x: 0,y: 0,width: newSize.width,height: newSize.height))
+    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return newImage!.withRenderingMode(.alwaysOriginal)
+}

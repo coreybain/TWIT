@@ -11,7 +11,7 @@ import Foundation
 typealias DownloadComplete = () -> ()
 typealias DownloadError = (NSError) -> ()
 
-let internalAdress = "http://192.168.1.9:3002/v1/"
+let internalAdress = "http://192.168.1.207:3000/v1/"
 let APIAdress = "\(internalAdress)v1/"
 let telstraAdress = "http://10.0.0.118:3002/v1/"
 
