@@ -18,6 +18,8 @@
 		83199F921DC6FF90009A507B /* TrendingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83199F911DC6FF90009A507B /* TrendingVC.swift */; };
 		83199F941DC7002B009A507B /* AccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83199F931DC7002B009A507B /* AccountVC.swift */; };
 		831BEABB1DD7BC710099FB05 /* UIIntExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831BEABA1DD7BC710099FB05 /* UIIntExtentions.swift */; };
+		832371AC1DFB99F70078B9BC /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832371AB1DFB99F70078B9BC /* UserCell.swift */; };
+		832371AE1DFBAA090078B9BC /* TwitUserDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832371AD1DFBAA090078B9BC /* TwitUserDetails.swift */; };
 		8323936C1D9B09DC00A85474 /* VideoLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8323936B1D9B09DC00A85474 /* VideoLauncher.swift */; };
 		8336E5761DA992B500E2AD35 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336E5751DA992B500E2AD35 /* LoadingView.swift */; };
 		8336E57C1DA995CF00E2AD35 /* RPCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8336E57B1DA995CF00E2AD35 /* RPCircularProgress.swift */; };
@@ -104,6 +106,8 @@
 		83199F911DC6FF90009A507B /* TrendingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrendingVC.swift; sourceTree = "<group>"; };
 		83199F931DC7002B009A507B /* AccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
 		831BEABA1DD7BC710099FB05 /* UIIntExtentions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIIntExtentions.swift; path = Utils/UIIntExtentions.swift; sourceTree = "<group>"; };
+		832371AB1DFB99F70078B9BC /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserCell.swift; path = Views/Accounts/UserCell.swift; sourceTree = "<group>"; };
+		832371AD1DFBAA090078B9BC /* TwitUserDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TwitUserDetails.swift; path = Model/TwitUserDetails.swift; sourceTree = "<group>"; };
 		8323936B1D9B09DC00A85474 /* VideoLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoLauncher.swift; path = Utils/VideoLauncher.swift; sourceTree = "<group>"; };
 		8336E5751DA992B500E2AD35 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingView.swift; path = Views/LoadingView.swift; sourceTree = "<group>"; };
 		8336E57B1DA995CF00E2AD35 /* RPCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RPCircularProgress.swift; sourceTree = "<group>"; };
@@ -190,6 +194,14 @@
 				F5735FA9F5BB2724E91E9DCC /* Pods_TWiT.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		832371AA1DFB99BD0078B9BC /* Accounts */ = {
+			isa = PBXGroup;
+			children = (
+				832371AB1DFB99F70078B9BC /* UserCell.swift */,
+			);
+			name = Accounts;
 			sourceTree = "<group>";
 		};
 		8370477D1DCFC26B00A90592 /* IRC */ = {
@@ -367,6 +379,7 @@
 		8397AAF21D9632CB00009C01 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				832371AA1DFB99BD0078B9BC /* Accounts */,
 				83ADAEA21DD3D76D000DA83B /* Live */,
 				8397AAF31D9632D300009C01 /* Featured */,
 				8336E5751DA992B500E2AD35 /* LoadingView.swift */,
@@ -413,6 +426,7 @@
 				8355CEA21DB1D16700BAF3F7 /* TwitParseCast.swift */,
 				8355CEA01DB1D10E00BAF3F7 /* TwitParseEpisode.swift */,
 				83ADAEA01DD3D4F4000DA83B /* TwitLiveMessage.swift */,
+				832371AD1DFBAA090078B9BC /* TwitUserDetails.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -610,6 +624,7 @@
 				835E6B631DA3ACBC002A1117 /* VideoPlayerControls.swift in Sources */,
 				8397AB081D97D87B00009C01 /* TwitParseShow.swift in Sources */,
 				8355CE9D1DAB85EE00BAF3F7 /* PeopleVC.swift in Sources */,
+				832371AE1DFBAA090078B9BC /* TwitUserDetails.swift in Sources */,
 				8397AAFE1D97388600009C01 /* FeaturedPageDetails.swift in Sources */,
 				831BEABB1DD7BC710099FB05 /* UIIntExtentions.swift in Sources */,
 				8397AAF11D961FAE00009C01 /* FeaturedVC.swift in Sources */,
@@ -658,6 +673,7 @@
 				83ADAEA41DD3D787000DA83B /* LiveChatCell.swift in Sources */,
 				837047851DCFC32C00A90592 /* GMIRCClientProtocol.swift in Sources */,
 				8397AAEE1D961F5F00009C01 /* TwitTabBarController.swift in Sources */,
+				832371AC1DFB99F70078B9BC /* UserCell.swift in Sources */,
 				83199F8E1DC6A7FE009A507B /* SubscriptionsVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -156,8 +156,8 @@ class QuickPlayCell: UICollectionViewCell {
     func setupViews() {
         
         addSubview(titleLabel)
-        addSubview(imageView)
         imageView.addSubview(playButton)
+        addSubview(imageView)
         addSubview(nameLabel)
         addSubview(episodeLabel)
         addSubview(audioButton)

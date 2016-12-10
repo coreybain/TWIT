@@ -61,75 +61,8 @@ class AccountVC: UITableViewController {
         view.backgroundColor = UIColor(red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
         tableView?.backgroundColor = UIColor(red: 23/255, green: 23/255, blue: 23/255, alpha: 1.0)
         tableView.separatorColor = UIColor(red: 56/255, green: 55/255, blue: 58/255, alpha: 1.0)
-        //tableView.separatorInset = UIEdgeInsets.zero
         
-        
-        // construct first name cell, section 0, row 0
-        self.userCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        //self.userCell.frame.size.height = 60
-        self.firstNameText = UITextField(frame: self.userCell.contentView.bounds.insetBy(dx: 15, dy: 0))
-        self.firstNameText.placeholder = "First Name"
-        self.userCell.addSubview(self.firstNameText)
-        
-        // construct last name cell, section 0, row 1
-        self.subscriptionCell.textLabel?.text = "Subscriptions"
-        self.subscriptionCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
-        self.subscriptionCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
-        self.subscriptionCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        self.subscriptionCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
-        
-        // construct last name cell, section 0, row 1
-        self.historyCell.textLabel?.text = "History"
-        self.historyCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
-        self.historyCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
-        self.historyCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        self.historyCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
-        
-        // construct last name cell, section 0, row 1
-        self.accountCell.textLabel?.text = "Account"
-        self.accountCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
-        self.accountCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
-        self.accountCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        self.accountCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
-        
-        // construct last name cell, section 0, row 1
-        self.liveChatCell.textLabel?.text = "Live Chat"
-        self.liveChatCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
-        self.liveChatCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
-        self.liveChatCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        self.liveChatCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
-        
-        // construct last name cell, section 0, row 1
-        self.notificationCell.textLabel?.text = "Notifications"
-        self.notificationCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
-        self.notificationCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
-        self.notificationCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        self.notificationCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
-        
-        // construct last name cell, section 0, row 1
-        self.dataUsageCell.textLabel?.text = "Data Usage"
-        self.dataUsageCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
-        self.dataUsageCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
-        self.dataUsageCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        self.dataUsageCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
-        
-        // construct last name cell, section 0, row 1
-        self.aboutCell.textLabel?.text = "About Spiritdevs"
-        self.aboutCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
-        self.aboutCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
-        self.aboutCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        //self.dataUsageCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
-        
-        // construct last name cell, section 0, row 1
-        self.shareCell.textLabel?.text = "Share with Friends"
-        self.shareCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
-        self.shareCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
-        self.shareCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
-        //self.shareCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
-        
-        
-        
-//        tableView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: AccountCellID)
+        setupCells()
         
     }
     
@@ -257,4 +190,76 @@ class AccountVC: UITableViewController {
     
     
     
+}
+
+
+/// MARK: -- Basic Cells Section:
+
+extension AccountVC {
+    func setupCells() {
+        // construct first name cell, section 0, row 0
+        self.userCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        //self.userCell.frame.size.height = 60
+        self.firstNameText = UITextField(frame: self.userCell.contentView.bounds.insetBy(dx: 15, dy: 0))
+        self.firstNameText.placeholder = "First Name"
+        self.userCell.addSubview(self.firstNameText)
+        
+        // construct last name cell, section 0, row 1
+        self.subscriptionCell.textLabel?.text = "Subscriptions"
+        self.subscriptionCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
+        self.subscriptionCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
+        self.subscriptionCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        self.subscriptionCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+        
+        // construct last name cell, section 0, row 1
+        self.historyCell.textLabel?.text = "History"
+        self.historyCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
+        self.historyCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
+        self.historyCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        self.historyCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+        
+        // construct last name cell, section 0, row 1
+        self.accountCell.textLabel?.text = "Account"
+        self.accountCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
+        self.accountCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
+        self.accountCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        self.accountCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+        
+        // construct last name cell, section 0, row 1
+        self.liveChatCell.textLabel?.text = "Live Chat"
+        self.liveChatCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
+        self.liveChatCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
+        self.liveChatCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        self.liveChatCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+        
+        // construct last name cell, section 0, row 1
+        self.notificationCell.textLabel?.text = "Notifications"
+        self.notificationCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
+        self.notificationCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
+        self.notificationCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        self.notificationCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+        
+        // construct last name cell, section 0, row 1
+        self.dataUsageCell.textLabel?.text = "Data Usage"
+        self.dataUsageCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
+        self.dataUsageCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
+        self.dataUsageCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        self.dataUsageCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+        
+        // construct last name cell, section 0, row 1
+        self.aboutCell.textLabel?.text = "About Spiritdevs"
+        self.aboutCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
+        self.aboutCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
+        self.aboutCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        //self.dataUsageCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+        
+        // construct last name cell, section 0, row 1
+        self.shareCell.textLabel?.text = "Share with Friends"
+        self.shareCell.textLabel?.textColor = UIColor(red: 237/255, green: 237/255, blue: 237/255, alpha: 1.0)
+        self.shareCell.imageView?.image = imageWithImage(image: UIImage(named: "aaa1400a")!, scaledToSize: CGSize(width: 30, height: 30))
+        self.shareCell.backgroundColor = UIColor(red: 28/255, green: 28/255, blue: 28/255, alpha: 1.0)
+        //self.shareCell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
+        
+
+    }
 }
