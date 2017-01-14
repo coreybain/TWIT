@@ -1,8 +1,8 @@
 //
-//  PlayerView.swift
+//  TwitPlayerView.swift
 //  TWiT
 //
-//  Created by Corey Baines on 4/10/16.
+//  Created by Corey Baines on 31/12/16.
 //  Copyright © 2016 Corey Baines. All rights reserved.
 //
 
@@ -11,9 +11,9 @@ import UIKit
 import AVFoundation.AVPlayer
 
 private extension Selector {
-    static let playerItemDidPlayToEndTime = #selector(PlayerView.playerItemDidPlayToEndTime(_:))
+    static let playerItemDidPlayToEndTime = #selector(TwitPlayerView.playerItemDidPlayToEndTime(_:))
 }
- extension PVTimeRange{
+extension PVTimeRange{
     static let zero = kCMTimeRangeZero
 }
 
@@ -23,42 +23,42 @@ typealias PVTimeRange = CMTimeRange
 typealias PVPlayer = AVQueuePlayer
 typealias PVPlayerItem = AVPlayerItem
 
-protocol PlayerViewDelegate: class {
-    func playerVideo(_ player: PlayerView, statusPlayer: PVStatus, error: NSError?)
-    func playerVideo(_ player: PlayerView, statusItemPlayer: PVItemStatus, error: NSError?)
-    func playerVideo(_ player: PlayerView, loadedTimeRanges: [PVTimeRange])
-    func playerVideo(_ player: PlayerView, duration: Double)
-    func playerVideo(_ player: PlayerView, currentTime: Double)
-    func playerVideo(_ player: PlayerView, rate: Float)
-    func playerVideo(playerFinished player: PlayerView)
+protocol TwitPlayerViewDelegate: class {
+    func playerVideo(_ player: TwitPlayerView, statusPlayer: PVStatus, error: NSError?)
+    func playerVideo(_ player: TwitPlayerView, statusItemPlayer: PVItemStatus, error: NSError?)
+    func playerVideo(_ player: TwitPlayerView, loadedTimeRanges: [PVTimeRange])
+    func playerVideo(_ player: TwitPlayerView, duration: Double)
+    func playerVideo(_ player: TwitPlayerView, currentTime: Double)
+    func playerVideo(_ player: TwitPlayerView, rate: Float)
+    func playerVideo(playerFinished player: TwitPlayerView)
 }
 
-extension PlayerViewDelegate {
+extension TwitPlayerViewDelegate {
     
-    func playerVideo(_ player: PlayerView, statusPlayer: PVStatus, error: NSError?) {
+    func playerVideo(_ player: TwitPlayerView, statusPlayer: PVStatus, error: NSError?) {
         
     }
-    func playerVideo(_ player: PlayerView, statusItemPlayer: PVItemStatus, error: NSError?) {
+    func playerVideo(_ player: TwitPlayerView, statusItemPlayer: PVItemStatus, error: NSError?) {
         
     }
-    func playerVideo(_ player: PlayerView, loadedTimeRanges: [PVTimeRange]) {
+    func playerVideo(_ player: TwitPlayerView, loadedTimeRanges: [PVTimeRange]) {
         
     }
-    func playerVideo(_ player: PlayerView, duration: Double) {
+    func playerVideo(_ player: TwitPlayerView, duration: Double) {
         
     }
-    func playerVideo(_ player: PlayerView, currentTime: Double) {
+    func playerVideo(_ player: TwitPlayerView, currentTime: Double) {
         
     }
-    func playerVideo(_ player: PlayerView, rate: Float) {
+    func playerVideo(_ player: TwitPlayerView, rate: Float) {
         
     }
-    func playerVideo(playerFinished player: PlayerView) {
+    func playerVideo(playerFinished player: TwitPlayerView) {
         
     }
 }
 
-enum PlayerViewFillMode {
+enum TwitPlayerViewFillMode {
     case resizeAspect
     case resizeAspectFill
     case resize
@@ -93,8 +93,9 @@ enum PlayerViewFillMode {
 private extension CMTime {
     static var zero:CMTime { return kCMTimeZero }
 }
+
 /// A simple `UIView` subclass that is backed by an `AVPlayerLayer` layer.
-@objc   class PlayerView: UIView {
+@objc   class TwitPlayerView: UIView {
     
     
     
@@ -107,9 +108,9 @@ private extension CMTime {
     
     fileprivate var urlsQueue: [URL]?
     //MARK: - Public Variables
-    weak var delegate: PlayerViewDelegate?
+    weak var delegate: TwitPlayerViewDelegate?
     
-      var loopVideosQueue = false
+    var loopVideosQueue = false
     var player: PVPlayer? {
         get {
             return playerLayer.player as? PVPlayer
@@ -121,14 +122,14 @@ private extension CMTime {
     }
     
     
-    var fillMode: PlayerViewFillMode! {
+    var fillMode: TwitPlayerViewFillMode! {
         didSet {
             playerLayer.videoGravity = fillMode.AVLayerVideoGravity
         }
     }
     
     
-      var currentTime: Double {
+    var currentTime: Double {
         get {
             guard let player = player else {
                 return 0
@@ -143,7 +144,7 @@ private extension CMTime {
             player!.seek(to: newTime,toleranceBefore: CMTime.zero,toleranceAfter: CMTime.zero)
         }
     }
-      var interval = CMTimeMake(1, 60) {
+    var interval = CMTimeMake(1, 60) {
         didSet {
             if rate != 0 {
                 addCurrentTimeObserver()
@@ -151,7 +152,7 @@ private extension CMTime {
         }
     }
     
-      var rate: Float {
+    var rate: Float {
         get {
             guard let player = player else {
                 return 0
@@ -229,7 +230,7 @@ private extension CMTime {
     func playerItemDidPlayToEndTime(_ aNotification: Notification) {
         //notification of player to stop
         let item = aNotification.object as! PVPlayerItem
-      
+        
         if loopVideosQueue && player?.items().count == 1,
             let urlsQueue = urlsQueue {
             
@@ -240,26 +241,26 @@ private extension CMTime {
     }
     // MARK: public Functions
     
-      func play() {
+    func play() {
         rate = 1
         //player?.play()
     }
     
-      func pause() {
+    func pause() {
         rate = 0
         //player?.pause()
     }
     
     
-      func stop() {
+    func stop() {
         currentTime = 0
         pause()
     }
-      func next() {
+    func next() {
         player?.advanceToNextItem()
     }
     
-      func resetPlayer() {
+    func resetPlayer() {
         urlsQueue = nil
         guard let player = player else {
             return
@@ -322,7 +323,7 @@ private extension CMTime {
         let viewImage: UIImage = UIImage(cgImage: ref)
         return (viewImage, timePicture)
     }
-      var url: URL? {
+    var url: URL? {
         didSet {
             guard let url = url else {
                 urls = nil
@@ -419,9 +420,9 @@ private extension CMTime {
     
     
     
-      override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
-   
+        
         
         
         if context == &statusContext {
@@ -431,7 +432,7 @@ private extension CMTime {
                 return
             }
             self.delegate?.playerVideo(self, statusPlayer: avPlayer.status, error: avPlayer.error as NSError?)
-            
+            print(avPlayer.status)
             
         } else if context == &loadedContext {
             

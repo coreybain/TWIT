@@ -1,15 +1,15 @@
 //
-//  VideoProgressSlider.swift
+//  TwitVideoSlider.swift
 //  TWiT
 //
-//  Created by Corey Baines on 4/10/16.
-//  Copyright © 2016 Corey Baines. All rights reserved.
+//  Created by Corey Baines on 1/1/17.
+//  Copyright © 2017 Corey Baines. All rights reserved.
 //
 
 import Foundation
 import UIKit
 
-class CustomSlider: UISlider {
+class TwitVideoSlider: UISlider {
     
     override init (frame : CGRect) {
         super.init(frame : frame)
@@ -41,7 +41,7 @@ class CustomSlider: UISlider {
     }
 }
 
-class CustomProgress: UIProgressView {
+class TwitVideoSliderProgress: UIProgressView {
     
     override init (frame : CGRect) {
         super.init(frame : frame)
@@ -64,3 +64,4 @@ class CustomProgress: UIProgressView {
     }
     
 }
+

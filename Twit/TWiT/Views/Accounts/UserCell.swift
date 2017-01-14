@@ -17,12 +17,12 @@ class UserCell: UICollectionViewCell {
             if userData != nil {
                 nameLabel.isHidden = false
                 descriptionLabel.isHidden = false
-                if let imageName = userData?.showPicture {
-                    imageView.isHidden = false
-                    imageView.image = UIImage(named: imageName)
-                }
-                descriptionLabel.text = (userData?.showNotes)!
-                nameLabel.text = userData?.label
+//                if let imageName = userData?.showPicture {
+//                    imageView.isHidden = false
+//                    imageView.image = UIImage(named: imageName)
+//                }
+//                descriptionLabel.text = (userData?.showNotes)!
+//                nameLabel.text = userData?.label
             } else {
                 imageView.isHidden = true
                 nameLabel.isHidden = true

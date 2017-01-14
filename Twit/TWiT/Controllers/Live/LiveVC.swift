@@ -20,6 +20,9 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     var irc: GMIRCClient!
     var messages: [TwitLiveMessage] = []
     var cellSize: [CGSize] = []
+    var twitPlaying:Bool?
+    var scheduleShowing:Bool = false
+    var isFullscreen: Bool = false
     fileprivate let liveCellID = "liveCell"
     
     //MARK: -- UI Elements
@@ -115,6 +118,24 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         let image = UIImageView()
         image.image = UIImage(named: "chatIcon")
         return image
+    }()
+    
+    var playPauseButton:UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "pause"), for: .normal)
+        return button
+    }()
+    
+    var airPlayButton:UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "settings"), for: .normal)
+        return button
+    }()
+    
+    var scheduleButton:UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "calendar"), for: .normal)
+        return button
     }()
     
     let chatUsernameBar: UITextField = {
@@ -217,42 +238,117 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         let height = view.frame.width * 9/16
         let offsetHeight = UIApplication.shared.statusBarFrame.height + (navigationController?.navigationBar.frame.size.height)!
         let videoFrame = CGRect(x: 0, y: offsetHeight, width: view.frame.width, height: height)
-        //let playerVideoView = playerView(frame: videoFrame)
         
-        let tempUrl = URL(string: "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/twit_demo.smil/playlist.m3u8")
+        let tempUrl = URL(string: "http://hls.twit.tv/flosoft/smil:twitStreamHi.smil/playlist.m3u8")
         
         player = AVPlayer(url: tempUrl!)
         player?.allowsExternalPlayback = true
         player?.usesExternalPlaybackWhileExternalScreenIsActive = true
         
-        var volumeView = MPVolumeView()
-        volumeView.showsVolumeSlider = false
-        volumeView.sizeToFit()
-        volumeView.frame = videoFrame
-        view.addSubview(volumeView)
-        
+        //MARK: -- Player View
         let playerLayer = AVPlayerLayer(player: player)
         playerLayer.backgroundColor = UIColor.black.cgColor
-        
         view.layer.addSublayer(playerLayer)
         playerLayer.frame = videoFrame
         
         player?.play()
         player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
         
+        //MARK: -- Control View
         controlsContainerView.frame = videoFrame
-        
         view.addSubview(controlsContainerView)
-        
         controlsContainerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LiveVC.touching)))
         
         controlsContainerView.addSubview(activityIndicatorView)
         activityIndicatorView.centerXAnchor.constraint(equalTo: controlsContainerView.centerXAnchor).isActive = true
         activityIndicatorView.centerYAnchor.constraint(equalTo: controlsContainerView.centerYAnchor).isActive = true
         
+        if player != nil {
+            
+            if (player?.rate != 0) && (player?.error == nil) {
+                twitPlaying = true
+                playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
+            } else {
+                twitPlaying = false
+                playPauseButton.setImage(UIImage(named: "play-button"), for: .normal)
+            }
+            
+            playPauseButton.frame = CGRect(x: (videoFrame.width/2) - 25, y: (videoFrame.width * 9/16)/2 - 25, width: 50, height: 50)
+            airPlayButton.frame = CGRect(x: videoFrame.width - 38, y: 15, width: 25, height: 25)
+            scheduleButton.frame = CGRect(x: 16, y: 15, width: 25, height: 25)
+            
+            controlsContainerView.addSubview(playPauseButton)
+            controlsContainerView.addSubview(airPlayButton)
+            controlsContainerView.addSubview(scheduleButton)
+            
+            playPauseButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LiveVC.playPause)))
+            scheduleButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LiveVC.showSchedule)))
+        }
         
     }
     
+    func playPause() {
+        if twitPlaying == true {
+            
+            player?.pause()
+            playPauseButton.setImage(UIImage(named: "play-button"), for: .normal)
+            twitPlaying = false
+        } else {
+            
+            player?.play()
+            playPauseButton.setImage(UIImage(named: "pause"), for: .normal)
+            twitPlaying = true
+        }
+    }
+    
+    func showSchedule() {
+        if !scheduleShowing {
+            scheduleShowing = true
+            let offsetHeight = UIApplication.shared.statusBarFrame.height + (navigationController?.navigationBar.frame.size.height)!
+            let tabHeight = (tabBarController?.tabBar.frame.size.height)!
+            guideLuncher.showGuide(offsetHeight: offsetHeight, videoHeight: view.frame.width * 9/16, player: player)
+        } else {
+            scheduleShowing = false
+            guideLuncher.handleDismiss()
+        }
+    }
+    
+    
+    //MARK: Player Controls Animations
+    
+//    func showPlayerControls() {
+//        if (!isMinimized) {
+//            UIView.animate(withDuration: 0.6, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+//                self.backPlayerControlsView.alpha = 0.55
+//                self.playerControlsView.alpha = 1.0
+//                self.minimizeButton.alpha = 1.0
+//                if !self.isFullscreen {
+//                    UIApplication.shared.setStatusBarHidden(false, with: .slide)
+//                }
+//                
+//            }, completion: nil)
+//            hideTimer?.invalidate()
+//            hideTimer = nil
+//            hideTimer = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(VideoVC.hidePlayerControls(_:)), userInfo: 1.0, repeats: false)
+//        }
+//    }
+//    
+//    func hidePlayerControls(_ dontAnimate: Bool) {
+//        if (dontAnimate) {
+//            self.controlsContainerView.alpha = 0.0
+//        } else {
+//            if (twitPlaying) {
+//                UIView.animate(withDuration: 0.6, delay: 0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+//                    self.controlsContainerView.alpha = 0.0
+//                    if !self.isFullscreen {
+//                        UIApplication.shared.setStatusBarHidden(true, with: .slide)
+//                    }
+//                    
+//                }, completion: nil)
+//            }
+//        }
+//    }
+
     
     func setupChatView() {
         
@@ -317,16 +413,11 @@ class LiveVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     }
     
     func touching() {
-        print("hehehehe")
+        print("HEHEHE")
         if UserDefaults.standard.bool(forKey: "keyboardVisable") {
             dismissKeyboard()
             UserDefaults.standard.set(false, forKey: "keyboardVisable")
-        } else {
-            let offsetHeight = UIApplication.shared.statusBarFrame.height + (navigationController?.navigationBar.frame.size.height)!
-            let tabHeight = (tabBarController?.tabBar.frame.size.height)!
-            guideLuncher.showGuide(offsetHeight: offsetHeight, videoHeight: view.frame.width * 9/16, player: player)
         }
-        
     }
     
     func playerView(frame: CGRect) {
@@ -509,7 +600,6 @@ extension LiveVC: GMIRCClientDelegate {
         
         let message = TwitLiveMessage(user: from, message: text)
         messages.append(message)
-        print(messages.count)
         collectionView.reloadData()
         let item = self.collectionView(collectionView, numberOfItemsInSection: 0) - 1
         let lastItemIndex = NSIndexPath(item: item, section: 0)

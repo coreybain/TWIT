@@ -35,6 +35,12 @@ class TwitMain {
         
         //Initiate tabViewController
         window.rootViewController = TwitTabBarController()
+        
+        
+        
+        
+        
+        
 //        let layout = UICollectionViewFlowLayout()
 //        let featuredController = FeaturedVC(collectionViewLayout: layout)
 //        window.rootViewController = UINavigationController(rootViewController: featuredController)

@@ -5,7 +5,6 @@
 //  Created by Corey Baines on 6/11/16.
 //  Copyright © 2016 Corey Baines. All rights reserved.
 //
-
 import Foundation
 import UIKit
 import AVKit

@@ -139,8 +139,8 @@ class QuickPlayCell: UICollectionViewCell {
     func playVideo() {
         if !UserDefaults.standard.bool(forKey: "videoplaying"){
             if episodeData != nil {
-                VideoPlayer.initVideo(URL(string: (episodeData?.videoArray[1].mediaUrl)!)!)
-                VideoPlayer.showYTFView()
+                //VideoPlayer.initVideo(URL(string: (episodeData?.videoArray[1].mediaUrl)!)!)
+                //VideoPlayer.showYTFView()
 //                let videoLauncher = VideoLauncher()
 //                videoLauncher.urlString = (episodeData?.videoArray[1].mediaUrl)!
 //                videoLauncher.showVideoPlayer()
